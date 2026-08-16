@@ -1,607 +1,932 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1E2A33">
-  <meta name="description" content="Recauda automatiza los cobros recurrentes de negocios locales y simplifica la gestión de mensualidades.">
-  <title>Recauda — Cobros recurrentes sin perseguir pagos</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C141A">
+  <meta name="description" content="Recauda automatiza cobros recurrentes para gimnasios, academias, escuelas deportivas y servicios por suscripción.">
+  <title>Recauda — Cobra a tiempo. Crece tranquilo.</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --ink:#18232C;
-      --ink-soft:#4C5D69;
-      --muted:#7E8C96;
-      --paper:#F4F6F3;
-      --card:#FFFFFF;
-      --accent:#3E647F;
-      --accent-2:#648EAA;
-      --accent-wash:#E8EFF3;
-      --ok:#2F7953;
-      --ok-wash:#E7F1EA;
-      --warning:#B17824;
-      --line:#DDE4E3;
-      --cream-text:#F6F8F6;
-      --display:'Zilla Slab', serif;
-      --body:'DM Sans', sans-serif;
-      --mono:'IBM Plex Mono', monospace;
-      --radius:8px;
-      --radius-lg:16px;
-      --shadow:0 18px 40px -24px rgba(24,35,44,.34);
-      --shadow-lg:0 30px 70px -30px rgba(24,35,44,.44);
-      --max:1140px;
+      --bg:#F4F7F5;
+      --surface:#FFFFFF;
+      --surface-2:#EDF2EF;
+      --ink:#0C141A;
+      --ink-2:#25333D;
+      --muted:#6D7B84;
+      --line:#DCE4E0;
+      --line-dark:#30404A;
+      --blue:#3D6D8D;
+      --blue-2:#7EA5BE;
+      --blue-soft:#E5EEF3;
+      --green:#24734A;
+      --green-soft:#E7F2EB;
+      --amber:#A46A1C;
+      --amber-soft:#F8EFDF;
+      --red:#A83D32;
+      --red-soft:#F9EAE7;
+      --white:#F8FBFA;
+
+      --display:'Zilla Slab', Georgia, serif;
+      --body:'DM Sans', Arial, sans-serif;
+      --mono:'IBM Plex Mono', ui-monospace, monospace;
+
+      --radius:12px;
+      --radius-lg:20px;
+      --radius-xl:28px;
+
+      --shadow-sm:0 8px 30px -22px rgba(12,20,26,.35);
+      --shadow:0 22px 58px -30px rgba(12,20,26,.42);
+      --shadow-lg:0 34px 90px -38px rgba(12,20,26,.48);
+
+      --max:1180px;
+      --ease:cubic-bezier(.22,.8,.22,1);
     }
 
-    *,*::before,*::after{box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:88px}
     body{
       margin:0;
-      font-family:var(--body);
       color:var(--ink);
-      background:var(--paper);
-      line-height:1.6;
+      background:var(--bg);
+      font:400 15px/1.65 var(--body);
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
     }
-    body.menu-open{overflow:hidden;}
-    h1,h2,h3{font-family:var(--display); margin:0 0 .5em; color:var(--ink); font-weight:700;}
-    p{margin:0 0 1em;}
-    a{color:inherit;}
-    button,input,select{font:inherit;}
-    button{cursor:pointer;}
-    img,svg{display:block;}
-    :focus-visible{outline:3px solid var(--accent-2);outline-offset:3px;}
-    ::selection{background:#C9DCE7;color:var(--ink);}
-    .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
+    body.is-locked{overflow:hidden}
+    a{color:inherit}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    ::selection{background:#C8DCE7;color:var(--ink)}
+    :focus-visible{outline:3px solid var(--blue-2);outline-offset:3px}
+    img,svg{display:block}
+    .wrap{width:min(var(--max),calc(100% - 44px));margin:auto}
     .sr-only{
-      position:absolute!important;width:1px!important;height:1px!important;
-      padding:0!important;margin:-1px!important;overflow:hidden!important;
-      clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
+      position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
+      margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
+      white-space:nowrap!important;border:0!important
+    }
+
+    /* ---------- Generic ---------- */
+    .eyebrow{
+      display:flex;align-items:center;gap:10px;
+      margin:0 0 14px;
+      color:var(--blue);
+      font:600 11px/1 var(--mono);
+      text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+    .eyebrow::before{content:"";width:22px;height:1px;background:currentColor}
+    .eyebrow--light{color:var(--blue-2)}
+    h1,h2,h3,h4{
+      margin:0;
+      color:var(--ink);
+      font-family:var(--display);
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+    h1{font-size:clamp(3rem,6vw,5.7rem);line-height:.92}
+    h2{font-size:clamp(2.2rem,4vw,3.5rem);line-height:1}
+    h3{font-size:1.3rem;line-height:1.1}
+    p{margin:0}
+    .muted{color:var(--muted)}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      min-height:48px;padding:0 17px;
+      border:1px solid transparent;border-radius:10px;
+      text-decoration:none;
+      font:600 11px/1 var(--mono);
+      letter-spacing:.02em;
+      transition:transform .18s var(--ease),background .18s var(--ease),border-color .18s var(--ease),box-shadow .18s var(--ease),color .18s var(--ease);
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn svg{width:17px;height:17px}
+    .btn--primary{background:var(--ink);color:var(--white);box-shadow:var(--shadow-sm)}
+    .btn--primary:hover{background:#1D2A33;box-shadow:var(--shadow)}
+    .btn--secondary{background:transparent;border-color:var(--ink);color:var(--ink)}
+    .btn--secondary:hover{background:var(--ink);color:var(--white)}
+    .btn--soft{background:var(--blue-soft);color:var(--blue);border-color:transparent}
+    .btn--soft:hover{background:#D8E6ED}
+    .btn--light{background:var(--white);color:var(--ink)}
+    .btn--light:hover{background:#EAF0EE}
+    .btn--full{width:100%}
+
+    .chip{
+      display:inline-flex;align-items:center;gap:7px;
+      border:1px solid var(--line);border-radius:999px;
+      padding:7px 10px;background:rgba(255,255,255,.65);
+      color:var(--ink-2);font:600 10px/1 var(--mono);
+      letter-spacing:.03em
+    }
+    .chip__dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+    .section{padding:108px 0}
+    .section--compact{padding:84px 0}
+    .section--dark{background:var(--ink);color:var(--white)}
+    .section--soft{background:var(--surface-2)}
+    .section__head{max-width:730px}
+    .section__head p:not(.eyebrow){color:var(--muted);margin-top:17px;max-width:64ch}
+    .section--dark h2,.section--dark h3{color:var(--white)}
+    .section--dark .section__head p:not(.eyebrow){color:#B9C5CB}
+
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .65s var(--ease),transform .65s var(--ease)}
+    .reveal.is-visible{opacity:1;transform:none}
+    .stagger>*{opacity:0;transform:translateY(18px)}
+    .stagger.is-visible>*{animation:staggerIn .6s var(--ease) forwards}
+    .stagger.is-visible>*:nth-child(2){animation-delay:.07s}
+    .stagger.is-visible>*:nth-child(3){animation-delay:.14s}
+    .stagger.is-visible>*:nth-child(4){animation-delay:.21s}
+    @keyframes staggerIn{to{opacity:1;transform:none}}
+
+    .progress{
+      position:fixed;left:0;top:0;height:3px;width:0;
+      background:var(--blue);z-index:300;
+      box-shadow:0 0 18px rgba(61,109,141,.35)
+    }
+
+    /* ---------- Nav ---------- */
+    .site-header{
+      position:sticky;top:0;z-index:200;
+      border-bottom:1px solid rgba(220,228,224,.9);
+      background:rgba(244,247,245,.88);
+      backdrop-filter:blur(16px)
+    }
+    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .brand__mark{
+      width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+      background:var(--ink);color:var(--white);font:700 14px/1 var(--display)
+    }
+    .brand__name{font:700 22px/1 var(--display)}
+    .nav__links{display:flex;align-items:center;gap:26px}
+    .nav__links a{
+      position:relative;text-decoration:none;color:var(--muted);
+      font:500 10px/1 var(--mono)
+    }
+    .nav__links a::after{
+      content:"";position:absolute;left:0;bottom:-10px;width:0;height:1px;background:var(--blue);
+      transition:width .2s ease
+    }
+    .nav__links a:hover,.nav__links a.is-active{color:var(--ink)}
+    .nav__links a.is-active::after{width:100%}
+    .nav__actions{display:flex;align-items:center;gap:8px}
+    .nav__menu{
+      display:none;background:transparent;border:0;padding:8px;border-radius:8px
+    }
+    .hamb{display:block;width:23px;height:16px;position:relative}
+    .hamb i{position:absolute;left:0;width:23px;height:2px;background:var(--ink);transition:.2s ease}
+    .hamb i:nth-child(1){top:0}.hamb i:nth-child(2){top:7px}.hamb i:nth-child(3){top:14px}
+    .nav__menu.is-open .hamb i:nth-child(1){top:7px;transform:rotate(45deg)}
+    .nav__menu.is-open .hamb i:nth-child(2){opacity:0}
+    .nav__menu.is-open .hamb i:nth-child(3){top:7px;transform:rotate(-45deg)}
+    .mobile-menu{
+      display:none;padding:10px 22px 24px;background:rgba(244,247,245,.98);border-top:1px solid var(--line)
+    }
+    .mobile-menu.is-open{display:grid;gap:4px}
+    .mobile-menu a{
+      text-decoration:none;padding:13px 2px;color:var(--muted);
+      font:500 11px/1.2 var(--mono)
+    }
+    .mobile-menu a:last-child{margin-top:6px}
+
+    /* ---------- Hero ---------- */
+    .hero{
+      position:relative;overflow:hidden;
+      padding:84px 0 76px;
+      background:
+        radial-gradient(circle at 90% 15%,rgba(126,165,190,.22),transparent 28%),
+        linear-gradient(180deg,#F6F9F7 0%,#F4F7F5 100%)
+    }
+    .hero::after{
+      content:"";position:absolute;left:-120px;bottom:-160px;width:420px;height:420px;border-radius:50%;
+      border:1px solid rgba(61,109,141,.1);box-shadow:0 0 0 80px rgba(61,109,141,.025)
+    }
+    .hero__grid{display:grid;grid-template-columns:1.05fr .95fr;gap:70px;align-items:center;position:relative;z-index:1}
+    .hero__lead{margin-top:25px;color:var(--ink-2);font-size:17px;line-height:1.72;max-width:60ch}
+    .hero__actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+    .hero__trust{display:flex;align-items:center;gap:11px;margin-top:18px;color:var(--muted);font-size:12px}
+    .hero__trust-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px var(--green-soft)}
+    .hero__metrics{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      margin-top:48px;border-top:1px solid var(--line);padding-top:18px
+    }
+    .hero__metric{padding-right:14px}
+    .hero__metric + .hero__metric{border-left:1px solid var(--line);padding-left:16px}
+    .hero__metric strong{display:block;font:600 15px/1 var(--mono)}
+    .hero__metric span{display:block;margin-top:6px;font-size:11px;color:var(--muted)}
+
+    /* ---------- Dashboard visual ---------- */
+    .dashboard{
+      position:relative;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:var(--surface);
+      box-shadow:var(--shadow-lg);
+      overflow:visible;
+      transform:translateY(0);
+      transition:transform .4s var(--ease)
+    }
+    .dashboard:hover{transform:translateY(-5px)}
+    .dashboard__top{
+      display:flex;align-items:center;justify-content:space-between;gap:15px;
+      padding:15px 17px;border-bottom:1px solid var(--line)
+    }
+    .window-dots{display:flex;gap:5px}
+    .window-dots i{display:block;width:7px;height:7px;border-radius:50%;background:#CAD4D1}
+    .dashboard__label{font:600 9px/1 var(--mono);letter-spacing:.08em;color:var(--muted)}
+    .dashboard__body{padding:20px}
+    .dash-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:14px}
+    .dash-card{
+      background:var(--surface-2);border:1px solid var(--line);
+      border-radius:13px;padding:17px
+    }
+    .dash-card--dark{background:var(--ink);border-color:var(--ink);color:var(--white)}
+    .dash-card__label{font:500 9px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .dash-card--dark .dash-card__label{color:#97A9B2}
+    .dash-card__value{margin-top:8px;font:600 24px/1 var(--mono)}
+    .dash-card__sub{margin-top:7px;font-size:10px;color:var(--muted)}
+    .dash-card--dark .dash-card__sub{color:#B8C4CA}
+    .dash-bars{display:flex;align-items:flex-end;gap:7px;height:80px;margin-top:14px}
+    .dash-bars span{
+      flex:1;border-radius:5px 5px 2px 2px;background:#BFD0D8;min-height:10px;
+      transition:height .5s var(--ease)
+    }
+    .dash-bars span:nth-child(5){background:var(--blue)}
+    .dash-bars span:nth-child(6){background:var(--blue-2)}
+    .dash-list{display:grid;gap:8px;margin-top:13px}
+    .dash-row{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:9px 10px;background:var(--surface);border:1px solid var(--line);border-radius:9px
+    }
+    .dash-row__who{display:flex;align-items:center;gap:9px;min-width:0}
+    .avatar{
+      width:24px;height:24px;border-radius:7px;background:var(--blue-soft);color:var(--blue);
+      display:grid;place-items:center;font:600 9px/1 var(--mono);flex:none
+    }
+    .dash-row strong{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dash-row small{display:block;color:var(--muted);font-size:8px;margin-top:1px}
+    .status{
+      display:inline-flex;align-items:center;gap:5px;padding:5px 7px;border-radius:999px;
+      font:600 8px/1 var(--mono);white-space:nowrap
+    }
+    .status--ok{color:var(--green);background:var(--green-soft)}
+    .status--warn{color:var(--amber);background:var(--amber-soft)}
+    .dashboard__float{
+      position:absolute;right:-23px;bottom:-28px;
+      width:210px;padding:15px 16px;
+      background:var(--ink);color:var(--white);
+      border-radius:15px;box-shadow:var(--shadow-lg)
+    }
+    .dashboard__float-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .dashboard__float small{font:500 8px/1 var(--mono);color:#9AAAB2;text-transform:uppercase}
+    .dashboard__float strong{display:block;margin-top:8px;font:600 18px/1 var(--mono)}
+    .dashboard__float .mini-positive{color:#9AD1AE;font:600 9px/1 var(--mono)}
+
+    /* ---------- Social proof strip ---------- */
+    .proof{
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      background:var(--surface)
+    }
+    .proof__inner{
+      display:grid;grid-template-columns:1.1fr repeat(4,1fr);
+      align-items:center;min-height:78px
+    }
+    .proof__lead{font:600 10px/1.35 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+    .proof__item{
+      text-align:center;color:#77848C;font:600 10px/1 var(--mono);
+      letter-spacing:.08em;text-transform:uppercase
+    }
+
+    /* ---------- Flow ---------- */
+    .flow-grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:55px;border-top:1px solid var(--line-dark)}
+    .flow-card{padding:23px 20px 10px;border-right:1px solid var(--line-dark)}
+    .flow-card:last-child{border-right:0}
+    .flow-card__num{font:600 10px/1 var(--mono);color:var(--blue-2);letter-spacing:.09em}
+    .flow-card__icon{
+      width:46px;height:46px;border-radius:13px;background:#FFFFFF0D;
+      display:grid;place-items:center;margin:20px 0 15px
+    }
+    .flow-card__icon svg{width:22px;height:22px;color:var(--blue-2)}
+    .flow-card h3{font-size:1.25rem}
+    .flow-card p{margin-top:8px;color:#AEBCC3;font-size:12px}
+
+    /* ---------- Benefits ---------- */
+    .benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px}
+    .benefit{
+      padding:26px;border:1px solid var(--line);background:var(--surface);
+      border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);
+      transition:transform .18s var(--ease),box-shadow .18s var(--ease),border-color .18s var(--ease)
+    }
+    .benefit:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#CAD7D3}
+    .benefit__icon{
+      width:44px;height:44px;border-radius:12px;background:var(--blue-soft);
+      display:grid;place-items:center;color:var(--blue);margin-bottom:22px
+    }
+    .benefit__icon svg{width:22px;height:22px}
+    .benefit p{margin-top:8px;color:var(--muted);font-size:12px;max-width:44ch}
+
+    /* ---------- Product use cases ---------- */
+    .usecases{display:grid;grid-template-columns:.92fr 1.08fr;gap:64px;align-items:center}
+    .usecases__list{display:grid;gap:10px;margin-top:30px}
+    .usecase{
+      display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;
+      padding:16px 15px;border:1px solid var(--line);border-radius:13px;background:var(--surface)
+    }
+    .usecase__num{font:600 9px/1 var(--mono);color:var(--blue)}
+    .usecase strong{display:block;font-size:12px}
+    .usecase span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+    .usecase svg{width:16px;height:16px;color:var(--muted)}
+    .usecases__panel{
+      min-height:430px;position:relative;display:grid;place-items:center;
+      border:1px solid var(--line);border-radius:var(--radius-xl);
+      background:
+        radial-gradient(circle at 70% 30%,rgba(126,165,190,.24),transparent 25%),
+        radial-gradient(circle at 20% 80%,rgba(36,115,74,.08),transparent 22%),
+        var(--surface);
+      overflow:hidden;box-shadow:var(--shadow)
+    }
+    .phone{
+      width:250px;max-width:70%;border:8px solid #121D24;border-radius:30px;
+      background:#0F181E;color:var(--white);box-shadow:var(--shadow-lg);padding:10px;
+      transform:rotate(-4deg)
+    }
+    .phone__screen{border-radius:20px;overflow:hidden;background:#F1F5F3;color:var(--ink)}
+    .phone__top{padding:13px 12px;border-bottom:1px solid #D9E1DD;font:600 9px/1 var(--mono)}
+    .phone__content{padding:12px}
+    .phone__total{background:var(--ink);color:var(--white);padding:14px;border-radius:12px}
+    .phone__total small{color:#A9B8BF;font:500 8px/1 var(--mono)}
+    .phone__total strong{display:block;margin-top:7px;font:600 20px/1 var(--mono)}
+    .phone__rows{display:grid;gap:7px;margin-top:9px}
+    .phone__row{display:flex;justify-content:space-between;padding:8px;border:1px solid #DCE4E0;border-radius:9px;background:#FFF;font-size:9px}
+    .phone__status{color:var(--green);font:600 8px/1 var(--mono)}
+
+    /* ---------- Pricing ---------- */
+    .pricing-top{display:flex;align-items:end;justify-content:space-between;gap:30px}
+    .pricing-switch{
+      display:inline-flex;padding:4px;border:1px solid var(--line);background:var(--surface);border-radius:999px;
+      box-shadow:var(--shadow-sm)
+    }
+    .pricing-switch button{
+      border:0;background:transparent;border-radius:999px;padding:9px 12px;
+      color:var(--muted);font:600 9px/1 var(--mono)
+    }
+    .pricing-switch button.is-active{background:var(--ink);color:var(--white)}
+    .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px}
+    .plan{
+      position:relative;display:flex;flex-direction:column;
+      border:1px solid var(--line);border-radius:20px;background:var(--surface);
+      overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)
+    }
+    .plan:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+    .plan.is-featured{border:2px solid var(--blue);box-shadow:var(--shadow-lg)}
+    .plan__bar{height:9px;background:var(--surface-2);border-bottom:1px dashed var(--line)}
+    .plan__body{padding:27px}
+    .plan__tag{
+      position:absolute;top:17px;right:17px;
+      background:var(--blue);color:var(--white);border-radius:999px;
+      padding:6px 8px;font:600 8px/1 var(--mono)
+    }
+    .plan__name{font:600 11px/1 var(--mono);letter-spacing:.12em;color:var(--muted)}
+    .plan__price{margin-top:14px;font:600 clamp(2rem,4vw,2.8rem)/1 var(--mono);letter-spacing:-.06em}
+    .plan__period{font-size:11px;color:var(--muted);margin-top:5px}
+    .plan__rule{border-top:1px dashed var(--line);margin:22px 0}
+    .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+    .plan li{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--ink-2)}
+    .plan li svg{width:14px;height:14px;color:var(--green);flex:none;margin-top:2px}
+    .plan .btn{margin-top:23px}
+    .pricing-note{
+      margin-top:18px;display:flex;gap:8px;align-items:flex-start;
+      color:var(--muted);font-size:10px
+    }
+
+    /* ---------- Registration / simulator ---------- */
+    .register-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:62px;align-items:start}
+    .register-copy{position:sticky;top:110px}
+    .register-copy h2{max-width:10ch}
+    .register-copy > p{margin-top:18px;color:var(--muted);max-width:47ch}
+    .register-points{display:grid;gap:9px;margin-top:24px}
+    .register-point{display:flex;align-items:center;gap:9px;color:var(--ink-2);font-size:11px}
+    .register-point svg{width:16px;height:16px;color:var(--green);flex:none}
+    .form-shell{
+      background:var(--surface);border:1px solid var(--line);border-radius:20px;
+      box-shadow:var(--shadow);overflow:hidden
+    }
+    .form-head{
+      display:flex;align-items:center;justify-content:space-between;gap:15px;
+      padding:17px 20px;border-bottom:1px solid var(--line);background:#FAFCFB
+    }
+    .form-head__title{font:600 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em}
+    .form-head__step{font:600 9px/1 var(--mono);color:var(--muted)}
+    .form{padding:24px;display:grid;gap:16px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:grid;gap:6px}
+    .field label{font:600 9px/1 var(--mono);color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em}
+    .field input,.field select{
+      width:100%;height:46px;padding:0 12px;border:1px solid var(--line);border-radius:10px;
+      background:var(--bg);color:var(--ink);font-size:13px;
+      transition:border-color .15s ease,box-shadow .15s ease,background .15s ease
+    }
+    .field input:focus,.field select:focus{
+      outline:0;border-color:var(--blue);background:var(--surface);box-shadow:0 0 0 4px var(--blue-soft)
+    }
+    .field.has-error input,.field.has-error select{border-color:var(--red);background:#FFF9F8}
+    .field__error{display:none;color:var(--red);font-size:10px}
+    .field.has-error .field__error{display:block}
+    .payment-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .payment-option{position:relative}
+    .payment-option input{position:absolute;opacity:0;pointer-events:none}
+    .payment-option label{
+      display:flex;align-items:center;justify-content:center;text-align:center;min-height:44px;
+      padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--bg);
+      color:var(--muted);font:600 8px/1.2 var(--mono);cursor:pointer;transition:.16s ease
+    }
+    .payment-option input:checked+label{border-color:var(--blue);background:var(--blue-soft);color:var(--blue)}
+    .form-note{
+      display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:10px;
+      background:var(--amber-soft);color:#7B5A2B;font-size:10px
+    }
+    .form-note svg{width:14px;height:14px;flex:none;margin-top:1px}
+    .form-submit{display:grid;gap:8px}
+    .form-privacy{text-align:center;color:var(--muted);font-size:9px}
+    .confirm{
+      margin:0 24px 24px;border:1px solid #CAE0D3;background:var(--green-soft);
+      border-radius:15px;padding:16px;display:grid;gap:10px
+    }
+    .confirm__title{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .confirm__title strong{font:600 11px/1 var(--mono);color:var(--green)}
+    .confirm__body{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .confirm__cell{background:rgba(255,255,255,.62);border:1px solid #D3E8DA;border-radius:9px;padding:10px}
+    .confirm__cell small{display:block;font:500 8px/1 var(--mono);color:var(--muted);text-transform:uppercase}
+    .confirm__cell b{display:block;margin-top:4px;font-size:11px}
+    .confirm__actions{display:flex;gap:8px}
+
+    /* ---------- Business simulator ---------- */
+    .biz-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:48px}
+    .biz-card{
+      background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:var(--shadow-sm)
+    }
+    .biz-card--dark{background:var(--ink);border-color:var(--ink);color:var(--white)}
+    .biz-card__label{font:600 9px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+    .biz-card--dark .biz-card__label{color:#93A5AE}
+    .biz-figure{font:600 24px/1 var(--mono);margin-top:9px}
+    .biz-sub{margin-top:8px;color:var(--muted);font-size:10px}
+    .biz-card--dark .biz-sub{color:#B7C4CA}
+    .biz-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:17px}
+    .mini-metric{padding:11px;border-radius:10px;background:#F4F7F5;border:1px solid var(--line)}
+    .mini-metric b{display:block;font:600 13px/1 var(--mono)}
+    .mini-metric span{display:block;margin-top:5px;font-size:9px;color:var(--muted)}
+    .slider-wrap{margin-top:25px}
+    .slider-line{display:flex;justify-content:space-between;gap:12px;font:600 9px/1 var(--mono);color:var(--ink-2)}
+    input[type=range]{width:100%;accent-color:var(--blue);margin-top:11px}
+    .calculator-results{margin-top:21px;background:var(--surface-2);border-radius:13px;padding:13px}
+    .result-row{display:flex;justify-content:space-between;gap:15px;padding:10px 2px;border-bottom:1px dashed var(--line);font:500 10px/1.2 var(--mono)}
+    .result-row:last-child{border-bottom:0}
+    .result-row span:first-child{color:var(--muted)}
+    .result-row strong{white-space:nowrap}
+    .result-row--total{margin-top:3px;border-top:1.5px solid var(--ink);padding-top:13px}
+    .result-row--total span:first-child{color:var(--ink);font-weight:600}
+    .result-row--total strong{font-size:16px;color:var(--green)}
+
+    /* ---------- FAQ ---------- */
+    .faq-grid{display:grid;grid-template-columns:.78fr 1.22fr;gap:70px;align-items:start}
+    .faq-list{border-top:1px solid var(--line)}
+    details{border-bottom:1px solid var(--line)}
+    summary{
+      list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px;
+      padding:21px 2px;cursor:pointer;font:600 18px/1.1 var(--display)
+    }
+    summary::-webkit-details-marker{display:none}
+    summary svg{width:18px;height:18px;color:var(--blue);transition:transform .18s ease;flex:none}
+    details[open] summary svg{transform:rotate(45deg)}
+    details p{padding:0 30px 21px 2px;color:var(--muted);font-size:12px;max-width:66ch}
+    .faq-card{
+      padding:20px;border:1px solid var(--line);background:var(--surface);border-radius:16px
+    }
+    .faq-card strong{font:600 11px/1 var(--mono)}
+    .faq-card p{margin-top:9px;color:var(--muted);font-size:10px}
+
+    /* ---------- Final CTA ---------- */
+    .final{
+      padding:92px 0;
+      background:
+        radial-gradient(circle at 80% 20%,rgba(126,165,190,.18),transparent 28%),
+        var(--ink);
+      color:var(--white)
+    }
+    .final-box{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+    .final h2{color:var(--white);max-width:14ch}
+    .final p{margin-top:15px;color:#B9C6CC;max-width:58ch;font-size:13px}
+    .final__actions{display:flex;gap:9px;flex-wrap:wrap}
+
+    /* ---------- Footer ---------- */
+    footer{background:var(--ink);color:var(--white);border-top:1px solid #24343D}
+    .footer{display:flex;justify-content:space-between;align-items:center;gap:30px;padding:28px 0}
+    .footer__brand{display:flex;align-items:center;gap:9px;font:700 20px/1 var(--display)}
+    .footer__meta{font:500 9px/1.5 var(--mono);color:#9AAAB2;text-align:right;max-width:55ch}
+
+    /* ---------- Floating ---------- */
+    .to-top{
+      position:fixed;right:20px;bottom:20px;z-index:150;
+      width:44px;height:44px;border:0;border-radius:50%;
+      background:var(--ink);color:var(--white);display:grid;place-items:center;
+      box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateY(8px);transition:.2s var(--ease)
+    }
+    .to-top.is-visible{opacity:1;pointer-events:auto;transform:none}
+    .to-top svg{width:18px;height:18px}
+
+    .toast{
+      position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);
+      z-index:250;display:flex;align-items:center;gap:8px;
+      max-width:min(440px,calc(100vw - 30px));
+      padding:11px 14px;border-radius:999px;background:var(--ink);color:var(--white);
+      box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.25s var(--ease);
+      font:500 10px/1.25 var(--mono);text-align:center
+    }
+    .toast.is-visible{opacity:1;transform:translate(-50%,0)}
+    .toast svg{width:15px;height:15px;color:#A8D5B7;flex:none}
+
+    /* ---------- Modal ---------- */
+    .modal{
+      position:fixed;inset:0;z-index:500;display:grid;place-items:center;
+      padding:20px;background:rgba(7,12,16,.62);backdrop-filter:blur(8px);
+      opacity:0;pointer-events:none;transition:opacity .2s ease
+    }
+    .modal.is-open{opacity:1;pointer-events:auto}
+    .modal__panel{
+      width:min(560px,100%);max-height:min(88vh,760px);overflow:auto;
+      background:var(--surface);border-radius:20px;box-shadow:var(--shadow-lg);
+      transform:translateY(14px) scale(.98);transition:transform .25s var(--ease)
+    }
+    .modal.is-open .modal__panel{transform:none}
+    .modal__head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 20px;border-bottom:1px solid var(--line)}
+    .modal__head strong{font:600 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em}
+    .modal__close{border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+    .modal__close svg{width:16px;height:16px}
+    .modal__body{padding:20px}
+    .modal__amount{font:600 34px/1 var(--mono)}
+    .modal__body p{margin-top:8px;color:var(--muted);font-size:11px}
+    .modal__timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:24px}
+    .timeline-step{padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+    .timeline-step.is-active{border-color:#BDD8C7;background:var(--green-soft)}
+    .timeline-step b{display:block;font:600 8px/1 var(--mono);color:var(--muted)}
+    .timeline-step span{display:block;margin-top:5px;font-size:9px}
+    .modal__actions{display:flex;gap:9px;margin-top:21px}
+    .modal__actions .btn{flex:1}
+
+    /* ---------- Responsive ---------- */
+    @media (max-width:1020px){
+      .nav__links{display:none}
+      .nav__menu{display:block}
+      .nav__actions .btn--secondary{display:none}
+      .hero__grid{grid-template-columns:1fr;gap:48px}
+      .dashboard{max-width:650px}
+      .proof__inner{grid-template-columns:1.2fr repeat(4,1fr);gap:0}
+      .proof__item{font-size:8px}
+      .flow-grid{grid-template-columns:repeat(2,1fr)}
+      .flow-card:nth-child(2){border-right:0}
+      .flow-card:nth-child(n+3){border-top:1px solid var(--line-dark)}
+      .usecases,.register-grid,.faq-grid{grid-template-columns:1fr;gap:44px}
+      .register-copy{position:static}
+      .register-copy h2{max-width:15ch}
+      .pricing-top{align-items:start;flex-direction:column}
+      .plans{grid-template-columns:1fr;max-width:470px}
+      .biz-grid{grid-template-columns:1fr}
+      .final-box{grid-template-columns:1fr}
+    }
+
+    @media (max-width:760px){
+      .wrap{width:min(var(--max),calc(100% - 30px))}
+      .section{padding:78px 0}
+      .section--compact{padding:65px 0}
+      .hero{padding:64px 0 56px}
+      .hero__lead{font-size:15px}
+      .hero__metrics{grid-template-columns:1fr;gap:15px}
+      .hero__metric{padding:0}
+      .hero__metric + .hero__metric{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:15px}
+      .dashboard__body{padding:13px}
+      .dash-grid{grid-template-columns:1fr}
+      .dashboard__float{right:12px;bottom:-42px}
+      .proof__inner{grid-template-columns:1fr 1fr;gap:17px;padding:17px 0}
+      .proof__lead{grid-column:1/-1}
+      .proof__item{text-align:left}
+      .flow-grid,.benefits-grid{grid-template-columns:1fr}
+      .flow-card{border-right:0;border-top:1px solid var(--line-dark);padding-left:0;padding-right:0}
+      .flow-card:first-child{border-top:0}
+      .usecases__panel{min-height:360px}
+      .payment-options{grid-template-columns:1fr 1fr}
+      .form-row,.confirm__body{grid-template-columns:1fr}
+      .confirm__actions{display:grid;grid-template-columns:1fr}
+      .modal__timeline{grid-template-columns:1fr 1fr}
+      .footer{align-items:flex-start;flex-direction:column}
+      .footer__meta{text-align:left}
+      .to-top{right:15px;bottom:15px}
     }
 
     @media (prefers-reduced-motion:reduce){
-      *,*::before,*::after{
-        animation-duration:.001ms!important;
-        animation-iteration-count:1!important;
-        transition-duration:.001ms!important;
-        scroll-behavior:auto!important;
-      }
-    }
-
-    /* Progress */
-    .progress{
-      position:fixed;top:0;left:0;height:3px;background:var(--accent);
-      width:0;z-index:200;transition:width .12s linear;
-    }
-
-    /* Buttons */
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:.55em;
-      min-height:46px;padding:.82em 1.35em;border-radius:var(--radius);
-      border:1.5px solid var(--ink);text-decoration:none;
-      font-family:var(--mono);font-weight:600;font-size:.78rem;
-      letter-spacing:.01em;transition:transform .16s ease,background .16s ease,
-      color .16s ease,border-color .16s ease,box-shadow .16s ease;
-    }
-    .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
-    .btn--primary{background:var(--ink);color:var(--cream-text);}
-    .btn--primary:hover{background:var(--accent);border-color:var(--accent);}
-    .btn--ghost{background:transparent;color:var(--ink);}
-    .btn--ghost:hover{background:var(--ink);color:var(--cream-text);}
-    .btn--soft{background:var(--accent-wash);border-color:transparent;color:var(--accent);}
-    .btn--soft:hover{background:#DDE9EF;border-color:#DDE9EF;}
-    .btn--full{width:100%;}
-    .btn--small{min-height:38px;padding:.55em .9em;font-size:.68rem;}
-    .btn svg{width:17px;height:17px;flex:none;}
-
-    /* Eyebrow */
-    .eyebrow{
-      font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;
-      font-size:.68rem;color:var(--accent);margin:0 0 .9em;
-      display:flex;align-items:center;gap:.65em;
-    }
-    .eyebrow::before{content:"";width:20px;height:1.5px;background:currentColor;display:inline-block;}
-
-    /* Nav */
-    .nav{
-      position:sticky;top:0;z-index:100;background:rgba(244,246,243,.9);
-      backdrop-filter:blur(12px);border-bottom:1px solid rgba(221,228,227,.9);
-    }
-    .nav__inner{display:flex;align-items:center;justify-content:space-between;height:70px;}
-    .nav__brand{
-      display:flex;align-items:center;gap:.55em;font-family:var(--display);
-      font-weight:700;font-size:1.22rem;text-decoration:none;white-space:nowrap;
-    }
-    .nav__mark{
-      display:inline-flex;align-items:center;justify-content:center;width:1.75em;height:1.75em;
-      background:var(--ink);color:var(--cream-text);border-radius:50%;font-size:.92rem;
-    }
-    .nav__links{display:flex;align-items:center;gap:1.7em;font-family:var(--mono);font-size:.74rem;}
-    .nav__links a{
-      text-decoration:none;position:relative;padding:.35em 0;color:var(--ink-soft);
-      transition:color .15s ease;
-    }
-    .nav__links a::after{
-      content:"";position:absolute;left:0;bottom:-4px;width:0;height:1.5px;
-      background:var(--accent);transition:width .2s ease;
-    }
-    .nav__links a:hover,.nav__links a.is-active{color:var(--ink);}
-    .nav__links a.is-active::after{width:100%;}
-    .nav__cta{
-      border:1.5px solid var(--ink);padding:.6em .95em!important;
-      border-radius:var(--radius);color:var(--ink)!important;
-    }
-    .nav__cta::after{display:none!important;}
-    .nav__cta:hover{background:var(--ink);color:var(--cream-text)!important;}
-    .nav__burger{
-      display:none;flex-direction:column;gap:5px;background:none;border:0;padding:9px;
-      border-radius:8px;
-    }
-    .nav__burger span{
-      width:23px;height:2px;background:var(--ink);display:block;
-      transition:transform .2s ease,opacity .2s ease;
-    }
-    .nav__burger.is-open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-    .nav__burger.is-open span:nth-child(2){opacity:0;}
-    .nav__burger.is-open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-    .nav__mobile{
-      display:none;position:absolute;top:70px;left:0;right:0;
-      padding:10px 24px 22px;background:rgba(244,246,243,.98);
-      border-bottom:1px solid var(--line);box-shadow:var(--shadow);
-    }
-    .nav__mobile.is-open{display:flex;flex-direction:column;gap:3px;}
-    .nav__mobile a{padding:12px 4px;text-decoration:none;color:var(--ink-soft);font-family:var(--mono);font-size:.78rem;}
-    .nav__mobile .nav__cta{margin-top:8px;text-align:center;}
-
-    /* Hero */
-    .hero{position:relative;overflow:hidden;padding:82px 0 54px;}
-    .hero::before{
-      content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-      background:
-        radial-gradient(circle at 88% 20%, rgba(100,142,170,.15), transparent 28%),
-        radial-gradient(circle,#26384212 1px,transparent 1.5px);
-      background-size:auto,22px 22px;
-      mask-image:linear-gradient(to bottom,black,transparent 92%);
-    }
-    .hero__grid{
-      display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:center;
-      position:relative;z-index:1;
-    }
-    .hero h1{
-      font-size:clamp(2.65rem,5.2vw,4.35rem);line-height:.99;letter-spacing:-.025em;
-      max-width:9.5ch;margin-bottom:.32em;
-    }
-    .hero__lead{max-width:58ch;color:var(--ink-soft);font-size:1rem;}
-    .hero__actions{display:flex;gap:12px;margin-top:1.65em;flex-wrap:wrap;}
-    .hero__proof{
-      display:flex;align-items:center;gap:10px;margin-top:18px;
-      color:var(--muted);font-size:.75rem;
-    }
-    .hero__proof-dot{
-      width:8px;height:8px;border-radius:50%;background:var(--ok);
-      box-shadow:0 0 0 5px var(--ok-wash);
-    }
-    .hero__stats{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-      margin-top:50px;border-top:1px solid var(--line);padding-top:18px;
-    }
-    .hero__stat{padding-right:16px;}
-    .hero__stat + .hero__stat{padding-left:16px;border-left:1px solid var(--line);}
-    .hero__stat b{display:block;font-family:var(--mono);font-size:1.06rem;color:var(--ink);}
-    .hero__stat span{font-size:.73rem;color:var(--muted);display:block;margin-top:2px;}
-
-    /* Receipt */
-    .hero__receipt-wrap{display:flex;justify-content:center;position:relative;}
-    .receipt{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
-      box-shadow:var(--shadow);position:relative;width:100%;max-width:360px;
-      overflow:hidden;
-    }
-    .receipt::after{
-      content:"";position:absolute;inset:auto 0 0;height:22px;
-      background:radial-gradient(circle at 8px 0,var(--paper) 4px,transparent 4.5px);
-      background-size:16px 16px;transform:translateY(50%);
-    }
-    .receipt--hero{animation:printIn .8s cubic-bezier(.2,.8,.2,1) both;transform-origin:top center;}
-    .receipt--plan:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
-    .receipt__perf{height:10px;border-bottom:1px dashed var(--line);}
-    .receipt__body{padding:28px 25px 32px;}
-    .receipt__store{
-      font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
-      text-align:center;margin-bottom:1.2em;color:var(--ink-soft);
-    }
-    .receipt__line{font-family:var(--mono);font-size:.77rem;margin:0 0 .52em;color:var(--ink-soft);}
-    .receipt__small{font-size:.7rem;color:var(--muted);}
-    .receipt__dash{border-top:1px dashed var(--line);margin:1.1em 0;}
-    .receipt__amount-label{
-      font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-align:center;
-      color:var(--accent);margin-bottom:.3em;
-    }
-    .receipt__amount{
-      font-family:var(--mono);font-weight:600;font-size:1.95rem;text-align:center;
-      color:var(--ink);margin:0;
-    }
-    .receipt__list{list-style:none;padding:0;margin:0 0 .2em;font-size:.84rem;color:var(--ink-soft);}
-    .receipt__list li{padding-left:1.35em;position:relative;margin-bottom:.58em;}
-    .receipt__list li::before{
-      content:"✓";position:absolute;left:0;color:var(--ok);font-family:var(--mono);
-      font-size:.75rem;font-weight:700;top:2px;
-    }
-    .tag{
-      display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
-      padding:.25em .6em;border-radius:999px;font-weight:600;
-    }
-    .tag--ok{background:var(--ok-wash);color:var(--ok);}
-    .tag--save{
-      position:absolute;top:14px;right:14px;background:var(--accent);color:var(--cream-text);
-      box-shadow:0 8px 18px -10px rgba(62,100,127,.55);z-index:2;
-    }
-    .receipt__status{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      background:#F8FAF9;border:1px solid var(--line);border-radius:8px;padding:10px 11px;
-      margin-top:14px;
-    }
-    .receipt__status small{font-size:.66rem;color:var(--muted);font-family:var(--mono);}
-    @keyframes printIn{
-      from{opacity:0;transform:translateY(-18px) scaleY(.96);}
-      to{opacity:1;transform:translateY(0) scaleY(1);}
-    }
-
-    /* Sections */
-    .section{padding:96px 0;}
-    .section--soft{background:#EEF2EF;}
-    .section__head{max-width:700px;}
-    .section h2{font-size:clamp(2rem,3.3vw,2.7rem);line-height:1.08;letter-spacing:-.015em;}
-    .section__sub{max-width:62ch;color:var(--ink-soft);}
-    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
-    .reveal.is-visible{opacity:1;transform:none;}
-
-    /* Flow */
-    .flow{padding:92px 0;background:var(--ink);color:var(--cream-text);}
-    .flow h2{color:var(--cream-text);max-width:19ch;}
-    .flow .eyebrow{color:var(--accent-2);}
-    .flow__grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:48px;border-top:1px solid #FFFFFF26;}
-    .flow__item{padding:25px 22px 8px;border-right:1px solid #FFFFFF26;}
-    .flow__item:last-child{border-right:0;}
-    .flow__num{
-      display:block;font-family:var(--mono);font-size:.68rem;color:var(--accent-2);
-      margin-bottom:1em;letter-spacing:.08em;
-    }
-    .flow__item h3{color:var(--cream-text);font-size:1.1rem;}
-    .flow__item p{color:#C8D0D4;font-size:.83rem;margin-bottom:0;}
-    .icon{width:25px;height:25px;color:var(--accent);}
-    .icon--light{color:var(--accent-2);}
-    .icon-circle{
-      width:44px;height:44px;border-radius:50%;background:var(--accent-wash);
-      display:flex;align-items:center;justify-content:center;margin-bottom:1em;
-    }
-
-    /* Value cards */
-    .value-grid{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;
-    }
-    .value-card{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
-      padding:24px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
-    }
-    .value-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#CDD9DA;}
-    .value-card h3{font-size:1.18rem;margin-bottom:.4em;}
-    .value-card p{font-size:.86rem;color:var(--ink-soft);margin-bottom:0;}
-    .value-card__number{
-      font-family:var(--mono);font-size:.7rem;color:var(--accent);margin-bottom:1.2em;
-    }
-
-    /* Pricing */
-    .pricing__grid{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:46px;align-items:start;
-    }
-    .receipt--plan{max-width:none;border-radius:var(--radius-lg);}
-    .receipt--featured{
-      border:2px solid var(--accent);transform:translateY(-8px);box-shadow:var(--shadow-lg);
-    }
-    .receipt--featured:hover{transform:translateY(-12px);}
-    .pricing__note{
-      display:flex;gap:8px;align-items:flex-start;max-width:58ch;margin:24px auto 0;
-      padding:13px 15px;border:1px solid var(--line);border-radius:10px;
-      background:rgba(255,255,255,.68);color:var(--ink-soft);font-size:.74rem;
-    }
-
-    /* Registration */
-    .registro{
-      background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-    }
-    .registro__grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:start;}
-    .registro__intro h2{font-size:clamp(2rem,3.2vw,2.65rem);line-height:1.08;}
-    .registro__intro>p:not(.eyebrow):not(.registro__note){color:var(--ink-soft);}
-    .registro__note{
-      font-family:var(--mono);font-size:.7rem;color:var(--accent);
-      border-left:2px solid var(--accent);padding-left:12px;margin-top:22px;
-    }
-    .form{
-      background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
-      padding:30px;display:grid;gap:17px;box-shadow:0 8px 26px -28px var(--ink);
-    }
-    .field{display:flex;flex-direction:column;gap:.42em;font-family:var(--mono);font-size:.74rem;}
-    .field span{color:var(--ink-soft);text-transform:uppercase;font-size:.64rem;letter-spacing:.1em;}
-    .field input,.field select{
-      width:100%;font-family:var(--body);font-size:.92rem;padding:.78em .84em;
-      border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);
-      transition:border-color .15s ease,box-shadow .15s ease;
-    }
-    .field input:focus,.field select:focus{
-      border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash);outline:0;
-    }
-    .field__error{color:#A53D32;font-family:var(--body);font-size:.7rem;min-height:1em;display:none;}
-    .field.has-error input,.field.has-error select{border-color:#B23A2E;background:#FFF9F8;}
-    .field.has-error .field__error{display:block;}
-    .form__legal{font-size:.68rem;color:var(--muted);margin:0;}
-    .form__legal a{color:var(--accent);}
-
-    .receipt--confirm{max-width:370px;margin:38px auto 0;}
-    .receipt__actions{display:flex;gap:10px;margin-top:1.2em;}
-    .receipt__actions .btn{flex:1;}
-
-    .clientes{margin:38px auto 0;max-width:760px;font-family:var(--mono);font-size:.74rem;}
-    .clientes__title{
-      color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-size:.64rem;margin-bottom:.8em;
-    }
-    .clientes__table{width:100%;border-collapse:collapse;background:#FAFBFA;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
-    .clientes__table th,.clientes__table td{text-align:left;padding:.72em .7em;border-bottom:1px dashed var(--line);}
-    .clientes__table tr:last-child td{border-bottom:0;}
-    .clientes__table th{color:var(--ink-soft);font-weight:600;font-size:.64rem;text-transform:uppercase;background:#F2F5F3;}
-    .clientes__table td{font-size:.71rem;}
-    .clientes__table td.estado{color:var(--ok);font-weight:600;}
-
-    /* Business model + calculator */
-    .negocios__cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:40px 0 50px;}
-    .negocios__card{
-      background:var(--ink);color:var(--cream-text);padding:26px;border-radius:var(--radius-lg);
-      position:relative;overflow:hidden;
-    }
-    .negocios__card::after{
-      content:"";position:absolute;width:130px;height:130px;border-radius:50%;
-      border:1px solid #FFFFFF18;right:-38px;bottom:-62px;
-    }
-    .icon-circle--dark{background:#FFFFFF0F;}
-    .icon-circle--dark .icon{color:var(--accent-2);}
-    .negocios__label{
-      font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
-      color:var(--accent-2);margin-bottom:.45em;
-    }
-    .negocios__figure{font-family:var(--mono);font-size:1.75rem;font-weight:600;margin-bottom:.25em;}
-    .negocios__figure span{font-size:.92rem;color:#C8D0D4;}
-    .negocios__card p:last-child{color:#C8D0D4;margin-bottom:0;font-size:.82rem;max-width:45ch;}
-
-    .calc{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
-      padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:44px;box-shadow:var(--shadow);
-    }
-    .calc h3{font-size:1.4rem;margin-bottom:.35em;}
-    .calc__intro{font-size:.85rem;color:var(--ink-soft);}
-    .calc__field{margin-bottom:23px;}
-    .calc__field label{
-      display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;
-      color:var(--ink-soft);margin-bottom:.55em;text-transform:uppercase;letter-spacing:.04em;
-    }
-    .calc__field label b{color:var(--ink);font-family:var(--mono);text-transform:none;letter-spacing:0;}
-    .calc__field input[type=range]{width:100%;accent-color:var(--accent);}
-    .calc__field select{
-      width:100%;font-family:var(--body);font-size:.9rem;padding:.72em .8em;
-      border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);
-    }
-    .calc__results{background:var(--paper);border-radius:12px;padding:20px;font-family:var(--mono);}
-    .calc__row{display:flex;justify-content:space-between;gap:20px;padding:.75em 0;border-bottom:1px dashed var(--line);font-size:.78rem;}
-    .calc__row span:first-child{color:var(--ink-soft);}
-    .calc__row span:last-child{white-space:nowrap;}
-    .calc__row.total{border-top:1.5px solid var(--ink);border-bottom:0;margin-top:.35em;padding-top:1em;}
-    .calc__row.total span:first-child{color:var(--ink);font-weight:600;}
-    .calc__row.total span:last-child{font-size:1.25rem;font-weight:600;color:var(--ok);}
-
-    /* FAQ */
-    .faq__list{max-width:790px;margin-top:38px;border-top:1px solid var(--line);}
-    .faq__item{border-bottom:1px solid var(--line);}
-    .faq__item summary{
-      list-style:none;cursor:pointer;padding:21px 4px;display:flex;justify-content:space-between;
-      align-items:center;font-family:var(--display);font-weight:600;font-size:1.03rem;gap:20px;
-    }
-    .faq__item summary::-webkit-details-marker{display:none;}
-    .faq__item summary .icon{width:18px;height:18px;color:var(--accent);flex-shrink:0;transition:transform .2s ease;}
-    .faq__item[open] summary .icon{transform:rotate(45deg);}
-    .faq__item p{padding:0 4px 22px;color:var(--ink-soft);max-width:66ch;font-size:.88rem;}
-
-    /* Final CTA */
-    .final-cta{padding:80px 0 92px;}
-    .final-cta__box{
-      background:var(--ink);color:var(--cream-text);border-radius:20px;padding:48px;
-      display:flex;align-items:center;justify-content:space-between;gap:34px;overflow:hidden;position:relative;
-    }
-    .final-cta__box::before{
-      content:"";position:absolute;width:300px;height:300px;border-radius:50%;
-      border:1px solid #FFFFFF15;right:-100px;top:-160px;
-    }
-    .final-cta h2{color:var(--cream-text);font-size:clamp(2rem,3.4vw,2.8rem);max-width:16ch;margin-bottom:.25em;}
-    .final-cta p{color:#C8D0D4;max-width:54ch;margin:0;}
-    .final-cta .btn--primary{background:var(--cream-text);color:var(--ink);border-color:var(--cream-text);}
-    .final-cta .btn--primary:hover{background:#DDE9EF;border-color:#DDE9EF;}
-
-    /* Footer */
-    .footer{background:var(--ink);color:var(--cream-text);padding:32px 0;}
-    .footer__inner{
-      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
-    }
-    .footer p{margin:0;}
-    .footer__brand{
-      display:flex;align-items:center;gap:.55em;font-family:var(--display);font-weight:700;
-    }
-    .footer__meta{font-family:var(--mono);font-size:.68rem;color:#C7CDD1;text-align:right;}
-
-    /* Floating UI */
-    .totop{
-      position:fixed;bottom:22px;right:22px;width:44px;height:44px;border-radius:50%;
-      background:var(--ink);color:var(--cream-text);border:0;display:flex;align-items:center;
-      justify-content:center;box-shadow:var(--shadow);opacity:0;pointer-events:none;
-      transform:translateY(8px);transition:opacity .2s ease,transform .2s ease;z-index:120;
-    }
-    .totop.is-visible{opacity:1;pointer-events:auto;transform:none;}
-    .totop:hover{transform:translateY(-3px);}
-    .totop .icon{color:var(--cream-text);width:18px;height:18px;}
-
-    .toast{
-      position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(18px);
-      background:var(--ink);color:var(--cream-text);font-family:var(--mono);font-size:.75rem;
-      padding:.9em 1.25em;border-radius:999px;box-shadow:var(--shadow-lg);opacity:0;
-      pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:180;
-      display:flex;align-items:center;gap:.6em;white-space:nowrap;
-    }
-    .toast.is-visible{opacity:1;transform:translateX(-50%) translateY(0);}
-    .toast .icon{width:15px;height:15px;color:#BEE0C9;}
-
-    /* Responsive */
-    @media (max-width:980px){
-      .nav__links{display:none;}
-      .nav__burger{display:flex;}
-      .hero__grid{grid-template-columns:1fr;gap:44px;}
-      .hero__copy{max-width:760px;}
-      .hero__receipt-wrap{justify-content:flex-start;}
-      .flow__grid{grid-template-columns:repeat(2,1fr);}
-      .flow__item:nth-child(2){border-right:0;}
-      .flow__item:nth-child(n+3){border-top:1px solid #FFFFFF26;}
-      .pricing__grid{grid-template-columns:1fr;max-width:450px;}
-      .receipt--featured,.receipt--featured:hover{transform:none;}
-      .registro__grid{grid-template-columns:1fr;gap:44px;}
-      .value-grid{grid-template-columns:1fr 1fr;}
-      .negocios__cards{grid-template-columns:1fr;}
-      .calc{grid-template-columns:1fr;}
-      .final-cta__box{align-items:flex-start;flex-direction:column;}
-    }
-
-    @media (max-width:700px){
-      .wrap{padding:0 18px;}
-      .hero{padding:62px 0 42px;}
-      .hero h1{font-size:clamp(2.45rem,12vw,3.5rem);}
-      .hero__stats{grid-template-columns:1fr;gap:14px;}
-      .hero__stat + .hero__stat{padding-left:0;border-left:0;border-top:1px solid var(--line);padding-top:14px;}
-      .section,.final-cta{padding:70px 0;}
-      .flow{padding:70px 0;}
-      .flow__grid{grid-template-columns:1fr;border-top:0;}
-      .flow__item,.flow__item:nth-child(2){border-right:0;border-top:1px solid #FFFFFF26;padding:22px 0;}
-      .value-grid{grid-template-columns:1fr;}
-      .form,.calc{padding:22px;}
-      .final-cta__box{padding:30px 24px;}
-      .footer__meta{text-align:left;}
-      .clientes{overflow-x:auto;}
-      .clientes__table{min-width:620px;}
-      .toast{max-width:calc(100vw - 36px);white-space:normal;text-align:center;justify-content:center;}
-    }
-
-    @media print{
-      body *{visibility:hidden!important;}
-      .receipt--confirm,.receipt--confirm *{visibility:visible!important;}
-      .receipt--confirm{position:absolute;top:0;left:0;box-shadow:none;}
-      .receipt__actions{display:none!important;}
+      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
     }
   </style>
 </head>
-
 <body>
   <div class="progress" id="progress" aria-hidden="true"></div>
 
-  <header class="nav" id="top">
-    <div class="wrap nav__inner">
-      <a href="#top" class="nav__brand" aria-label="Recauda, volver al inicio">
-        <span class="nav__mark">R</span>Recauda
+  <!-- NAV -->
+  <header class="site-header" id="top">
+    <div class="wrap nav">
+      <a href="#top" class="brand" aria-label="Recauda, inicio">
+        <span class="brand__mark">R</span>
+        <span class="brand__name">Recauda</span>
       </a>
 
-      <nav class="nav__links" id="navLinks" aria-label="Navegación principal">
-        <a href="#como-funciona" data-section="como-funciona">Cómo funciona</a>
+      <nav class="nav__links" id="desktopNav" aria-label="Navegación principal">
+        <a href="#producto" data-section="producto">Producto</a>
         <a href="#beneficios" data-section="beneficios">Beneficios</a>
         <a href="#planes" data-section="planes">Planes</a>
-        <a href="#negocios" data-section="negocios">Para negocios</a>
-        <a href="#faq" data-section="faq">Preguntas</a>
-        <a href="#registro" class="nav__cta">Registrarme</a>
+        <a href="#registro" data-section="registro">Demo</a>
+        <a href="#faq" data-section="faq">FAQ</a>
       </nav>
 
-      <button class="nav__burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="nav__actions">
+        <a class="btn btn--secondary" href="#negocio">Soy negocio</a>
+        <a class="btn btn--primary" href="#registro">Probar demo</a>
+        <button class="nav__menu" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+          <span class="hamb"><i></i><i></i><i></i></span>
+        </button>
+      </div>
     </div>
 
-    <nav class="nav__mobile" id="navMobile" aria-label="Navegación móvil">
-      <a href="#como-funciona">Cómo funciona</a>
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Navegación móvil">
+      <a href="#producto">Producto</a>
       <a href="#beneficios">Beneficios</a>
       <a href="#planes">Planes</a>
-      <a href="#negocios">Para negocios</a>
-      <a href="#faq">Preguntas</a>
-      <a href="#registro" class="nav__cta">Registrarme</a>
+      <a href="#registro">Demo</a>
+      <a href="#faq">Preguntas frecuentes</a>
+      <a class="btn btn--primary" href="#registro">Probar demo</a>
     </nav>
   </header>
 
   <main>
     <!-- HERO -->
-    <section class="hero">
+    <section class="hero" id="producto">
       <div class="wrap hero__grid">
-        <div class="hero__copy">
-          <p class="eyebrow">Cobro recurrente para negocios locales</p>
-          <h1>Cobra cada mes sin perseguir a nadie.</h1>
+        <div class="reveal">
+          <p class="eyebrow">Cobros recurrentes para negocios locales</p>
+          <h1>Cobra a tiempo.<br>Crece tranquilo.</h1>
           <p class="hero__lead">
-            Gimnasios, academias de baile, escuelas de fútbol y profesores particulares
-            pueden automatizar sus cobros y dejar de depender de mensajes, efectivo y recordatorios manuales.
+            Recauda convierte la mensualidad repetitiva en un proceso ordenado:
+            cliente registrado, cobro programado, soporte y seguimiento.
+            Menos mensajes. Menos efectivo. Menos tiempo persiguiendo pagos.
           </p>
 
           <div class="hero__actions">
-            <a href="#planes" class="btn btn--primary">
-              Ver planes
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path d="M5 12h13M13 6l6 6-6 6"/>
-              </svg>
+            <a class="btn btn--primary" href="#registro">
+              Probar la demo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
             </a>
-            <a href="#negocios" class="btn btn--ghost">Soy un negocio</a>
+            <a class="btn btn--secondary" href="#como-funciona">Ver cómo funciona</a>
           </div>
 
-          <div class="hero__proof">
-            <span class="hero__proof-dot" aria-hidden="true"></span>
-            Demo académica: los pagos reales todavía no están conectados.
+          <div class="hero__trust">
+            <span class="hero__trust-dot"></span>
+            <span>Proyecto académico · los pagos reales todavía no están conectados</span>
           </div>
 
-          <div class="hero__stats" aria-label="Características principales">
-            <div class="hero__stat">
-              <b>Día 1</b>
-              <span>cobro programado cada ciclo</span>
+          <div class="hero__metrics">
+            <div class="hero__metric">
+              <strong>1 registro</strong>
+              <span>para dejar configurado el cliente</span>
             </div>
-            <div class="hero__stat">
-              <b>48h</b>
-              <span>segundo intento si falla</span>
+            <div class="hero__metric">
+              <strong>48 h</strong>
+              <span>segundo intento planteado en la demo</span>
             </div>
-            <div class="hero__stat">
-              <b>2,5% + $900</b>
-              <span>comisión demostrativa por transacción</span>
+            <div class="hero__metric">
+              <strong>2,5% + $900</strong>
+              <span>comisión de referencia del modelo</span>
             </div>
           </div>
         </div>
 
-        <div class="hero__receipt-wrap">
-          <div class="receipt receipt--hero" id="heroReceipt" aria-label="Ejemplo de comprobante de Recauda">
-            <div class="receipt__perf"></div>
-            <div class="receipt__body">
-              <p class="receipt__store">RECAUDA · COMPROBANTE</p>
-              <p class="receipt__line">Cliente&nbsp;&nbsp; María Sánchez</p>
-              <p class="receipt__line">Negocio&nbsp; Estudio Fit Zone</p>
-              <p class="receipt__line">Plan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bronce · Mensual</p>
-              <div class="receipt__dash"></div>
+        <div class="reveal" style="transition-delay:.08s">
+          <div class="dashboard" id="dashboardPreview">
+            <div class="dashboard__top">
+              <div class="window-dots"><i></i><i></i><i></i></div>
+              <div class="dashboard__label">RECAUDA / PANEL</div>
+              <span class="chip"><span class="chip__dot"></span> Sistema activo</span>
+            </div>
 
-              <p class="receipt__amount-label">COBRO AUTOMÁTICO EXITOSO</p>
-              <p class="receipt__amount" id="heroAmount">$0</p>
-
-              <div class="receipt__status">
-                <div>
-                  <small>Próximo cobro</small><br>
-                  <span class="receipt__line">Día 1 del siguiente ciclo</span>
+            <div class="dashboard__body">
+              <div class="dash-grid">
+                <div class="dash-card dash-card--dark">
+                  <div class="dash-card__label">Ingresos cobrados</div>
+                  <div class="dash-card__value" id="dashCollected">$4.920.000</div>
+                  <div class="dash-card__sub">+12,8% vs. ciclo anterior</div>
+                  <div class="dash-bars" id="dashBars" aria-label="Gráfico de cobros">
+                    <span style="height:37%"></span><span style="height:51%"></span><span style="height:42%"></span>
+                    <span style="height:66%"></span><span style="height:79%"></span><span style="height:91%"></span>
+                  </div>
                 </div>
-                <span class="tag tag--ok">ACTIVO</span>
+
+                <div class="dash-card">
+                  <div class="dash-card__label">Cobros del mes</div>
+                  <div class="dash-card__value">62</div>
+                  <div class="dash-card__sub">58 exitosos · 4 pendientes</div>
+
+                  <div class="dash-list">
+                    <div class="dash-row">
+                      <div class="dash-row__who">
+                        <div class="avatar">MS</div>
+                        <div><strong>María Sánchez</strong><small>Bronce</small></div>
+                      </div>
+                      <span class="status status--ok">Pagado</span>
+                    </div>
+                    <div class="dash-row">
+                      <div class="dash-row__who">
+                        <div class="avatar">JR</div>
+                        <div><strong>Juan Rojas</strong><small>Plata</small></div>
+                      </div>
+                      <span class="status status--warn">Reintento</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dash-card" style="margin-top:14px">
+                <div class="dash-card__label">Próximos cobros</div>
+                <div class="dash-list">
+                  <div class="dash-row">
+                    <div class="dash-row__who"><div class="avatar">LC</div><div><strong>Laura Castillo</strong><small>Mañana · $80.000</small></div></div>
+                    <span class="status status--ok">Programado</span>
+                  </div>
+                  <div class="dash-row">
+                    <div class="dash-row__who"><div class="avatar">DT</div><div><strong>Diego Torres</strong><small>Mañana · $220.000</small></div></div>
+                    <span class="status status--ok">Programado</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard__float">
+              <div class="dashboard__float-top">
+                <small>Neto estimado</small>
+                <span class="mini-positive">+8,4%</span>
+              </div>
+              <strong id="dashNet">$4.692.500</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROOF STRIP -->
+    <div class="proof">
+      <div class="wrap proof__inner">
+        <div class="proof__lead">Pensado para negocios que cobran de forma recurrente</div>
+        <div class="proof__item">GYM</div>
+        <div class="proof__item">ACADEMIA</div>
+        <div class="proof__item">DEPORTE</div>
+        <div class="proof__item">CLASES</div>
+      </div>
+    </div>
+
+    <!-- HOW -->
+    <section class="section section--dark" id="como-funciona">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow eyebrow--light">El ciclo de cobro</p>
+          <h2>Una operación sencilla por detrás de una experiencia que se siente automática.</h2>
+          <p>La demo representa el flujo que tendría una plataforma real de cobros recurrentes.</p>
+        </div>
+
+        <div class="flow-grid stagger reveal">
+          <article class="flow-card">
+            <span class="flow-card__num">01 · REGISTRO</span>
+            <div class="flow-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
+            </div>
+            <h3>Cliente registrado</h3>
+            <p>Se guardan datos básicos, plan y medio de cobro para dejar listo el siguiente ciclo.</p>
+          </article>
+
+          <article class="flow-card">
+            <span class="flow-card__num">02 · COBRO</span>
+            <div class="flow-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16v11H4z"/><path d="M4 11h16M8 15h3"/></svg>
+            </div>
+            <h3>Orden programada</h3>
+            <p>En un sistema real, la pasarela intentaría el cobro en la fecha definida para ese cliente.</p>
+          </article>
+
+          <article class="flow-card">
+            <span class="flow-card__num">03 · CONTROL</span>
+            <div class="flow-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 18V6M10 18v-8M16 18V3M22 18v-5"/></svg>
+            </div>
+            <h3>Estado visible</h3>
+            <p>El negocio sabe qué cobros fueron exitosos, cuáles están pendientes y cuáles necesitan atención.</p>
+          </article>
+
+          <article class="flow-card">
+            <span class="flow-card__num">04 · DISPERSIÓN</span>
+            <div class="flow-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h12"/><path d="M13 6l6 6-6 6"/></svg>
+            </div>
+            <h3>Resultado para el negocio</h3>
+            <p>La simulación muestra el neto estimado después de comisiones y software.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section class="section section--soft" id="beneficios">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow">Beneficios</p>
+          <h2>La propuesta deja de parecer una página y empieza a parecer un producto.</h2>
+          <p>Recauda no solo explica qué hace: muestra visualmente cómo trabajaría un negocio con la plataforma.</p>
+        </div>
+
+        <div class="benefits-grid stagger reveal">
+          <article class="benefit">
+            <div class="benefit__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 3h12v6H6z"/><path d="M8 9v12h8V9M10 13h4M10 17h4"/></svg>
+            </div>
+            <h3>Menos trabajo administrativo</h3>
+            <p>El flujo se centra en registrar una vez y dejar programado el ciclo, en lugar de depender de recordatorios manuales.</p>
+          </article>
+
+          <article class="benefit">
+            <div class="benefit__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 18V6M10 18v-8M16 18V3M22 18v-5"/></svg>
+            </div>
+            <h3>Más control sobre los cobros</h3>
+            <p>El panel de ejemplo convierte números sueltos en una lectura rápida de ingresos, pendientes y próximos cobros.</p>
+          </article>
+
+          <article class="benefit">
+            <div class="benefit__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3v18M7 8.5C7 6.57 9.24 5 12 5s5 1.57 5 3.5S14.76 12 12 12s-5 1.57-5 3.5S9.24 19 12 19s5-1.57 5-3.5"/></svg>
+            </div>
+            <h3>Una propuesta fácil de entender</h3>
+            <p>Precios, registros, simulación y preguntas frecuentes están conectados dentro de un mismo recorrido.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section class="section" id="uso">
+      <div class="wrap usecases">
+        <div>
+          <p class="eyebrow">¿Dónde encaja?</p>
+          <h2>Un mismo motor. Muchos negocios.</h2>
+          <p class="muted" style="margin-top:18px;max-width:50ch">La propuesta funciona mejor cuando el cliente paga periódicamente por mantener activo un servicio.</p>
+
+          <div class="usecases__list">
+            <div class="usecase">
+              <span class="usecase__num">01</span>
+              <div><strong>Gimnasios y estudios fitness</strong><span>Mensualidades, renovaciones y membresías</span></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            </div>
+            <div class="usecase">
+              <span class="usecase__num">02</span>
+              <div><strong>Academias y escuelas</strong><span>Baile, idiomas, música y formación</span></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            </div>
+            <div class="usecase">
+              <span class="usecase__num">03</span>
+              <div><strong>Escuelas deportivas</strong><span>Fútbol, natación y entrenamientos</span></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            </div>
+            <div class="usecase">
+              <span class="usecase__num">04</span>
+              <div><strong>Servicios por suscripción</strong><span>Clientes activos con cobro periódico</span></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="usecases__panel reveal">
+          <div class="phone">
+            <div class="phone__screen">
+              <div class="phone__top">RECAUDA · CLIENTE</div>
+              <div class="phone__content">
+                <div class="phone__total">
+                  <small>PRÓXIMO COBRO</small>
+                  <strong>$80.000</strong>
+                </div>
+                <div class="phone__rows">
+                  <div class="phone__row"><span>Plan</span><strong>Bronce</strong></div>
+                  <div class="phone__row"><span>Fecha</span><strong>Día 1</strong></div>
+                  <div class="phone__row"><span>Estado</span><span class="phone__status">ACTIVO</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -609,763 +934,778 @@
       </div>
     </section>
 
-    <!-- FLOW -->
-    <section class="flow" id="como-funciona">
-      <div class="wrap">
-        <p class="eyebrow">El ciclo de cobro</p>
-        <h2 class="reveal">Cuatro pasos para automatizar la mensualidad.</h2>
-
-        <div class="flow__grid">
-          <div class="flow__item reveal">
-            <span class="flow__num">01 · DÍA 1</span>
-            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>
-            </svg>
-            <h3>Cobro programado</h3>
-            <p>El sistema lanza la orden de cobro al medio de pago que el cliente registró.</p>
-          </div>
-
-          <div class="flow__item reveal">
-            <span class="flow__num">02 · +0H</span>
-            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M17 3v4h-4M7 21v-4h4"/>
-            </svg>
-            <h3>Procesamiento</h3>
-            <p>Si el pago falla, se plantea un segundo intento 48 horas después.</p>
-          </div>
-
-          <div class="flow__item reveal">
-            <span class="flow__num">03 · SOPORTE</span>
-            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h3"/>
-            </svg>
-            <h3>Comprobante</h3>
-            <p>Se genera un soporte digital para que el cliente tenga constancia del cobro.</p>
-          </div>
-
-          <div class="flow__item reveal">
-            <span class="flow__num">04 · DISPERSIÓN</span>
-            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <path d="M4 12h13M13 6l6 6-6 6"/>
-            </svg>
-            <h3>Dinero al negocio</h3>
-            <p>La simulación muestra el valor neto después de la comisión del servicio.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BENEFICIOS -->
-    <section class="section section--soft" id="beneficios">
-      <div class="wrap">
-        <div class="section__head">
-          <p class="eyebrow">¿Por qué Recauda?</p>
-          <h2 class="reveal">Menos seguimiento manual. Más tiempo para el negocio.</h2>
-          <p class="section__sub reveal">
-            La propuesta está pensada para negocios pequeños que cobran de forma recurrente y necesitan una experiencia más ordenada.
-          </p>
-        </div>
-
-        <div class="value-grid">
-          <article class="value-card reveal">
-            <div class="value-card__number">01 / AUTOMATIZACIÓN</div>
-            <h3>Cobros programados</h3>
-            <p>El cliente se registra una vez y la lógica de la demo calcula el siguiente cobro sin que tengas que recordárselo cada mes.</p>
-          </article>
-
-          <article class="value-card reveal">
-            <div class="value-card__number">02 / VISIBILIDAD</div>
-            <h3>Información clara</h3>
-            <p>Cada registro deja una confirmación con cliente, plan, medio de cobro y fecha estimada del próximo ciclo.</p>
-          </article>
-
-          <article class="value-card reveal">
-            <div class="value-card__number">03 / CONTROL</div>
-            <h3>Simulación para decidir</h3>
-            <p>El negocio puede mover clientes y plan promedio para entender rápidamente cuánto quedaría después de comisiones.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <!-- PRICING -->
-    <section class="section" id="planes">
+    <section class="section section--soft" id="planes">
       <div class="wrap">
-        <div class="section__head">
-          <p class="eyebrow">Planes para tus clientes</p>
-          <h2 class="reveal">Elige cómo cobrar.</h2>
-          <p class="section__sub reveal">Los planes de esta demo pueden adaptarse a gimnasios, academias, escuelas deportivas o servicios por suscripción.</p>
+        <div class="pricing-top">
+          <div class="section__head">
+            <p class="eyebrow">Planes</p>
+            <h2>Precios claros antes del registro.</h2>
+            <p>Selecciona un plan y la demo te lleva directamente al formulario con la opción escogida.</p>
+          </div>
+
+          <div class="pricing-switch" aria-label="Modo de precios">
+            <button type="button" class="is-active" data-pricing-mode="cliente">Cliente</button>
+            <button type="button" data-pricing-mode="negocio">Negocio</button>
+          </div>
         </div>
 
-        <div class="pricing__grid">
-          <article class="receipt receipt--plan reveal" data-plan="Bronce">
-            <div class="receipt__perf"></div>
-            <div class="receipt__body">
-              <p class="receipt__store">PLAN BRONCE</p>
-              <p class="receipt__line receipt__small">Facturación mensual</p>
-              <div class="receipt__dash"></div>
-              <p class="receipt__amount">$80.000</p>
-              <p class="receipt__line receipt__small">por mes</p>
-              <div class="receipt__dash"></div>
-              <ul class="receipt__list">
-                <li>Cobro automático por ciclo</li>
-                <li>Soporte digital de registro</li>
-                <li>Cancelación cuando quieras</li>
+        <div class="plans" id="plansClient">
+          <article class="plan reveal" data-plan="Bronce" data-price="80000">
+            <div class="plan__bar"></div>
+            <div class="plan__body">
+              <div class="plan__name">BRONCE</div>
+              <div class="plan__price">$80.000</div>
+              <div class="plan__period">por mes</div>
+              <div class="plan__rule"></div>
+              <ul>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Cobro automático por ciclo</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Soporte digital</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Cancelación antes del próximo ciclo</li>
               </ul>
-              <button class="btn btn--soft btn--full btn--plan" type="button" data-plan="Bronce">Elegir Bronce</button>
+              <button class="btn btn--soft btn--full plan-select" type="button" data-plan="Bronce">Elegir Bronce</button>
             </div>
           </article>
 
-          <article class="receipt receipt--plan receipt--featured reveal" data-plan="Plata">
-            <span class="tag tag--save">AHORRO 8%*</span>
-            <div class="receipt__perf"></div>
-            <div class="receipt__body">
-              <p class="receipt__store">PLAN PLATA</p>
-              <p class="receipt__line receipt__small">Facturación trimestral</p>
-              <div class="receipt__dash"></div>
-              <p class="receipt__amount">$220.000</p>
-              <p class="receipt__line receipt__small">cada 3 meses</p>
-              <div class="receipt__dash"></div>
-              <ul class="receipt__list">
-                <li>Todo lo del plan Bronce</li>
-                <li>Un solo cobro trimestral</li>
-                <li>Equivale a menos que 3 pagos mensuales</li>
+          <article class="plan is-featured reveal" data-plan="Plata" data-price="220000">
+            <span class="plan__tag">MÁS ELEGIDO</span>
+            <div class="plan__bar"></div>
+            <div class="plan__body">
+              <div class="plan__name">PLATA</div>
+              <div class="plan__price">$220.000</div>
+              <div class="plan__period">cada 3 meses</div>
+              <div class="plan__rule"></div>
+              <ul>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Todo lo de Bronce</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Un cobro trimestral</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Menos cobros por gestionar</li>
               </ul>
-              <button class="btn btn--primary btn--full btn--plan" type="button" data-plan="Plata">Elegir Plata</button>
+              <button class="btn btn--primary btn--full plan-select" type="button" data-plan="Plata">Elegir Plata</button>
             </div>
           </article>
 
-          <article class="receipt receipt--plan reveal" data-plan="Oro">
-            <span class="tag tag--save">2 MESES EQUIVALENTES GRATIS*</span>
-            <div class="receipt__perf"></div>
-            <div class="receipt__body">
-              <p class="receipt__store">PLAN ORO</p>
-              <p class="receipt__line receipt__small">Facturación anual</p>
-              <div class="receipt__dash"></div>
-              <p class="receipt__amount">$800.000</p>
-              <p class="receipt__line receipt__small">por año</p>
-              <div class="receipt__dash"></div>
-              <ul class="receipt__list">
-                <li>Todo lo del plan Plata</li>
-                <li>Un solo cobro anual</li>
-                <li>Valor equivalente a una tarifa mensual reducida</li>
+          <article class="plan reveal" data-plan="Oro" data-price="800000">
+            <div class="plan__bar"></div>
+            <div class="plan__body">
+              <div class="plan__name">ORO</div>
+              <div class="plan__price">$800.000</div>
+              <div class="plan__period">por año</div>
+              <div class="plan__rule"></div>
+              <ul>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Todo lo de Plata</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Un cobro anual</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Menos frecuencia administrativa</li>
               </ul>
-              <button class="btn btn--soft btn--full btn--plan" type="button" data-plan="Oro">Elegir Oro</button>
+              <button class="btn btn--soft btn--full plan-select" type="button" data-plan="Oro">Elegir Oro</button>
             </div>
           </article>
         </div>
 
-        <div class="pricing__note reveal">
-          <span aria-hidden="true">ⓘ</span>
-          <span>*Los porcentajes y equivalencias se muestran como parte del ejercicio de la propuesta. Antes de ofrecer el servicio real deben definirse precios, comisiones, condiciones y reglas comerciales definitivas.</span>
+        <div class="pricing-note">
+          <span>ⓘ</span>
+          <span>Los precios y comisiones forman parte de la maqueta académica. Antes de operar de verdad habría que definir contrato, impuestos, pasarela, costos de operación y condiciones comerciales.</span>
         </div>
       </div>
     </section>
 
     <!-- REGISTRATION -->
-    <section class="section registro" id="registro">
-      <div class="wrap registro__grid">
-        <div class="registro__intro reveal">
-          <p class="eyebrow">Registro del cliente</p>
-          <h2>Regístrate una vez. Deja el ciclo organizado.</h2>
-          <p>
-            Ingresa los datos del cliente, selecciona su plan y registra el medio de cobro.
-            La demo genera una confirmación visual y guarda los últimos registros localmente en este navegador.
-          </p>
-          <p class="registro__note">
-            DEMO DE ESTUDIO<br>
-            Este formulario no procesa pagos reales ni almacena datos bancarios.
-          </p>
-        </div>
+    <section class="section" id="registro">
+      <div class="wrap register-grid">
+        <div class="register-copy reveal">
+          <p class="eyebrow">Demo interactiva</p>
+          <h2>Registra un cliente y mira qué pasa después.</h2>
+          <p>Esta parte ahora funciona como un pequeño prototipo de producto: valida datos, confirma el plan, calcula el siguiente cobro y guarda los últimos registros en tu navegador.</p>
 
-        <form class="form reveal" id="registroForm" novalidate>
-          <label class="field" id="fieldNombre">
-            <span>Nombre completo</span>
-            <input type="text" name="nombre" id="nombre" required placeholder="María Sánchez" minlength="3" autocomplete="name">
-            <small class="field__error">Escribe el nombre completo del cliente.</small>
-          </label>
-
-          <label class="field" id="fieldCedula">
-            <span>Cédula</span>
-            <input type="text" name="cedula" id="cedula" required placeholder="1.000.000.000" inputmode="numeric" autocomplete="off">
-            <small class="field__error">Ingresa solo números, sin puntos ni espacios.</small>
-          </label>
-
-          <label class="field" id="fieldCorreo">
-            <span>Correo</span>
-            <input type="email" name="correo" id="correo" required placeholder="maria@correo.com" autocomplete="email">
-            <small class="field__error">Ingresa un correo válido.</small>
-          </label>
-
-          <label class="field" id="fieldPlan">
-            <span>Plan</span>
-            <select name="plan" id="plan" required>
-              <option value="" disabled selected>Selecciona un plan</option>
-              <option value="Bronce">Bronce · $80.000/mes</option>
-              <option value="Plata">Plata · $220.000/trimestre</option>
-              <option value="Oro">Oro · $800.000/año</option>
-            </select>
-            <small class="field__error">Selecciona un plan.</small>
-          </label>
-
-          <label class="field" id="fieldMedio">
-            <span>Medio de cobro</span>
-            <select name="medio" id="medio" required>
-              <option value="" disabled selected>Selecciona un medio</option>
-              <option value="Tarjeta de crédito">Tarjeta de crédito</option>
-              <option value="Débito PSE">Débito PSE</option>
-              <option value="Nequi">Nequi</option>
-              <option value="Daviplata">Daviplata</option>
-            </select>
-            <small class="field__error">Selecciona un medio de cobro.</small>
-          </label>
-
-          <p class="form__legal">
-            Al registrar, esta demo guarda únicamente información de ejemplo en el almacenamiento local del navegador.
-          </p>
-
-          <button type="submit" class="btn btn--primary btn--full">Activar cobro automático</button>
-        </form>
-      </div>
-
-      <div class="wrap">
-        <div class="receipt receipt--confirm" id="confirmReceipt" hidden>
-          <div class="receipt__perf"></div>
-          <div class="receipt__body">
-            <p class="receipt__store">RECAUDA · REGISTRO CONFIRMADO</p>
-            <p class="receipt__line" id="confNombre"></p>
-            <p class="receipt__line" id="confCedula"></p>
-            <p class="receipt__line" id="confCorreo"></p>
-            <div class="receipt__dash"></div>
-            <p class="receipt__line" id="confPlan"></p>
-            <p class="receipt__line" id="confMedio"></p>
-            <div class="receipt__dash"></div>
-            <p class="receipt__amount-label">PRÓXIMO COBRO ESTIMADO</p>
-            <p class="receipt__amount" id="confMonto"></p>
-            <p class="receipt__line receipt__small" id="confFecha"></p>
-            <p class="receipt__line receipt__small">Estado: <span class="tag tag--ok">ACTIVO</span></p>
-            <div class="receipt__actions">
-              <button type="button" class="btn btn--ghost btn--small" id="printBtn">Imprimir</button>
-              <button type="button" class="btn btn--ghost btn--small" id="newBtn">Registrar otro</button>
-            </div>
+          <div class="register-points">
+            <div class="register-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Validación campo por campo</span></div>
+            <div class="register-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Confirmación visual del cobro</span></div>
+            <div class="register-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Historial local de hasta 8 clientes</span></div>
+            <div class="register-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Sin datos bancarios reales</span></div>
           </div>
         </div>
 
-        <div class="clientes" id="clientesBox" hidden>
-          <p class="clientes__title">Últimos clientes registrados · demo local</p>
-          <table class="clientes__table" id="clientesTable">
-            <thead>
-              <tr><th>Nombre</th><th>Plan</th><th>Medio</th><th>Estado</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <div class="form-shell reveal">
+          <div class="form-head">
+            <div class="form-head__title">Nuevo cliente</div>
+            <div class="form-head__step" id="formStep">Paso 1 de 1 · Demo</div>
+          </div>
+
+          <form class="form" id="clientForm" novalidate>
+            <div class="form-row">
+              <div class="field" id="fName">
+                <label for="name">Nombre completo</label>
+                <input id="name" name="name" required minlength="3" autocomplete="name" placeholder="María Sánchez">
+                <div class="field__error">Escribe un nombre válido.</div>
+              </div>
+
+              <div class="field" id="fId">
+                <label for="idNumber">Cédula</label>
+                <input id="idNumber" name="idNumber" required inputmode="numeric" autocomplete="off" placeholder="1.000.000.000">
+                <div class="field__error">Usa entre 5 y 12 dígitos.</div>
+              </div>
+            </div>
+
+            <div class="field" id="fEmail">
+              <label for="email">Correo</label>
+              <input id="email" name="email" type="email" required autocomplete="email" placeholder="maria@correo.com">
+              <div class="field__error">Ingresa un correo válido.</div>
+            </div>
+
+            <div class="form-row">
+              <div class="field" id="fPlan">
+                <label for="plan">Plan</label>
+                <select id="plan" name="plan" required>
+                  <option value="" disabled selected>Selecciona un plan</option>
+                  <option value="Bronce">Bronce · $80.000 / mes</option>
+                  <option value="Plata">Plata · $220.000 / 3 meses</option>
+                  <option value="Oro">Oro · $800.000 / año</option>
+                </select>
+                <div class="field__error">Selecciona un plan.</div>
+              </div>
+
+              <div class="field" id="fBusiness">
+                <label for="business">Tipo de negocio</label>
+                <select id="business" name="business" required>
+                  <option value="" disabled selected>Selecciona</option>
+                  <option>Gimnasio / Fitness</option>
+                  <option>Academia / Educación</option>
+                  <option>Escuela deportiva</option>
+                  <option>Otro servicio recurrente</option>
+                </select>
+                <div class="field__error">Selecciona una opción.</div>
+              </div>
+            </div>
+
+            <div class="field" id="fMethod">
+              <label>Medio de cobro</label>
+              <div class="payment-options">
+                <div class="payment-option">
+                  <input type="radio" id="card" name="method" value="Tarjeta" required>
+                  <label for="card">Tarjeta</label>
+                </div>
+                <div class="payment-option">
+                  <input type="radio" id="pse" name="method" value="PSE">
+                  <label for="pse">PSE</label>
+                </div>
+                <div class="payment-option">
+                  <input type="radio" id="nequi" name="method" value="Nequi">
+                  <label for="nequi">Nequi</label>
+                </div>
+                <div class="payment-option">
+                  <input type="radio" id="davi" name="method" value="Daviplata">
+                  <label for="davi">Daviplata</label>
+                </div>
+              </div>
+              <div class="field__error">Selecciona un medio.</div>
+            </div>
+
+            <div class="form-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></svg>
+              <span>Esta demo no procesa pagos reales. Nunca introduzcas datos de tarjeta, claves ni códigos de seguridad.</span>
+            </div>
+
+            <div class="form-submit">
+              <button class="btn btn--primary btn--full" type="submit">
+                Registrar cliente
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+              </button>
+              <div class="form-privacy">Los registros de esta maqueta se almacenan solo en este navegador.</div>
+            </div>
+          </form>
+
+          <div class="confirm" id="confirmation" hidden>
+            <div class="confirm__title">
+              <strong>✓ Registro creado correctamente</strong>
+              <span class="status status--ok">ACTIVO</span>
+            </div>
+
+            <div class="confirm__body">
+              <div class="confirm__cell"><small>Cliente</small><b id="cName">—</b></div>
+              <div class="confirm__cell"><small>Plan</small><b id="cPlan">—</b></div>
+              <div class="confirm__cell"><small>Próximo cobro</small><b id="cDate">—</b></div>
+              <div class="confirm__cell"><small>Valor</small><b id="cAmount">—</b></div>
+            </div>
+
+            <div class="confirm__actions">
+              <button class="btn btn--secondary" type="button" id="resetForm">Registrar otro</button>
+              <button class="btn btn--soft" type="button" id="openReceipt">Ver comprobante</button>
+            </div>
+          </div>
+
+          <div class="clientes" id="clientHistory" hidden style="padding:0 24px 24px">
+            <div style="font:600 9px/1 var(--mono);color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px">Últimos registros · local</div>
+            <div style="border:1px solid var(--line);border-radius:12px;overflow:auto">
+              <table style="width:100%;border-collapse:collapse;min-width:560px;font-size:10px">
+                <thead>
+                  <tr style="background:var(--surface-2);font:600 8px/1 var(--mono);color:var(--muted);text-transform:uppercase">
+                    <th style="padding:9px;text-align:left">Cliente</th>
+                    <th style="padding:9px;text-align:left">Plan</th>
+                    <th style="padding:9px;text-align:left">Negocio</th>
+                    <th style="padding:9px;text-align:left">Medio</th>
+                    <th style="padding:9px;text-align:left">Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- BUSINESS MODEL -->
-    <section class="section" id="negocios">
+    <!-- BUSINESS -->
+    <section class="section section--soft" id="negocio">
       <div class="wrap">
         <div class="section__head">
-          <p class="eyebrow reveal">Modelo de negocio</p>
-          <h2 class="reveal">Una plataforma que cobra y también deja ver el resultado.</h2>
-          <p class="section__sub reveal">
-            En esta maqueta, Recauda gana a través de una comisión por transacción y una suscripción de software.
-            La calculadora permite probar escenarios antes de tomar decisiones.
-          </p>
+          <p class="eyebrow">Modelo de negocio</p>
+          <h2>La web también explica de dónde sale el dinero.</h2>
+          <p>En lugar de esconder la lógica económica, la mostramos con un simulador para que el visitante pueda cambiar el escenario.</p>
         </div>
 
-        <div class="negocios__cards">
-          <div class="negocios__card reveal">
-            <div class="icon-circle icon-circle--dark">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                <path d="M5 19L19 5M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
-              </svg>
+        <div class="biz-grid">
+          <div class="biz-card reveal">
+            <div class="biz-card__label">Comisión de referencia</div>
+            <div class="biz-figure">2,5% + $900</div>
+            <div class="biz-sub">Aplicada por cliente en la simulación.</div>
+            <div class="biz-metrics">
+              <div class="mini-metric"><b>2,5%</b><span>porcentaje variable</span></div>
+              <div class="mini-metric"><b>$900</b><span>cargo fijo por cobro</span></div>
             </div>
-            <p class="negocios__label">Comisión demostrativa</p>
-            <p class="negocios__figure">2,5% + $900</p>
-            <p>Modelo de referencia sobre cada mensualidad procesada en la simulación.</p>
           </div>
 
-          <div class="negocios__card reveal">
-            <div class="icon-circle icon-circle--dark">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                <rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/>
-              </svg>
+          <div class="biz-card biz-card--dark reveal">
+            <div class="biz-card__label">Software</div>
+            <div class="biz-figure">$50.000 / mes</div>
+            <div class="biz-sub">Suscripción de referencia usada en la demo.</div>
+            <div class="biz-metrics">
+              <div class="mini-metric"><b>1</b><span>negocio activo</span></div>
+              <div class="mini-metric"><b>100%</b><span>escenario editable</span></div>
             </div>
-            <p class="negocios__label">Suscripción al software</p>
-            <p class="negocios__figure">$50.000<span>/mes</span></p>
-            <p>Tarifa fija de referencia por la gestión del sistema dentro de esta maqueta.</p>
           </div>
         </div>
 
-        <div class="calc reveal" aria-label="Calculadora de ingresos">
-          <div>
-            <p class="eyebrow">Simulador de ingresos</p>
-            <h3>Calcula tu MRR estimado</h3>
-            <p class="calc__intro">
-              Mueve el número de clientes y el plan promedio para estimar el ingreso bruto y el valor que quedaría después de las comisiones de la demo.
-            </p>
+        <div class="biz-card reveal" style="margin-top:22px">
+          <div class="biz-card__label">Simulador de ingresos</div>
+          <div class="biz-figure">¿Cuánto quedaría al negocio?</div>
+          <div class="biz-sub">Cambia clientes y precio mensual equivalente.</div>
 
-            <div class="calc__field">
-              <label for="calcClientes">Clientes activos <b id="calcClientesVal">30</b></label>
-              <input type="range" id="calcClientes" min="1" max="300" value="30" aria-label="Número de clientes activos">
+          <div class="slider-wrap">
+            <div class="slider-line">
+              <span>Clientes activos</span>
+              <strong id="clientCount">50</strong>
             </div>
-
-            <div class="calc__field">
-              <label for="calcPlan">Plan promedio</label>
-              <select id="calcPlan">
-                <option value="80000">Bronce · $80.000 / mes</option>
-                <option value="73333" selected>Plata · $220.000 cada 3 meses (≈ mensual)</option>
-                <option value="66667">Oro · $800.000 al año (≈ mensual)</option>
-              </select>
-            </div>
-
-            <p class="form__legal">La calculadora es orientativa y no representa una liquidación contable real.</p>
+            <input type="range" id="clientRange" min="1" max="500" value="50" aria-label="Clientes activos">
           </div>
 
-          <div class="calc__results">
-            <div class="calc__row"><span>Ingreso bruto mensual</span><span id="calcBruto">$0</span></div>
-            <div class="calc__row"><span>Comisión Recauda</span><span id="calcComision">$0</span></div>
-            <div class="calc__row"><span>Suscripción del software</span><span id="calcSuscripcion">$50.000</span></div>
-            <div class="calc__row total"><span>Neto para el negocio</span><span id="calcNeto">$0</span></div>
+          <div class="slider-wrap">
+            <div class="slider-line">
+              <span>Plan promedio mensual</span>
+              <strong id="avgPriceLabel">$80.000</strong>
+            </div>
+            <input type="range" id="priceRange" min="50000" max="300000" step="5000" value="80000" aria-label="Precio mensual promedio">
+          </div>
+
+          <div class="calculator-results">
+            <div class="result-row"><span>Ingreso bruto mensual</span><strong id="grossValue">$0</strong></div>
+            <div class="result-row"><span>Comisión Recauda</span><strong id="feeValue">-$0</strong></div>
+            <div class="result-row"><span>Software</span><strong>-$50.000</strong></div>
+            <div class="result-row result-row--total"><span>Neto estimado</span><strong id="netValue">$0</strong></div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section class="section section--soft" id="faq">
-      <div class="wrap">
-        <div class="section__head">
-          <p class="eyebrow reveal">Preguntas frecuentes</p>
-          <h2 class="reveal">Lo que conviene explicar antes de registrarse.</h2>
+    <section class="section" id="faq">
+      <div class="wrap faq-grid">
+        <div class="reveal">
+          <p class="eyebrow">Preguntas frecuentes</p>
+          <h2>Lo importante, explicado sin letra pequeña.</h2>
+          <div class="faq-card" style="margin-top:25px">
+            <strong>Nota de la demo</strong>
+            <p>Las respuestas describen el concepto de producto de esta maqueta. Para una operación real habría que definir integraciones, contratos y procesos de cumplimiento.</p>
+          </div>
         </div>
 
-        <div class="faq__list reveal">
-          <details class="faq__item">
-            <summary>
-              ¿Qué pasa si un pago falla?
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-            </summary>
-            <p>En la demo se plantea un segundo intento 48 horas después. Si también falla, el registro puede pasar a estado de mora y requerir una regularización manual.</p>
+        <div class="faq-list reveal">
+          <details>
+            <summary>¿Qué pasa si un pago falla?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>La maqueta representa un segundo intento 48 horas después. Si falla nuevamente, el negocio debería recibir una alerta y tomar la acción que defina su política de cobro.</p>
           </details>
-
-          <details class="faq__item">
-            <summary>
-              ¿Puedo cancelar?
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-            </summary>
-            <p>Sí. La propuesta contempla que el cliente pueda cancelar antes del siguiente ciclo de cobro.</p>
+          <details>
+            <summary>¿Cuándo se cobra al cliente?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>Depende del plan. En la demo, Bronce se interpreta como mensual, Plata como trimestral y Oro como anual.</p>
           </details>
-
-          <details class="faq__item">
-            <summary>
-              ¿Se guardan los datos de tarjeta o Nequi?
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-            </summary>
-            <p>No en esta página. El formulario es una simulación académica y no recoge ni procesa credenciales bancarias reales.</p>
+          <details>
+            <summary>¿Guarda la tarjeta o la clave de Nequi?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>No. Esta página no procesa ni almacena credenciales bancarias. Una implementación real debería delegar esos datos a una pasarela especializada.</p>
           </details>
-
-          <details class="faq__item">
-            <summary>
-              ¿Cómo recibe el negocio su dinero?
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-            </summary>
-            <p>La maqueta muestra un valor neto estimado después de las comisiones definidas en el ejercicio. En una implementación real habría que conectar una pasarela y un sistema de dispersión.</p>
+          <details>
+            <summary>¿Para qué negocios sirve mejor?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>Principalmente para servicios con una relación recurrente: gimnasios, academias, escuelas deportivas, clases y otras suscripciones.</p>
           </details>
-
-          <details class="faq__item">
-            <summary>
-              ¿Para qué tipo de negocio sirve?
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-            </summary>
-            <p>Está pensado para negocios con cobros recurrentes como gimnasios, academias, escuelas deportivas, clases particulares y servicios de suscripción.</p>
+          <details>
+            <summary>¿Esto ya está conectado a pagos reales?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>No. La experiencia que estás viendo es frontend puro y funciona como demostración del producto. Para cobrar realmente habría que conectar backend, base de datos y una pasarela de pagos.</p>
           </details>
         </div>
       </div>
     </section>
 
-    <!-- FINAL CTA -->
-    <section class="final-cta">
-      <div class="wrap">
-        <div class="final-cta__box reveal">
-          <div>
-            <p class="eyebrow" style="color:var(--accent-2);">Siguiente paso</p>
-            <h2>Haz que cobrar sea parte del sistema.</h2>
-            <p>Prueba la demo, selecciona un plan y mira cómo cambia la simulación según el tamaño del negocio.</p>
-          </div>
-          <a href="#registro" class="btn btn--primary">
-            Probar la demo
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6"/>
-            </svg>
-          </a>
+    <!-- FINAL -->
+    <section class="final" id="contacto">
+      <div class="wrap final-box">
+        <div class="reveal">
+          <p class="eyebrow eyebrow--light">Recauda</p>
+          <h2>Cobrar no debería sentirse como perseguir a alguien.</h2>
+          <p>Prueba la demo, registra un cliente y cambia el número de clientes para ver cómo se comportaría el modelo.</p>
+        </div>
+        <div class="final__actions reveal">
+          <a class="btn btn--light" href="#registro">Probar demo</a>
+          <button class="btn btn--secondary" id="openInfoModal" type="button" style="color:var(--white);border-color:#71818A">Ver qué falta para producción</button>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap footer__inner">
-      <p class="footer__brand"><span class="nav__mark">R</span>Recauda</p>
-      <p class="footer__meta">Proyecto de Etapa Productiva · SENA · Demo de plataforma intermediaria de cobros recurrentes.</p>
+  <footer>
+    <div class="wrap footer">
+      <div class="footer__brand"><span class="brand__mark">R</span>Recauda</div>
+      <div class="footer__meta">Proyecto de Etapa Productiva · SENA · Frontend demostrativo de una plataforma de cobros recurrentes.</div>
     </div>
   </footer>
 
-  <button class="totop" id="totop" type="button" aria-label="Volver arriba">
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <path d="M12 19V5M5 12l7-7 7 7"/>
-    </svg>
+  <button class="to-top" id="toTop" type="button" aria-label="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
 
   <div class="toast" id="toast" role="status" aria-live="polite">
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <path d="M20 6L9 17l-5-5"/>
-    </svg>
-    <span id="toastMsg">Cliente registrado con éxito</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+    <span id="toastText">Listo</span>
+  </div>
+
+  <!-- RECEIPT MODAL -->
+  <div class="modal" id="receiptModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <strong id="receiptTitle">Comprobante · Recauda</strong>
+        <button class="modal__close" type="button" data-close-modal="receiptModal" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="modal__amount" id="receiptAmount">$0</div>
+        <p id="receiptSummary">Cobro programado para el próximo ciclo.</p>
+
+        <div class="modal__timeline">
+          <div class="timeline-step is-active"><b>01</b><span>Registro</span></div>
+          <div class="timeline-step is-active"><b>02</b><span>Programación</span></div>
+          <div class="timeline-step"><b>03</b><span>Procesamiento</span></div>
+          <div class="timeline-step"><b>04</b><span>Dispersión</span></div>
+        </div>
+
+        <div class="modal__actions">
+          <button class="btn btn--secondary" type="button" id="printReceipt">Imprimir</button>
+          <button class="btn btn--primary" type="button" data-close-modal="receiptModal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO MODAL -->
+  <div class="modal" id="infoModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <strong id="infoTitle">Qué falta para producción</strong>
+        <button class="modal__close" type="button" data-close-modal="infoModal" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="modal__amount">Frontend listo</div>
+        <p>Esta maqueta ya presenta el producto. Para llevarlo a una operación real todavía habría que conectar las siguientes capas.</p>
+        <div style="display:grid;gap:9px;margin-top:18px">
+          <div class="confirm__cell"><small>01 · Backend</small><b>API, usuarios, autenticación y base de datos</b></div>
+          <div class="confirm__cell"><small>02 · Pagos</small><b>Pasarela y manejo seguro de tokens</b></div>
+          <div class="confirm__cell"><small>03 · Operación</small><b>Estados de cobro, reintentos, devoluciones y conciliación</b></div>
+          <div class="confirm__cell"><small>04 · Legal</small><b>Términos, tratamiento de datos, facturación y cumplimiento</b></div>
+        </div>
+        <div class="modal__actions">
+          <button class="btn btn--primary btn--full" type="button" data-close-modal="infoModal">Entendido</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
     'use strict';
 
-    /* ---------- Utilidades ---------- */
-    const $ = (selector, root = document) => root.querySelector(selector);
-    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
 
-    function formatoCOP(valor) {
-      return '$' + Math.round(valor).toLocaleString('es-CO');
-    }
-
+    /* ---------- Toast ---------- */
     let toastTimer;
-    function mostrarToast(msg) {
-      const toast = $('#toast');
-      $('#toastMsg').textContent = msg;
-      toast.classList.add('is-visible');
+    function toast(message){
+      const el = $('#toast');
+      $('#toastText').textContent = message;
+      el.classList.add('is-visible');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 3200);
+      toastTimer = setTimeout(() => el.classList.remove('is-visible'), 3200);
     }
 
-    /* ---------- Menú móvil ---------- */
-    const burger = $('#burger');
-    const navMobile = $('#navMobile');
+    /* ---------- Mobile nav ---------- */
+    const menuBtn = $('#menuBtn');
+    const mobileMenu = $('#mobileMenu');
 
-    function cerrarMenu() {
-      navMobile.classList.remove('is-open');
-      burger.classList.remove('is-open');
-      burger.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('menu-open');
+    function closeMenu(){
+      menuBtn.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+      menuBtn.setAttribute('aria-expanded','false');
+      document.body.classList.remove('is-locked');
     }
-
-    burger.addEventListener('click', () => {
-      const abierto = navMobile.classList.toggle('is-open');
-      burger.classList.toggle('is-open', abierto);
-      burger.setAttribute('aria-expanded', String(abierto));
-      document.body.classList.toggle('menu-open', abierto);
+    menuBtn.addEventListener('click', () => {
+      const open = !mobileMenu.classList.contains('is-open');
+      menuBtn.classList.toggle('is-open', open);
+      mobileMenu.classList.toggle('is-open', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('is-locked', open);
     });
+    $$('#mobileMenu a').forEach(a => a.addEventListener('click', closeMenu));
+    window.addEventListener('resize', () => { if(window.innerWidth > 1020) closeMenu(); });
 
-    $$('#navMobile a').forEach(link => link.addEventListener('click', cerrarMenu));
+    /* ---------- Scroll progress + to top ---------- */
+    const progress = $('#progress');
+    const toTop = $('#toTop');
 
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 980) cerrarMenu();
-    });
-
-    /* ---------- Scroll UI ---------- */
-    const progressBar = $('#progress');
-    const totop = $('#totop');
-
-    function actualizarScrollUI() {
-      const doc = document.documentElement;
-      const maxScroll = doc.scrollHeight - doc.clientHeight;
-      const scrolled = maxScroll > 0 ? (doc.scrollTop / maxScroll) * 100 : 0;
-      progressBar.style.width = scrolled + '%';
-      totop.classList.toggle('is-visible', doc.scrollTop > 550);
+    function onScroll(){
+      const d = document.documentElement;
+      const max = Math.max(1, d.scrollHeight - d.clientHeight);
+      progress.style.width = ((d.scrollTop / max) * 100) + '%';
+      toTop.classList.toggle('is-visible', d.scrollTop > 650);
     }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+    toTop.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
 
-    window.addEventListener('scroll', actualizarScrollUI, { passive: true });
-    actualizarScrollUI();
-
-    totop.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
-
-    /* ---------- Menú activo ---------- */
-    const sections = $$('main section[id]');
-    const navAnchors = $$('#navLinks a[data-section]');
-
-    if ('IntersectionObserver' in window) {
-      const sectionObserver = new IntersectionObserver((entries) => {
+    /* ---------- Active nav ---------- */
+    if('IntersectionObserver' in window){
+      const navLinks = $$('#desktopNav a[data-section]');
+      const sections = $$('main section[id]');
+      const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          navAnchors.forEach(a => {
-            a.classList.toggle('is-active', a.dataset.section === entry.target.id);
-          });
+          if(!entry.isIntersecting) return;
+          navLinks.forEach(link => link.classList.toggle('is-active', link.dataset.section === entry.target.id));
         });
-      }, { rootMargin: '-35% 0px -55% 0px' });
-
-      sections.forEach(section => sectionObserver.observe(section));
+      }, {rootMargin:'-40% 0px -45% 0px'});
+      sections.forEach(s => observer.observe(s));
     }
 
     /* ---------- Reveal ---------- */
-    const revealElements = $$('.reveal');
-
-    if ('IntersectionObserver' in window) {
-      const revealObserver = new IntersectionObserver((entries, observer) => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!prefersReduced && 'IntersectionObserver' in window){
+      const ro = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
+          if(!entry.isIntersecting) return;
           entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+          ro.unobserve(entry.target);
         });
-      }, { threshold: 0.12 });
-
-      revealElements.forEach(el => revealObserver.observe(el));
+      }, {threshold:.12});
+      $$('.reveal').forEach(el => ro.observe(el));
     } else {
-      revealElements.forEach(el => el.classList.add('is-visible'));
+      $$('.reveal').forEach(el => el.classList.add('is-visible'));
     }
 
-    /* ---------- Monto animado ---------- */
-    function animarMonto(el, destino, duracion = 900) {
-      const inicio = performance.now();
-
-      function paso(ahora) {
-        const progreso = Math.min((ahora - inicio) / duracion, 1);
-        const valor = Math.floor(progreso * destino);
-        el.textContent = formatoCOP(valor);
-        if (progreso < 1) requestAnimationFrame(paso);
-      }
-
-      requestAnimationFrame(paso);
+    /* ---------- Dashboard tiny live movement ---------- */
+    const dashBars = $$('#dashBars span');
+    let barIndex = 0;
+    if(!prefersReduced){
+      setInterval(() => {
+        dashBars.forEach((bar, i) => {
+          const heights = [37,51,42,66,79,91];
+          const variance = ((i + barIndex) % 3) * 5;
+          bar.style.height = Math.min(96, heights[i] + variance) + '%';
+        });
+        barIndex++;
+      }, 1800);
     }
 
-    window.addEventListener('load', () => {
-      const heroAmount = $('#heroAmount');
-      if (heroAmount) animarMonto(heroAmount, 80000);
+    /* ---------- Pricing mode toggle ---------- */
+    $$('.pricing-switch button').forEach(button => {
+      button.addEventListener('click', () => {
+        $$('.pricing-switch button').forEach(b => b.classList.remove('is-active'));
+        button.classList.add('is-active');
+        if(button.dataset.pricingMode === 'negocio'){
+          toast('Modo negocio seleccionado: usa el simulador de ingresos más abajo.');
+          $('#negocio').scrollIntoView({behavior:'smooth'});
+        }
+      });
     });
 
-    /* ---------- Selección de plan ---------- */
+    /* ---------- Plan selector ---------- */
     const planSelect = $('#plan');
-
-    $$('.btn--plan').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const plan = btn.dataset.plan;
-        if (planSelect) planSelect.value = plan;
-
-        $('#registro').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => $('#nombre').focus({ preventScroll: true }), 450);
+    $$('.plan-select').forEach(button => {
+      button.addEventListener('click', () => {
+        planSelect.value = button.dataset.plan;
+        toast('Plan ' + button.dataset.plan + ' seleccionado');
+        $('#registro').scrollIntoView({behavior:'smooth'});
       });
     });
 
-    /* ---------- Formateo de cédula ---------- */
-    const cedulaInput = $('#cedula');
+    /* ---------- Form helpers ---------- */
+    const form = $('#clientForm');
+    const nameInput = $('#name');
+    const idInput = $('#idNumber');
+    const emailInput = $('#email');
+    const businessInput = $('#business');
+    const methodInputs = $$('input[name="method"]');
 
-    cedulaInput.addEventListener('input', () => {
-      const digits = cedulaInput.value.replace(/\D/g, '').slice(0, 12);
-      cedulaInput.value = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    idInput.addEventListener('input', () => {
+      const digits = idInput.value.replace(/\D/g,'').slice(0,12);
+      idInput.value = digits.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
     });
 
-    /* ---------- Validación ---------- */
-    const camposValidar = ['nombre', 'cedula', 'correo', 'plan', 'medio'];
-
-    function validarCampo(id) {
-      const input = $('#' + id);
-      const field = $('#field' + id.charAt(0).toUpperCase() + id.slice(1));
-      let valido = input.checkValidity() && input.value.trim() !== '';
-
-      if (id === 'cedula') {
-        valido = /^\d{1,12}(\.\d{3})*$/.test(input.value) && input.value.replace(/\D/g, '').length >= 5;
-      }
-
-      field.classList.toggle('has-error', !valido);
-      input.setAttribute('aria-invalid', String(!valido));
-      return valido;
+    function setInvalid(fieldId, invalid){
+      const field = $('#' + fieldId);
+      field.classList.toggle('has-error', invalid);
     }
 
-    camposValidar.forEach(id => {
-      const input = $('#' + id);
-      input.addEventListener('blur', () => validarCampo(id));
+    function validName(){
+      const ok = nameInput.value.trim().length >= 3;
+      setInvalid('fName', !ok);
+      return ok;
+    }
+    function validId(){
+      const digits = idInput.value.replace(/\D/g,'');
+      const ok = digits.length >= 5 && digits.length <= 12;
+      setInvalid('fId', !ok);
+      return ok;
+    }
+    function validEmail(){
+      const ok = emailInput.validity.valid && emailInput.value.trim() !== '';
+      setInvalid('fEmail', !ok);
+      return ok;
+    }
+    function validPlan(){
+      const ok = planSelect.value !== '';
+      setInvalid('fPlan', !ok);
+      return ok;
+    }
+    function validBusiness(){
+      const ok = businessInput.value !== '';
+      setInvalid('fBusiness', !ok);
+      return ok;
+    }
+    function validMethod(){
+      const ok = methodInputs.some(i => i.checked);
+      setInvalid('fMethod', !ok);
+      return ok;
+    }
+
+    [
+      [nameInput,validName],[idInput,validId],[emailInput,validEmail],
+      [planSelect,validPlan],[businessInput,validBusiness]
+    ].forEach(([input,fn]) => {
+      input.addEventListener('blur', fn);
       input.addEventListener('input', () => {
-        if (input.getAttribute('aria-invalid') === 'true') validarCampo(id);
+        if(input.closest('.field')?.classList.contains('has-error')) fn();
+      });
+      input.addEventListener('change', () => {
+        if(input.closest('.field')?.classList.contains('has-error')) fn();
       });
     });
+    methodInputs.forEach(i => i.addEventListener('change', validMethod));
 
-    /* ---------- Datos y ciclos ---------- */
-    const PRECIOS = {
-      Bronce: { monto: 80000, meses: 1 },
-      Plata:  { monto: 220000, meses: 3 },
-      Oro:    { monto: 800000, meses: 12 }
+    /* ---------- Dates / plans ---------- */
+    const PRICES = {
+      Bronce:{amount:80000,months:1},
+      Plata:{amount:220000,months:3},
+      Oro:{amount:800000,months:12}
     };
-
-    function proximoCobro(plan) {
-      const hoy = new Date();
-      const meses = PRECIOS[plan]?.meses || 1;
-      const proximo = new Date(hoy.getFullYear(), hoy.getMonth() + meses, 1);
-
-      return proximo.toLocaleDateString('es-CO', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
+    function nextCharge(plan){
+      const months = PRICES[plan].months;
+      const now = new Date();
+      const d = new Date(now.getFullYear(), now.getMonth()+months, 1);
+      return d.toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+    }
+    function cop(value){
+      return '$' + Math.round(value).toLocaleString('es-CO');
     }
 
-    function cargarClientes() {
-      try {
-        const datos = JSON.parse(localStorage.getItem('recauda_clientes') || '[]');
-        return Array.isArray(datos) ? datos : [];
-      } catch {
+    /* ---------- Local history ---------- */
+    function loadHistory(){
+      try{
+        const value = JSON.parse(localStorage.getItem('recauda_demo_history') || '[]');
+        return Array.isArray(value) ? value : [];
+      }catch{
         return [];
       }
     }
-
-    function guardarCliente(cliente) {
-      try {
-        const clientes = cargarClientes();
-        clientes.unshift(cliente);
-        localStorage.setItem('recauda_clientes', JSON.stringify(clientes.slice(0, 8)));
-      } catch {
-        mostrarToast('Registro creado, pero no pudo guardarse localmente');
-      }
+    function saveHistory(row){
+      try{
+        const history = loadHistory();
+        history.unshift(row);
+        localStorage.setItem('recauda_demo_history', JSON.stringify(history.slice(0,8)));
+      }catch{}
     }
+    function renderHistory(){
+      const history = loadHistory();
+      const box = $('#clientHistory');
+      const body = $('#historyBody');
+      body.textContent = '';
+      if(!history.length){ box.hidden = true; return; }
 
-    function pintarClientes() {
-      const clientes = cargarClientes();
-      const box = $('#clientesBox');
-      const tbody = $('#clientesTable tbody');
-
-      tbody.innerHTML = '';
-
-      if (!clientes.length) {
-        box.hidden = true;
-        return;
-      }
-
-      clientes.forEach(cliente => {
+      history.forEach(row => {
         const tr = document.createElement('tr');
-
-        [cliente.nombre, cliente.plan, cliente.medio].forEach(valor => {
+        tr.style.borderTop = '1px dashed var(--line)';
+        [row.name,row.plan,row.business,row.method].forEach(text => {
           const td = document.createElement('td');
-          td.textContent = valor;
+          td.style.padding = '9px';
+          td.textContent = text;
           tr.appendChild(td);
         });
-
-        const estado = document.createElement('td');
-        estado.textContent = 'Activo';
-        estado.className = 'estado';
-        tr.appendChild(estado);
-
-        tbody.appendChild(tr);
+        const td = document.createElement('td');
+        td.style.padding = '9px';
+        td.style.color = 'var(--green)';
+        td.style.fontWeight = '600';
+        td.textContent = 'Activo';
+        tr.appendChild(td);
+        body.appendChild(tr);
       });
-
       box.hidden = false;
     }
 
-    /* ---------- Registro ---------- */
-    const form = $('#registroForm');
-    const confirmReceipt = $('#confirmReceipt');
+    /* ---------- Submit ---------- */
+    let currentReceipt = {amount:0,summary:''};
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', event => {
       event.preventDefault();
 
-      const todoValido = camposValidar.map(validarCampo).every(Boolean);
-
-      if (!todoValido) {
-        mostrarToast('Revisa los campos marcados en rojo');
-        const primerError = $('.has-error input, .has-error select');
-        primerError?.focus();
+      const checks = [validName(),validId(),validEmail(),validPlan(),validBusiness(),validMethod()];
+      if(!checks.every(Boolean)){
+        toast('Revisa los campos marcados');
+        const invalid = $('.has-error input,.has-error select');
+        invalid?.focus();
         return;
       }
 
-      const nombre = $('#nombre').value.trim();
-      const cedula = $('#cedula').value.trim();
-      const correo = $('#correo').value.trim();
-      const plan = $('#plan').value;
-      const medio = $('#medio').value;
-      const info = PRECIOS[plan];
-
-      $('#confNombre').textContent = 'Cliente    ' + nombre;
-      $('#confCedula').textContent = 'Cédula     ' + cedula;
-      $('#confCorreo').textContent = 'Correo     ' + correo;
-      $('#confPlan').textContent = 'Plan       ' + plan;
-      $('#confMedio').textContent = 'Medio      ' + medio;
-      $('#confMonto').textContent = formatoCOP(info.monto);
-      $('#confFecha').textContent = 'Próximo cobro: ' + proximoCobro(plan);
-
-      confirmReceipt.hidden = false;
-      confirmReceipt.scrollIntoView({behavior:'smooth', block:'center'});
-
-      guardarCliente({
-        nombre,
+      const plan = planSelect.value;
+      const method = $('input[name="method"]:checked').value;
+      const row = {
+        name:nameInput.value.trim(),
+        id:idInput.value.replace(/\D/g,''),
+        email:emailInput.value.trim(),
         plan,
-        medio,
-        fecha: new Date().toISOString()
-      });
+        business:businessInput.value,
+        method,
+        createdAt:new Date().toISOString()
+      };
 
-      pintarClientes();
-      mostrarToast('Cliente registrado con éxito');
+      $('#cName').textContent = row.name;
+      $('#cPlan').textContent = row.plan;
+      $('#cDate').textContent = nextCharge(plan);
+      $('#cAmount').textContent = cop(PRICES[plan].amount);
+      $('#confirmation').hidden = false;
 
+      currentReceipt = {
+        amount:PRICES[plan].amount,
+        summary:row.name + ' · ' + row.plan + ' · próximo cobro ' + nextCharge(plan)
+      };
+
+      saveHistory(row);
+      renderHistory();
       form.reset();
-      camposValidar.forEach(id => {
-        const field = $('#field' + id.charAt(0).toUpperCase() + id.slice(1));
-        const input = $('#' + id);
-        field.classList.remove('has-error');
-        input.setAttribute('aria-invalid', 'false');
-      });
+      $$('.field').forEach(f => f.classList.remove('has-error'));
+
+      toast('Cliente registrado correctamente');
+      setTimeout(() => $('#confirmation').scrollIntoView({behavior:'smooth',block:'center'}),80);
     });
 
-    $('#printBtn').addEventListener('click', () => window.print());
+    renderHistory();
 
-    $('#newBtn').addEventListener('click', () => {
-      confirmReceipt.hidden = true;
-      $('#registro').scrollIntoView({behavior:'smooth', block:'start'});
-      setTimeout(() => $('#nombre').focus({preventScroll:true}), 350);
+    /* ---------- Reset ---------- */
+    $('#resetForm').addEventListener('click', () => {
+      $('#confirmation').hidden = true;
+      form.reset();
+      $$('.field').forEach(f => f.classList.remove('has-error'));
+      nameInput.focus();
     });
 
-    pintarClientes();
-
-    /* ---------- Calculadora ---------- */
-    const calcClientes = $('#calcClientes');
-    const calcClientesVal = $('#calcClientesVal');
-    const calcPlan = $('#calcPlan');
-    const calcBruto = $('#calcBruto');
-    const calcComision = $('#calcComision');
-    const calcSuscripcion = $('#calcSuscripcion');
-    const calcNeto = $('#calcNeto');
-
-    function actualizarCalculadora() {
-      const clientes = parseInt(calcClientes.value, 10) || 0;
-      const precioMensual = parseFloat(calcPlan.value) || 0;
-
-      calcClientesVal.textContent = clientes;
-
-      const bruto = clientes * precioMensual;
-      const comision = clientes * (precioMensual * 0.025 + 900);
-      const suscripcion = 50000;
-      const neto = bruto - comision - suscripcion;
-
-      calcBruto.textContent = formatoCOP(bruto);
-      calcComision.textContent = '-' + formatoCOP(comision);
-      calcSuscripcion.textContent = '-' + formatoCOP(suscripcion);
-      calcNeto.textContent = formatoCOP(Math.max(neto, 0));
+    /* ---------- Modals ---------- */
+    function openModal(id){
+      const modal = $('#' + id);
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden','false');
+      document.body.classList.add('is-locked');
+      setTimeout(() => modal.querySelector('button')?.focus(),40);
+    }
+    function closeModal(id){
+      const modal = $('#' + id);
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+      if(!$('.modal.is-open')) document.body.classList.remove('is-locked');
     }
 
-    calcClientes.addEventListener('input', actualizarCalculadora);
-    calcPlan.addEventListener('change', actualizarCalculadora);
-    actualizarCalculadora();
+    $$('.modal').forEach(modal => {
+      modal.addEventListener('click', e => {
+        if(e.target === modal) closeModal(modal.id);
+      });
+    });
+    $$('[data-close-modal]').forEach(button => {
+      button.addEventListener('click', () => closeModal(button.dataset.closeModal));
+    });
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape') $$('.modal.is-open').forEach(m => closeModal(m.id));
+    });
 
-    /* ---------- Cerrar FAQ anterior para una lectura más limpia ---------- */
-    $$('.faq__item').forEach(item => {
-      item.addEventListener('toggle', () => {
-        if (!item.open) return;
-        $$('.faq__item').forEach(other => {
-          if (other !== item) other.open = false;
-        });
+    $('#openReceipt').addEventListener('click', () => {
+      $('#receiptAmount').textContent = cop(currentReceipt.amount);
+      $('#receiptSummary').textContent = currentReceipt.summary;
+      openModal('receiptModal');
+    });
+
+    $('#openInfoModal').addEventListener('click', () => openModal('infoModal'));
+
+    $('#printReceipt').addEventListener('click', () => {
+      const oldTitle = document.title;
+      document.title = 'Recauda · Comprobante';
+      window.print();
+      document.title = oldTitle;
+    });
+
+    /* ---------- Simulator ---------- */
+    const clientRange = $('#clientRange');
+    const priceRange = $('#priceRange');
+    const clientCount = $('#clientCount');
+    const avgPriceLabel = $('#avgPriceLabel');
+    const grossValue = $('#grossValue');
+    const feeValue = $('#feeValue');
+    const netValue = $('#netValue');
+
+    function updateSimulator(){
+      const clients = Number(clientRange.value);
+      const price = Number(priceRange.value);
+      const gross = clients * price;
+      const fee = clients * (price * .025 + 900);
+      const net = Math.max(0, gross - fee - 50000);
+
+      clientCount.textContent = clients;
+      avgPriceLabel.textContent = cop(price);
+      grossValue.textContent = cop(gross);
+      feeValue.textContent = '-' + cop(fee);
+      netValue.textContent = cop(net);
+
+      $('#dashCollected').textContent = cop(Math.max(4920000, gross * .84));
+      $('#dashNet').textContent = cop(Math.max(0, Math.max(4920000, gross * .84) - fee - 50000));
+    }
+    clientRange.addEventListener('input',updateSimulator);
+    priceRange.addEventListener('input',updateSimulator);
+    updateSimulator();
+
+    /* ---------- FAQ accordion ---------- */
+    $$('details').forEach(detail => {
+      detail.addEventListener('toggle', () => {
+        if(!detail.open) return;
+        $$('details').forEach(other => { if(other !== detail) other.open = false; });
       });
     });
   </script>
