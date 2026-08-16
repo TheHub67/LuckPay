@@ -1,907 +1,1373 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recauda — Cobro automático para negocios locales</title>
-<meta name="description" content="Recauda cobra la mensualidad de tus clientes de forma automática cada mes. Sin WhatsApp, sin efectivo, sin perseguir a nadie.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --ink:#1E2A33;
-  --ink-soft:#4A5A68;
-  --muted:#7C8A94;
-  --paper:#F2F3EF;
-  --card:#FFFFFF;
-  --accent:#3E5C76;
-  --accent-soft:#7297B3;
-  --accent-wash:#E7EDF1;
-  --ok:#4C7A5D;
-  --ok-wash:#E7EFE9;
-  --line:#DDE0D9;
-  --cream-text:#F4F5F2;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1E2A33">
+  <meta name="description" content="Recauda automatiza los cobros recurrentes de negocios locales y simplifica la gestión de mensualidades.">
+  <title>Recauda — Cobros recurrentes sin perseguir pagos</title>
 
-  --display:'Zilla Slab', serif;
-  --body:'Work Sans', sans-serif;
-  --mono:'IBM Plex Mono', monospace;
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@400;600;700&display=swap" rel="stylesheet">
 
-  --radius:4px;
-  --shadow:0 16px 34px -20px rgba(30,42,51,0.35);
-  --shadow-lg:0 26px 54px -24px rgba(30,42,51,0.45);
-}
+  <style>
+    :root{
+      --ink:#18232C;
+      --ink-soft:#4C5D69;
+      --muted:#7E8C96;
+      --paper:#F4F6F3;
+      --card:#FFFFFF;
+      --accent:#3E647F;
+      --accent-2:#648EAA;
+      --accent-wash:#E8EFF3;
+      --ok:#2F7953;
+      --ok-wash:#E7F1EA;
+      --warning:#B17824;
+      --line:#DDE4E3;
+      --cream-text:#F6F8F6;
+      --display:'Zilla Slab', serif;
+      --body:'DM Sans', sans-serif;
+      --mono:'IBM Plex Mono', monospace;
+      --radius:8px;
+      --radius-lg:16px;
+      --shadow:0 18px 40px -24px rgba(24,35,44,.34);
+      --shadow-lg:0 30px 70px -30px rgba(24,35,44,.44);
+      --max:1140px;
+    }
 
-*,*::before,*::after{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  margin:0;
-  font-family:var(--body);
-  color:var(--ink);
-  background:var(--paper);
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3{font-family:var(--display); margin:0 0 .5em; color:var(--ink); font-weight:700;}
-p{margin:0 0 1em;}
-a{color:inherit;}
-.wrap{max-width:1120px; margin:0 auto; padding:0 24px;}
+    *,*::before,*::after{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      margin:0;
+      font-family:var(--body);
+      color:var(--ink);
+      background:var(--paper);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    body.menu-open{overflow:hidden;}
+    h1,h2,h3{font-family:var(--display); margin:0 0 .5em; color:var(--ink); font-weight:700;}
+    p{margin:0 0 1em;}
+    a{color:inherit;}
+    button,input,select{font:inherit;}
+    button{cursor:pointer;}
+    img,svg{display:block;}
+    :focus-visible{outline:3px solid var(--accent-2);outline-offset:3px;}
+    ::selection{background:#C9DCE7;color:var(--ink);}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
+    .sr-only{
+      position:absolute!important;width:1px!important;height:1px!important;
+      padding:0!important;margin:-1px!important;overflow:hidden!important;
+      clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
+    }
 
-.eyebrow{
-  font-family:var(--mono); text-transform:uppercase; letter-spacing:.14em;
-  font-size:.7rem; color:var(--accent); margin:0 0 .8em;
-  display:flex; align-items:center; gap:.6em;
-}
-.eyebrow::before{content:""; width:18px; height:1.5px; background:var(--accent); display:inline-block;}
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+        animation-duration:.001ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.001ms!important;
+        scroll-behavior:auto!important;
+      }
+    }
 
-button{font-family:inherit; cursor:pointer;}
-:focus-visible{outline:3px solid var(--accent-soft); outline-offset:2px;}
-svg{display:block;}
+    /* Progress */
+    .progress{
+      position:fixed;top:0;left:0;height:3px;background:var(--accent);
+      width:0;z-index:200;transition:width .12s linear;
+    }
 
-@media (prefers-reduced-motion: reduce){
-  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
-}
+    /* Buttons */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:.55em;
+      min-height:46px;padding:.82em 1.35em;border-radius:var(--radius);
+      border:1.5px solid var(--ink);text-decoration:none;
+      font-family:var(--mono);font-weight:600;font-size:.78rem;
+      letter-spacing:.01em;transition:transform .16s ease,background .16s ease,
+      color .16s ease,border-color .16s ease,box-shadow .16s ease;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+    .btn--primary{background:var(--ink);color:var(--cream-text);}
+    .btn--primary:hover{background:var(--accent);border-color:var(--accent);}
+    .btn--ghost{background:transparent;color:var(--ink);}
+    .btn--ghost:hover{background:var(--ink);color:var(--cream-text);}
+    .btn--soft{background:var(--accent-wash);border-color:transparent;color:var(--accent);}
+    .btn--soft:hover{background:#DDE9EF;border-color:#DDE9EF;}
+    .btn--full{width:100%;}
+    .btn--small{min-height:38px;padding:.55em .9em;font-size:.68rem;}
+    .btn svg{width:17px;height:17px;flex:none;}
 
-/* ---------- Reveal on scroll ---------- */
-.reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
-.reveal.is-visible{opacity:1; transform:translateY(0);}
+    /* Eyebrow */
+    .eyebrow{
+      font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;
+      font-size:.68rem;color:var(--accent);margin:0 0 .9em;
+      display:flex;align-items:center;gap:.65em;
+    }
+    .eyebrow::before{content:"";width:20px;height:1.5px;background:currentColor;display:inline-block;}
 
-/* ---------- Progress bar ---------- */
-.progress{position:fixed; top:0; left:0; height:3px; background:var(--accent); width:0%; z-index:100; transition:width .1s linear;}
+    /* Nav */
+    .nav{
+      position:sticky;top:0;z-index:100;background:rgba(244,246,243,.9);
+      backdrop-filter:blur(12px);border-bottom:1px solid rgba(221,228,227,.9);
+    }
+    .nav__inner{display:flex;align-items:center;justify-content:space-between;height:70px;}
+    .nav__brand{
+      display:flex;align-items:center;gap:.55em;font-family:var(--display);
+      font-weight:700;font-size:1.22rem;text-decoration:none;white-space:nowrap;
+    }
+    .nav__mark{
+      display:inline-flex;align-items:center;justify-content:center;width:1.75em;height:1.75em;
+      background:var(--ink);color:var(--cream-text);border-radius:50%;font-size:.92rem;
+    }
+    .nav__links{display:flex;align-items:center;gap:1.7em;font-family:var(--mono);font-size:.74rem;}
+    .nav__links a{
+      text-decoration:none;position:relative;padding:.35em 0;color:var(--ink-soft);
+      transition:color .15s ease;
+    }
+    .nav__links a::after{
+      content:"";position:absolute;left:0;bottom:-4px;width:0;height:1.5px;
+      background:var(--accent);transition:width .2s ease;
+    }
+    .nav__links a:hover,.nav__links a.is-active{color:var(--ink);}
+    .nav__links a.is-active::after{width:100%;}
+    .nav__cta{
+      border:1.5px solid var(--ink);padding:.6em .95em!important;
+      border-radius:var(--radius);color:var(--ink)!important;
+    }
+    .nav__cta::after{display:none!important;}
+    .nav__cta:hover{background:var(--ink);color:var(--cream-text)!important;}
+    .nav__burger{
+      display:none;flex-direction:column;gap:5px;background:none;border:0;padding:9px;
+      border-radius:8px;
+    }
+    .nav__burger span{
+      width:23px;height:2px;background:var(--ink);display:block;
+      transition:transform .2s ease,opacity .2s ease;
+    }
+    .nav__burger.is-open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav__burger.is-open span:nth-child(2){opacity:0;}
+    .nav__burger.is-open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .nav__mobile{
+      display:none;position:absolute;top:70px;left:0;right:0;
+      padding:10px 24px 22px;background:rgba(244,246,243,.98);
+      border-bottom:1px solid var(--line);box-shadow:var(--shadow);
+    }
+    .nav__mobile.is-open{display:flex;flex-direction:column;gap:3px;}
+    .nav__mobile a{padding:12px 4px;text-decoration:none;color:var(--ink-soft);font-family:var(--mono);font-size:.78rem;}
+    .nav__mobile .nav__cta{margin-top:8px;text-align:center;}
 
-/* ---------- Buttons ---------- */
-.btn{
-  display:inline-flex; align-items:center; gap:.5em;
-  font-family:var(--mono); font-weight:600; font-size:.82rem; letter-spacing:.02em;
-  text-decoration:none; padding:.85em 1.5em; border-radius:var(--radius);
-  border:1.5px solid var(--ink); transition:transform .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
-}
-.btn:hover{transform:translateY(-2px); box-shadow:var(--shadow);}
-.btn--primary{background:var(--ink); color:var(--cream-text);}
-.btn--primary:hover{background:var(--accent); border-color:var(--accent);}
-.btn--ghost{background:transparent; color:var(--ink);}
-.btn--ghost:hover{background:var(--ink); color:var(--cream-text);}
-.btn--full{width:100%; justify-content:center; border:none; margin-top:.5em;}
-.btn--plan{width:100%; justify-content:center; background:var(--paper); border:1.5px dashed var(--ink-soft); margin-top:1.2em;}
-.btn--plan:hover{background:var(--accent); border-style:solid; color:#fff;}
-.btn--small{padding:.55em 1em; font-size:.72rem;}
+    /* Hero */
+    .hero{position:relative;overflow:hidden;padding:82px 0 54px;}
+    .hero::before{
+      content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+      background:
+        radial-gradient(circle at 88% 20%, rgba(100,142,170,.15), transparent 28%),
+        radial-gradient(circle,#26384212 1px,transparent 1.5px);
+      background-size:auto,22px 22px;
+      mask-image:linear-gradient(to bottom,black,transparent 92%);
+    }
+    .hero__grid{
+      display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:center;
+      position:relative;z-index:1;
+    }
+    .hero h1{
+      font-size:clamp(2.65rem,5.2vw,4.35rem);line-height:.99;letter-spacing:-.025em;
+      max-width:9.5ch;margin-bottom:.32em;
+    }
+    .hero__lead{max-width:58ch;color:var(--ink-soft);font-size:1rem;}
+    .hero__actions{display:flex;gap:12px;margin-top:1.65em;flex-wrap:wrap;}
+    .hero__proof{
+      display:flex;align-items:center;gap:10px;margin-top:18px;
+      color:var(--muted);font-size:.75rem;
+    }
+    .hero__proof-dot{
+      width:8px;height:8px;border-radius:50%;background:var(--ok);
+      box-shadow:0 0 0 5px var(--ok-wash);
+    }
+    .hero__stats{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+      margin-top:50px;border-top:1px solid var(--line);padding-top:18px;
+    }
+    .hero__stat{padding-right:16px;}
+    .hero__stat + .hero__stat{padding-left:16px;border-left:1px solid var(--line);}
+    .hero__stat b{display:block;font-family:var(--mono);font-size:1.06rem;color:var(--ink);}
+    .hero__stat span{font-size:.73rem;color:var(--muted);display:block;margin-top:2px;}
 
-/* ---------- Nav ---------- */
-.nav{position:sticky; top:0; z-index:50; background:rgba(242,243,239,.92); backdrop-filter:blur(6px); border-bottom:1.5px solid var(--line);}
-.nav__inner{display:flex; align-items:center; justify-content:space-between; height:66px;}
-.nav__brand{display:flex; align-items:center; gap:.5em; font-family:var(--display); font-weight:700; font-size:1.2rem; text-decoration:none;}
-.nav__mark{display:inline-flex; align-items:center; justify-content:center; width:1.7em; height:1.7em; background:var(--ink); color:var(--cream-text); border-radius:50%; font-size:.95rem;}
-.nav__links{display:flex; align-items:center; gap:2em; font-family:var(--mono); font-size:.8rem;}
-.nav__links a{text-decoration:none; position:relative; padding:.3em 0; color:var(--ink-soft); transition:color .15s ease;}
-.nav__links a::after{content:""; position:absolute; left:0; bottom:-2px; width:0; height:1.5px; background:var(--accent); transition:width .2s ease;}
-.nav__links a:hover, .nav__links a.is-active{color:var(--ink);}
-.nav__links a.is-active::after{width:100%;}
-.nav__cta{border:1.5px solid var(--ink); padding:.5em 1em; border-radius:var(--radius); color:var(--ink) !important;}
-.nav__cta::after{display:none;}
-.nav__cta:hover{background:var(--ink); color:var(--cream-text) !important;}
-.nav__burger{display:none; flex-direction:column; gap:4px; background:none; border:none; padding:8px;}
-.nav__burger span{width:22px; height:2px; background:var(--ink); display:block; transition:transform .2s ease, opacity .2s ease;}
-.nav__mobile{display:none; flex-direction:column; padding:0 24px 20px; gap:1em; font-family:var(--mono);}
-.nav__mobile a{text-decoration:none; padding:.4em 0;}
-@media (max-width:800px){
-  .nav__links{display:none;}
-  .nav__burger{display:flex;}
-  .nav__mobile.is-open{display:flex;}
-}
+    /* Receipt */
+    .hero__receipt-wrap{display:flex;justify-content:center;position:relative;}
+    .receipt{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+      box-shadow:var(--shadow);position:relative;width:100%;max-width:360px;
+      overflow:hidden;
+    }
+    .receipt::after{
+      content:"";position:absolute;inset:auto 0 0;height:22px;
+      background:radial-gradient(circle at 8px 0,var(--paper) 4px,transparent 4.5px);
+      background-size:16px 16px;transform:translateY(50%);
+    }
+    .receipt--hero{animation:printIn .8s cubic-bezier(.2,.8,.2,1) both;transform-origin:top center;}
+    .receipt--plan:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
+    .receipt__perf{height:10px;border-bottom:1px dashed var(--line);}
+    .receipt__body{padding:28px 25px 32px;}
+    .receipt__store{
+      font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
+      text-align:center;margin-bottom:1.2em;color:var(--ink-soft);
+    }
+    .receipt__line{font-family:var(--mono);font-size:.77rem;margin:0 0 .52em;color:var(--ink-soft);}
+    .receipt__small{font-size:.7rem;color:var(--muted);}
+    .receipt__dash{border-top:1px dashed var(--line);margin:1.1em 0;}
+    .receipt__amount-label{
+      font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-align:center;
+      color:var(--accent);margin-bottom:.3em;
+    }
+    .receipt__amount{
+      font-family:var(--mono);font-weight:600;font-size:1.95rem;text-align:center;
+      color:var(--ink);margin:0;
+    }
+    .receipt__list{list-style:none;padding:0;margin:0 0 .2em;font-size:.84rem;color:var(--ink-soft);}
+    .receipt__list li{padding-left:1.35em;position:relative;margin-bottom:.58em;}
+    .receipt__list li::before{
+      content:"✓";position:absolute;left:0;color:var(--ok);font-family:var(--mono);
+      font-size:.75rem;font-weight:700;top:2px;
+    }
+    .tag{
+      display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
+      padding:.25em .6em;border-radius:999px;font-weight:600;
+    }
+    .tag--ok{background:var(--ok-wash);color:var(--ok);}
+    .tag--save{
+      position:absolute;top:14px;right:14px;background:var(--accent);color:var(--cream-text);
+      box-shadow:0 8px 18px -10px rgba(62,100,127,.55);z-index:2;
+    }
+    .receipt__status{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      background:#F8FAF9;border:1px solid var(--line);border-radius:8px;padding:10px 11px;
+      margin-top:14px;
+    }
+    .receipt__status small{font-size:.66rem;color:var(--muted);font-family:var(--mono);}
+    @keyframes printIn{
+      from{opacity:0;transform:translateY(-18px) scaleY(.96);}
+      to{opacity:1;transform:translateY(0) scaleY(1);}
+    }
 
-/* ---------- Hero ---------- */
-.hero{padding:70px 0 44px; position:relative; overflow:hidden;}
-.hero::before{
-  content:""; position:absolute; inset:0; z-index:0;
-  background-image: radial-gradient(circle, #22303C0d 1px, transparent 1.5px);
-  background-size:22px 22px;
-  mask-image: linear-gradient(to bottom, black, transparent 85%);
-}
-.hero__grid{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center; position:relative; z-index:1;}
-.hero h1{font-size:clamp(2rem, 4vw, 2.9rem); line-height:1.1;}
-.hero__lead{max-width:46ch; color:var(--ink-soft); font-size:1rem;}
-.hero__actions{display:flex; gap:14px; margin-top:1.6em; flex-wrap:wrap;}
-.hero__receipt-wrap{display:flex; justify-content:center;}
+    /* Sections */
+    .section{padding:96px 0;}
+    .section--soft{background:#EEF2EF;}
+    .section__head{max-width:700px;}
+    .section h2{font-size:clamp(2rem,3.3vw,2.7rem);line-height:1.08;letter-spacing:-.015em;}
+    .section__sub{max-width:62ch;color:var(--ink-soft);}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+    .reveal.is-visible{opacity:1;transform:none;}
 
-.hero__stats{display:flex; gap:34px; margin-top:44px; flex-wrap:wrap;}
-.hero__stat b{display:block; font-family:var(--mono); font-size:1.4rem; color:var(--ink);}
-.hero__stat span{font-size:.78rem; color:var(--muted);}
+    /* Flow */
+    .flow{padding:92px 0;background:var(--ink);color:var(--cream-text);}
+    .flow h2{color:var(--cream-text);max-width:19ch;}
+    .flow .eyebrow{color:var(--accent-2);}
+    .flow__grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:48px;border-top:1px solid #FFFFFF26;}
+    .flow__item{padding:25px 22px 8px;border-right:1px solid #FFFFFF26;}
+    .flow__item:last-child{border-right:0;}
+    .flow__num{
+      display:block;font-family:var(--mono);font-size:.68rem;color:var(--accent-2);
+      margin-bottom:1em;letter-spacing:.08em;
+    }
+    .flow__item h3{color:var(--cream-text);font-size:1.1rem;}
+    .flow__item p{color:#C8D0D4;font-size:.83rem;margin-bottom:0;}
+    .icon{width:25px;height:25px;color:var(--accent);}
+    .icon--light{color:var(--accent-2);}
+    .icon-circle{
+      width:44px;height:44px;border-radius:50%;background:var(--accent-wash);
+      display:flex;align-items:center;justify-content:center;margin-bottom:1em;
+    }
 
-@media (max-width:900px){
-  .hero__grid{grid-template-columns:1fr; text-align:left;}
-  .hero__receipt-wrap{order:-1;}
-}
+    /* Value cards */
+    .value-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;
+    }
+    .value-card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+      padding:24px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+    }
+    .value-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#CDD9DA;}
+    .value-card h3{font-size:1.18rem;margin-bottom:.4em;}
+    .value-card p{font-size:.86rem;color:var(--ink-soft);margin-bottom:0;}
+    .value-card__number{
+      font-family:var(--mono);font-size:.7rem;color:var(--accent);margin-bottom:1.2em;
+    }
 
-/* ---------- Receipt (elemento firma) ---------- */
-.receipt{
-  background:var(--card); border:1.5px solid var(--line); border-radius:var(--radius);
-  box-shadow:var(--shadow); position:relative; width:100%; max-width:330px;
-  transition:transform .2s ease, box-shadow .2s ease;
-}
-.receipt--plan:hover{transform:translateY(-4px); box-shadow:var(--shadow-lg);}
-.receipt__perf{
-  height:11px;
-  background-image: radial-gradient(circle, var(--paper) 3px, transparent 3.5px);
-  background-size:16px 16px; background-position:8px center;
-  border-bottom:1.5px dashed var(--line);
-}
-.receipt__body{padding:24px 22px 26px;}
-.receipt__store{font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; text-align:center; margin-bottom:1.1em; color:var(--ink-soft);}
-.receipt__line{font-family:var(--mono); font-size:.8rem; margin:0 0 .5em; color:var(--ink-soft);}
-.receipt__small{font-size:.72rem; color:var(--muted);}
-.receipt__dash{border-top:1.5px dashed var(--line); margin:1em 0;}
-.receipt__amount-label{font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-align:center; color:var(--accent); margin-bottom:.3em;}
-.receipt__amount{font-family:var(--mono); font-weight:600; font-size:1.8rem; text-align:center; color:var(--ink); margin-bottom:0;}
-.receipt__list{list-style:none; padding:0; margin:0 0 .2em; font-size:.85rem; color:var(--ink-soft);}
-.receipt__list li{padding-left:1.3em; position:relative; margin-bottom:.55em;}
-.receipt__list li::before{content:"·"; position:absolute; left:0; color:var(--accent); font-weight:700; font-size:1.3em; top:-4px;}
+    /* Pricing */
+    .pricing__grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:46px;align-items:start;
+    }
+    .receipt--plan{max-width:none;border-radius:var(--radius-lg);}
+    .receipt--featured{
+      border:2px solid var(--accent);transform:translateY(-8px);box-shadow:var(--shadow-lg);
+    }
+    .receipt--featured:hover{transform:translateY(-12px);}
+    .pricing__note{
+      display:flex;gap:8px;align-items:flex-start;max-width:58ch;margin:24px auto 0;
+      padding:13px 15px;border:1px solid var(--line);border-radius:10px;
+      background:rgba(255,255,255,.68);color:var(--ink-soft);font-size:.74rem;
+    }
 
-.tag{font-family:var(--mono); font-size:.65rem; letter-spacing:.08em; padding:.2em .6em; border-radius:2px; font-weight:600;}
-.tag--ok{background:var(--ok-wash); color:var(--ok);}
-.tag--save{position:absolute; top:-11px; right:16px; background:var(--accent); color:var(--cream-text); box-shadow:0 6px 14px -8px rgba(62,92,118,.6); z-index:2;}
+    /* Registration */
+    .registro{
+      background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    }
+    .registro__grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:start;}
+    .registro__intro h2{font-size:clamp(2rem,3.2vw,2.65rem);line-height:1.08;}
+    .registro__intro>p:not(.eyebrow):not(.registro__note){color:var(--ink-soft);}
+    .registro__note{
+      font-family:var(--mono);font-size:.7rem;color:var(--accent);
+      border-left:2px solid var(--accent);padding-left:12px;margin-top:22px;
+    }
+    .form{
+      background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
+      padding:30px;display:grid;gap:17px;box-shadow:0 8px 26px -28px var(--ink);
+    }
+    .field{display:flex;flex-direction:column;gap:.42em;font-family:var(--mono);font-size:.74rem;}
+    .field span{color:var(--ink-soft);text-transform:uppercase;font-size:.64rem;letter-spacing:.1em;}
+    .field input,.field select{
+      width:100%;font-family:var(--body);font-size:.92rem;padding:.78em .84em;
+      border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);
+      transition:border-color .15s ease,box-shadow .15s ease;
+    }
+    .field input:focus,.field select:focus{
+      border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash);outline:0;
+    }
+    .field__error{color:#A53D32;font-family:var(--body);font-size:.7rem;min-height:1em;display:none;}
+    .field.has-error input,.field.has-error select{border-color:#B23A2E;background:#FFF9F8;}
+    .field.has-error .field__error{display:block;}
+    .form__legal{font-size:.68rem;color:var(--muted);margin:0;}
+    .form__legal a{color:var(--accent);}
 
-.receipt--hero{animation: printIn .9s cubic-bezier(.2,.8,.2,1) both; transform-origin:top center;}
-@keyframes printIn{
-  0%{opacity:0; transform:translateY(-20px) scaleY(.94);}
-  100%{opacity:1; transform:translateY(0) scaleY(1);}
-}
+    .receipt--confirm{max-width:370px;margin:38px auto 0;}
+    .receipt__actions{display:flex;gap:10px;margin-top:1.2em;}
+    .receipt__actions .btn{flex:1;}
 
-/* ---------- Icons ---------- */
-.icon{width:26px; height:26px; color:var(--accent);}
-.icon-circle{
-  width:46px; height:46px; border-radius:50%; background:var(--accent-wash);
-  display:flex; align-items:center; justify-content:center; margin-bottom:1em;
-}
-.icon-circle .icon{width:22px; height:22px;}
-.icon-circle--dark{background:#ffffff14;}
-.icon-circle--dark .icon{color:var(--accent-soft);}
+    .clientes{margin:38px auto 0;max-width:760px;font-family:var(--mono);font-size:.74rem;}
+    .clientes__title{
+      color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-size:.64rem;margin-bottom:.8em;
+    }
+    .clientes__table{width:100%;border-collapse:collapse;background:#FAFBFA;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+    .clientes__table th,.clientes__table td{text-align:left;padding:.72em .7em;border-bottom:1px dashed var(--line);}
+    .clientes__table tr:last-child td{border-bottom:0;}
+    .clientes__table th{color:var(--ink-soft);font-weight:600;font-size:.64rem;text-transform:uppercase;background:#F2F5F3;}
+    .clientes__table td{font-size:.71rem;}
+    .clientes__table td.estado{color:var(--ok);font-weight:600;}
 
-/* ---------- Flow ---------- */
-.flow{padding:80px 0; background:var(--ink); color:var(--cream-text);}
-.flow h2{color:var(--cream-text); font-size:clamp(1.4rem,3vw,2rem); max-width:22ch;}
-.flow .eyebrow{color:var(--accent-soft);}
-.flow .eyebrow::before{background:var(--accent-soft);}
-.flow__grid{display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:48px; border-top:1.5px solid #ffffff26;}
-.flow__item{padding:26px 20px 0; border-right:1.5px solid #ffffff26;}
-.flow__item:last-child{border-right:none;}
-.flow__num{font-family:var(--mono); font-size:.75rem; color:var(--accent-soft); display:block; margin-bottom:.9em; letter-spacing:.1em;}
-.flow__item h3{color:var(--cream-text); font-size:1.05rem;}
-.flow__item p{color:#C7CDD1; font-size:.88rem;}
-@media (max-width:800px){
-  .flow__grid{grid-template-columns:1fr; border-top:none;}
-  .flow__item{border-right:none; border-top:1.5px solid #ffffff26; padding-top:22px; padding-bottom:6px;}
-}
+    /* Business model + calculator */
+    .negocios__cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:40px 0 50px;}
+    .negocios__card{
+      background:var(--ink);color:var(--cream-text);padding:26px;border-radius:var(--radius-lg);
+      position:relative;overflow:hidden;
+    }
+    .negocios__card::after{
+      content:"";position:absolute;width:130px;height:130px;border-radius:50%;
+      border:1px solid #FFFFFF18;right:-38px;bottom:-62px;
+    }
+    .icon-circle--dark{background:#FFFFFF0F;}
+    .icon-circle--dark .icon{color:var(--accent-2);}
+    .negocios__label{
+      font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--accent-2);margin-bottom:.45em;
+    }
+    .negocios__figure{font-family:var(--mono);font-size:1.75rem;font-weight:600;margin-bottom:.25em;}
+    .negocios__figure span{font-size:.92rem;color:#C8D0D4;}
+    .negocios__card p:last-child{color:#C8D0D4;margin-bottom:0;font-size:.82rem;max-width:45ch;}
 
-/* ---------- Pricing ---------- */
-.pricing{padding:88px 0;}
-.pricing h2{font-size:clamp(1.5rem,3vw,2.1rem);}
-.pricing__sub{color:var(--ink-soft); max-width:50ch;}
-.pricing__grid{display:grid; grid-template-columns:repeat(3,1fr); gap:30px; margin-top:44px; align-items:start;}
-.receipt--plan{max-width:none;}
-.receipt--featured{border-width:2px; border-color:var(--accent); transform:translateY(-8px); box-shadow:var(--shadow-lg);}
-.receipt--featured:hover{transform:translateY(-12px);}
-@media (max-width:900px){
-  .pricing__grid{grid-template-columns:1fr; max-width:380px; margin-left:auto; margin-right:auto;}
-  .receipt--featured{transform:none;}
-}
+    .calc{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+      padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:44px;box-shadow:var(--shadow);
+    }
+    .calc h3{font-size:1.4rem;margin-bottom:.35em;}
+    .calc__intro{font-size:.85rem;color:var(--ink-soft);}
+    .calc__field{margin-bottom:23px;}
+    .calc__field label{
+      display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;
+      color:var(--ink-soft);margin-bottom:.55em;text-transform:uppercase;letter-spacing:.04em;
+    }
+    .calc__field label b{color:var(--ink);font-family:var(--mono);text-transform:none;letter-spacing:0;}
+    .calc__field input[type=range]{width:100%;accent-color:var(--accent);}
+    .calc__field select{
+      width:100%;font-family:var(--body);font-size:.9rem;padding:.72em .8em;
+      border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);
+    }
+    .calc__results{background:var(--paper);border-radius:12px;padding:20px;font-family:var(--mono);}
+    .calc__row{display:flex;justify-content:space-between;gap:20px;padding:.75em 0;border-bottom:1px dashed var(--line);font-size:.78rem;}
+    .calc__row span:first-child{color:var(--ink-soft);}
+    .calc__row span:last-child{white-space:nowrap;}
+    .calc__row.total{border-top:1.5px solid var(--ink);border-bottom:0;margin-top:.35em;padding-top:1em;}
+    .calc__row.total span:first-child{color:var(--ink);font-weight:600;}
+    .calc__row.total span:last-child{font-size:1.25rem;font-weight:600;color:var(--ok);}
 
-/* ---------- Registro ---------- */
-.registro{padding:88px 0 44px; background:var(--card); border-top:1.5px solid var(--line); border-bottom:1.5px solid var(--line);}
-.registro__grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:56px; align-items:start;}
-.registro__intro h2{font-size:clamp(1.5rem,3vw,2rem);}
-.registro__note{font-family:var(--mono); font-size:.76rem; color:var(--accent); border-left:2px solid var(--accent); padding-left:12px;}
+    /* FAQ */
+    .faq__list{max-width:790px;margin-top:38px;border-top:1px solid var(--line);}
+    .faq__item{border-bottom:1px solid var(--line);}
+    .faq__item summary{
+      list-style:none;cursor:pointer;padding:21px 4px;display:flex;justify-content:space-between;
+      align-items:center;font-family:var(--display);font-weight:600;font-size:1.03rem;gap:20px;
+    }
+    .faq__item summary::-webkit-details-marker{display:none;}
+    .faq__item summary .icon{width:18px;height:18px;color:var(--accent);flex-shrink:0;transition:transform .2s ease;}
+    .faq__item[open] summary .icon{transform:rotate(45deg);}
+    .faq__item p{padding:0 4px 22px;color:var(--ink-soft);max-width:66ch;font-size:.88rem;}
 
-.form{background:var(--paper); border:1.5px solid var(--line); border-radius:var(--radius); padding:30px; display:grid; gap:18px;}
-.field{display:flex; flex-direction:column; gap:.4em; font-family:var(--mono); font-size:.76rem;}
-.field span{color:var(--ink-soft); text-transform:uppercase; font-size:.68rem; letter-spacing:.1em;}
-.field input, .field select{
-  font-family:var(--body); font-size:.94rem; padding:.72em .8em;
-  border:1.5px solid var(--line); border-radius:var(--radius); background:var(--card); color:var(--ink);
-  transition:border-color .15s ease;
-}
-.field input:focus, .field select:focus{border-color:var(--accent);}
-.field__error{color:#B23A2E; font-family:var(--body); font-size:.72rem; min-height:1em; display:none;}
-.field.has-error input, .field.has-error select{border-color:#B23A2E;}
-.field.has-error .field__error{display:block;}
+    /* Final CTA */
+    .final-cta{padding:80px 0 92px;}
+    .final-cta__box{
+      background:var(--ink);color:var(--cream-text);border-radius:20px;padding:48px;
+      display:flex;align-items:center;justify-content:space-between;gap:34px;overflow:hidden;position:relative;
+    }
+    .final-cta__box::before{
+      content:"";position:absolute;width:300px;height:300px;border-radius:50%;
+      border:1px solid #FFFFFF15;right:-100px;top:-160px;
+    }
+    .final-cta h2{color:var(--cream-text);font-size:clamp(2rem,3.4vw,2.8rem);max-width:16ch;margin-bottom:.25em;}
+    .final-cta p{color:#C8D0D4;max-width:54ch;margin:0;}
+    .final-cta .btn--primary{background:var(--cream-text);color:var(--ink);border-color:var(--cream-text);}
+    .final-cta .btn--primary:hover{background:#DDE9EF;border-color:#DDE9EF;}
 
-@media (max-width:900px){ .registro__grid{grid-template-columns:1fr;} }
+    /* Footer */
+    .footer{background:var(--ink);color:var(--cream-text);padding:32px 0;}
+    .footer__inner{
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
+    }
+    .footer p{margin:0;}
+    .footer__brand{
+      display:flex;align-items:center;gap:.55em;font-family:var(--display);font-weight:700;
+    }
+    .footer__meta{font-family:var(--mono);font-size:.68rem;color:#C7CDD1;text-align:right;}
 
-.receipt--confirm{margin:36px auto 0; max-width:330px;}
-.receipt__actions{display:flex; gap:10px; margin-top:1.2em;}
-.receipt__actions .btn{flex:1;}
+    /* Floating UI */
+    .totop{
+      position:fixed;bottom:22px;right:22px;width:44px;height:44px;border-radius:50%;
+      background:var(--ink);color:var(--cream-text);border:0;display:flex;align-items:center;
+      justify-content:center;box-shadow:var(--shadow);opacity:0;pointer-events:none;
+      transform:translateY(8px);transition:opacity .2s ease,transform .2s ease;z-index:120;
+    }
+    .totop.is-visible{opacity:1;pointer-events:auto;transform:none;}
+    .totop:hover{transform:translateY(-3px);}
+    .totop .icon{color:var(--cream-text);width:18px;height:18px;}
 
-.clientes{margin:36px auto 0; max-width:640px; font-family:var(--mono); font-size:.8rem;}
-.clientes__title{color:var(--accent); text-transform:uppercase; letter-spacing:.08em; font-size:.7rem; margin-bottom:.8em;}
-.clientes__table{width:100%; border-collapse:collapse;}
-.clientes__table th, .clientes__table td{text-align:left; padding:.6em .5em; border-bottom:1px dashed var(--line);}
-.clientes__table th{color:var(--ink-soft); font-weight:600; font-size:.7rem; text-transform:uppercase;}
-.clientes__table td.estado{color:var(--ok);}
+    .toast{
+      position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(18px);
+      background:var(--ink);color:var(--cream-text);font-family:var(--mono);font-size:.75rem;
+      padding:.9em 1.25em;border-radius:999px;box-shadow:var(--shadow-lg);opacity:0;
+      pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:180;
+      display:flex;align-items:center;gap:.6em;white-space:nowrap;
+    }
+    .toast.is-visible{opacity:1;transform:translateX(-50%) translateY(0);}
+    .toast .icon{width:15px;height:15px;color:#BEE0C9;}
 
-/* ---------- Toast ---------- */
-.toast{
-  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
-  background:var(--ink); color:var(--cream-text); font-family:var(--mono); font-size:.82rem;
-  padding:.9em 1.4em; border-radius:var(--radius); box-shadow:var(--shadow-lg);
-  opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:80;
-  display:flex; align-items:center; gap:.6em;
-}
-.toast.is-visible{opacity:1; transform:translateX(-50%) translateY(0);}
-.toast .icon{width:16px; height:16px; color:var(--ok-wash);}
+    /* Responsive */
+    @media (max-width:980px){
+      .nav__links{display:none;}
+      .nav__burger{display:flex;}
+      .hero__grid{grid-template-columns:1fr;gap:44px;}
+      .hero__copy{max-width:760px;}
+      .hero__receipt-wrap{justify-content:flex-start;}
+      .flow__grid{grid-template-columns:repeat(2,1fr);}
+      .flow__item:nth-child(2){border-right:0;}
+      .flow__item:nth-child(n+3){border-top:1px solid #FFFFFF26;}
+      .pricing__grid{grid-template-columns:1fr;max-width:450px;}
+      .receipt--featured,.receipt--featured:hover{transform:none;}
+      .registro__grid{grid-template-columns:1fr;gap:44px;}
+      .value-grid{grid-template-columns:1fr 1fr;}
+      .negocios__cards{grid-template-columns:1fr;}
+      .calc{grid-template-columns:1fr;}
+      .final-cta__box{align-items:flex-start;flex-direction:column;}
+    }
 
-/* ---------- Negocios ---------- */
-.negocios{padding:88px 0;}
-.negocios h2{font-size:clamp(1.5rem,3vw,2rem);}
-.negocios__intro{max-width:64ch;}
-.negocios__cards{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:40px 0 56px;}
-.negocios__card{background:var(--ink); color:var(--cream-text); padding:26px 24px; border-radius:var(--radius);}
-.negocios__label{font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-soft); margin-bottom:.5em;}
-.negocios__figure{font-family:var(--mono); font-size:1.9rem; font-weight:600; margin-bottom:.3em;}
-.negocios__figure span{font-size:1rem; color:#C7CDD1;}
-.negocios__card p:last-child{color:#C7CDD1; margin-bottom:0; font-size:.88rem;}
-@media (max-width:800px){ .negocios__cards{grid-template-columns:1fr;} }
+    @media (max-width:700px){
+      .wrap{padding:0 18px;}
+      .hero{padding:62px 0 42px;}
+      .hero h1{font-size:clamp(2.45rem,12vw,3.5rem);}
+      .hero__stats{grid-template-columns:1fr;gap:14px;}
+      .hero__stat + .hero__stat{padding-left:0;border-left:0;border-top:1px solid var(--line);padding-top:14px;}
+      .section,.final-cta{padding:70px 0;}
+      .flow{padding:70px 0;}
+      .flow__grid{grid-template-columns:1fr;border-top:0;}
+      .flow__item,.flow__item:nth-child(2){border-right:0;border-top:1px solid #FFFFFF26;padding:22px 0;}
+      .value-grid{grid-template-columns:1fr;}
+      .form,.calc{padding:22px;}
+      .final-cta__box{padding:30px 24px;}
+      .footer__meta{text-align:left;}
+      .clientes{overflow-x:auto;}
+      .clientes__table{min-width:620px;}
+      .toast{max-width:calc(100vw - 36px);white-space:normal;text-align:center;justify-content:center;}
+    }
 
-/* ---------- Calculadora ---------- */
-.calc{
-  background:var(--card); border:1.5px solid var(--line); border-radius:var(--radius);
-  padding:36px; display:grid; grid-template-columns:1fr 1fr; gap:40px;
-}
-.calc h3{font-size:1.2rem;}
-.calc__field{margin-bottom:22px;}
-.calc__field label{display:flex; justify-content:space-between; font-family:var(--mono); font-size:.76rem; color:var(--ink-soft); margin-bottom:.5em; text-transform:uppercase; letter-spacing:.05em;}
-.calc__field label b{color:var(--ink); font-family:var(--mono); text-transform:none; letter-spacing:0;}
-.calc__field input[type="range"]{width:100%; accent-color:var(--accent);}
-.calc__field select{
-  width:100%; font-family:var(--body); font-size:.94rem; padding:.7em .8em;
-  border:1.5px solid var(--line); border-radius:var(--radius); background:var(--paper); color:var(--ink);
-}
-.calc__results{background:var(--paper); border-radius:var(--radius); padding:26px; font-family:var(--mono);}
-.calc__row{display:flex; justify-content:space-between; padding:.6em 0; border-bottom:1px dashed var(--line); font-size:.88rem;}
-.calc__row:last-child{border-bottom:none;}
-.calc__row span:first-child{color:var(--ink-soft);}
-.calc__row.total{border-top:1.5px solid var(--ink); margin-top:.4em; padding-top:.9em;}
-.calc__row.total span:first-child{color:var(--ink); font-weight:600;}
-.calc__row.total span:last-child{font-size:1.3rem; font-weight:600; color:var(--ok);}
-@media (max-width:800px){ .calc{grid-template-columns:1fr;} }
-
-/* ---------- FAQ ---------- */
-.faq{padding:88px 0;}
-.faq h2{font-size:clamp(1.5rem,3vw,2rem);}
-.faq__list{max-width:760px; margin-top:36px; border-top:1.5px solid var(--line);}
-.faq__item{border-bottom:1.5px solid var(--line);}
-.faq__item summary{
-  list-style:none; cursor:pointer; padding:22px 4px; display:flex; justify-content:space-between;
-  align-items:center; font-family:var(--display); font-weight:600; font-size:1.02rem; gap:20px;
-}
-.faq__item summary::-webkit-details-marker{display:none;}
-.faq__item summary .icon{width:18px; height:18px; color:var(--accent); flex-shrink:0; transition:transform .2s ease;}
-.faq__item[open] summary .icon{transform:rotate(45deg);}
-.faq__item p{padding:0 4px 22px; color:var(--ink-soft); max-width:64ch;}
-
-/* ---------- Back to top ---------- */
-.totop{
-  position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
-  background:var(--ink); color:var(--cream-text); border:none; display:flex; align-items:center;
-  justify-content:center; box-shadow:var(--shadow); opacity:0; pointer-events:none;
-  transition:opacity .2s ease, transform .2s ease; z-index:70;
-}
-.totop.is-visible{opacity:1; pointer-events:auto;}
-.totop:hover{transform:translateY(-3px);}
-
-/* ---------- Footer ---------- */
-.footer{background:var(--ink); color:var(--cream-text); padding:32px 0;}
-.footer__inner{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
-.footer p{margin:0; font-family:var(--display); display:flex; align-items:center; gap:.5em;}
-.footer__meta{font-family:var(--mono); font-size:.76rem; color:#C7CDD1;}
-
-/* ---------- Print (recibo) ---------- */
-@media print{
-  body *{visibility:hidden;}
-  .receipt--confirm, .receipt--confirm *{visibility:visible;}
-  .receipt--confirm{position:absolute; top:0; left:0; box-shadow:none;}
-  .receipt__actions{display:none;}
-}
-</style>
+    @media print{
+      body *{visibility:hidden!important;}
+      .receipt--confirm,.receipt--confirm *{visibility:visible!important;}
+      .receipt--confirm{position:absolute;top:0;left:0;box-shadow:none;}
+      .receipt__actions{display:none!important;}
+    }
+  </style>
 </head>
+
 <body>
+  <div class="progress" id="progress" aria-hidden="true"></div>
 
-<div class="progress" id="progress"></div>
+  <header class="nav" id="top">
+    <div class="wrap nav__inner">
+      <a href="#top" class="nav__brand" aria-label="Recauda, volver al inicio">
+        <span class="nav__mark">R</span>Recauda
+      </a>
 
-<header class="nav" id="top">
-  <div class="wrap nav__inner">
-    <a href="#top" class="nav__brand"><span class="nav__mark">R</span>Recauda</a>
-    <nav class="nav__links" id="navLinks">
-      <a href="#como-funciona" data-section="como-funciona">Cómo funciona</a>
-      <a href="#planes" data-section="planes">Planes</a>
-      <a href="#negocios" data-section="negocios">Para negocios</a>
-      <a href="#faq" data-section="faq">Preguntas</a>
+      <nav class="nav__links" id="navLinks" aria-label="Navegación principal">
+        <a href="#como-funciona" data-section="como-funciona">Cómo funciona</a>
+        <a href="#beneficios" data-section="beneficios">Beneficios</a>
+        <a href="#planes" data-section="planes">Planes</a>
+        <a href="#negocios" data-section="negocios">Para negocios</a>
+        <a href="#faq" data-section="faq">Preguntas</a>
+        <a href="#registro" class="nav__cta">Registrarme</a>
+      </nav>
+
+      <button class="nav__burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <nav class="nav__mobile" id="navMobile" aria-label="Navegación móvil">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#beneficios">Beneficios</a>
+      <a href="#planes">Planes</a>
+      <a href="#negocios">Para negocios</a>
+      <a href="#faq">Preguntas</a>
       <a href="#registro" class="nav__cta">Registrarme</a>
     </nav>
-    <button class="nav__burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <nav class="nav__mobile" id="navMobile">
-    <a href="#como-funciona">Cómo funciona</a>
-    <a href="#planes">Planes</a>
-    <a href="#negocios">Para negocios</a>
-    <a href="#faq">Preguntas</a>
-    <a href="#registro" class="nav__cta">Registrarme</a>
-  </nav>
-</header>
+  </header>
 
-<main>
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero__grid">
+        <div class="hero__copy">
+          <p class="eyebrow">Cobro recurrente para negocios locales</p>
+          <h1>Cobra cada mes sin perseguir a nadie.</h1>
+          <p class="hero__lead">
+            Gimnasios, academias de baile, escuelas de fútbol y profesores particulares
+            pueden automatizar sus cobros y dejar de depender de mensajes, efectivo y recordatorios manuales.
+          </p>
 
-  <section class="hero">
-    <div class="wrap hero__grid">
-      <div class="hero__copy">
-        <p class="eyebrow">Cobro recurrente para negocios locales</p>
-        <h1>Cobra la mensualidad<br>sin perseguir a nadie.</h1>
-        <p class="hero__lead">
-          Gimnasios, academias de baile, escuelas de fútbol y profesores particulares
-          pierden horas cada mes cobrando por WhatsApp o en efectivo.
-          Recauda guarda el medio de pago de tu cliente una sola vez
-          y le cobra automático el primer día de cada mes.
-        </p>
-        <div class="hero__actions">
-          <a href="#planes" class="btn btn--primary">Ver planes</a>
-          <a href="#negocios" class="btn btn--ghost">Soy un negocio</a>
+          <div class="hero__actions">
+            <a href="#planes" class="btn btn--primary">
+              Ver planes
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6"/>
+              </svg>
+            </a>
+            <a href="#negocios" class="btn btn--ghost">Soy un negocio</a>
+          </div>
+
+          <div class="hero__proof">
+            <span class="hero__proof-dot" aria-hidden="true"></span>
+            Demo académica: los pagos reales todavía no están conectados.
+          </div>
+
+          <div class="hero__stats" aria-label="Características principales">
+            <div class="hero__stat">
+              <b>Día 1</b>
+              <span>cobro programado cada ciclo</span>
+            </div>
+            <div class="hero__stat">
+              <b>48h</b>
+              <span>segundo intento si falla</span>
+            </div>
+            <div class="hero__stat">
+              <b>2,5% + $900</b>
+              <span>comisión demostrativa por transacción</span>
+            </div>
+          </div>
         </div>
 
-        <div class="hero__stats">
-          <div class="hero__stat"><b>Día 1</b><span>cobro automático cada mes</span></div>
-          <div class="hero__stat"><b>48h</b><span>segundo intento si falla el pago</span></div>
-          <div class="hero__stat"><b>2.5%+$900</b><span>comisión por transacción</span></div>
-        </div>
-      </div>
+        <div class="hero__receipt-wrap">
+          <div class="receipt receipt--hero" id="heroReceipt" aria-label="Ejemplo de comprobante de Recauda">
+            <div class="receipt__perf"></div>
+            <div class="receipt__body">
+              <p class="receipt__store">RECAUDA · COMPROBANTE</p>
+              <p class="receipt__line">Cliente&nbsp;&nbsp; María Sánchez</p>
+              <p class="receipt__line">Negocio&nbsp; Estudio Fit Zone</p>
+              <p class="receipt__line">Plan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bronce · Mensual</p>
+              <div class="receipt__dash"></div>
 
-      <div class="hero__receipt-wrap" aria-hidden="true">
-        <div class="receipt receipt--hero" id="heroReceipt">
-          <div class="receipt__perf"></div>
-          <div class="receipt__body">
-            <p class="receipt__store">RECAUDA · COMPROBANTE</p>
-            <p class="receipt__line">Cliente&nbsp; &nbsp;María Sánchez</p>
-            <p class="receipt__line">Negocio&nbsp; Estudio Fit Zone</p>
-            <p class="receipt__line">Plan&nbsp; &nbsp; &nbsp; &nbsp;Bronce · Mensual</p>
-            <div class="receipt__dash"></div>
-            <p class="receipt__amount-label">COBRO AUTOMÁTICO EXITOSO</p>
-            <p class="receipt__amount" id="heroAmount">$0</p>
-            <div class="receipt__dash"></div>
-            <p class="receipt__line receipt__small">Día 1 · próximo cobro programado</p>
-            <p class="receipt__line receipt__small">Estado: <span class="tag tag--ok">ACTIVO</span></p>
+              <p class="receipt__amount-label">COBRO AUTOMÁTICO EXITOSO</p>
+              <p class="receipt__amount" id="heroAmount">$0</p>
+
+              <div class="receipt__status">
+                <div>
+                  <small>Próximo cobro</small><br>
+                  <span class="receipt__line">Día 1 del siguiente ciclo</span>
+                </div>
+                <span class="tag tag--ok">ACTIVO</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="flow" id="como-funciona">
-    <div class="wrap">
-      <p class="eyebrow">El ciclo de cobro</p>
-      <h2 class="reveal">Cuatro pasos, cada mes, sin que muevas un dedo</h2>
-      <div class="flow__grid">
-        <div class="flow__item reveal">
-          <span class="flow__num">01 · Día 1</span>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-          <h3>Cobro programado</h3>
-          <p>El día 1 de cada mes, el sistema lanza la orden de cobro automática al banco o billetera digital del cliente.</p>
-        </div>
-        <div class="flow__item reveal">
-          <span class="flow__num">02 · +0h</span>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M17 3v4h-4M7 21v-4h4"/></svg>
-          <h3>Procesamiento</h3>
-          <p>Si hay fondos, la transacción se aprueba al instante. Si falla, se programa un segundo intento en 48 horas.</p>
-        </div>
-        <div class="flow__item reveal">
-          <span class="flow__num">03 · +48h</span>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
-          <h3>Emisión de soporte</h3>
-          <p>Se genera la factura digital o recibo de caja y se envía automáticamente al correo del cliente.</p>
-        </div>
-        <div class="flow__item reveal">
-          <span class="flow__num">04 · +72h</span>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h13M13 6l6 6-6 6"/></svg>
-          <h3>Dispersión</h3>
-          <p>Recauda transfiere el dinero al dueño del negocio, descontando la comisión del servicio.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- FLOW -->
+    <section class="flow" id="como-funciona">
+      <div class="wrap">
+        <p class="eyebrow">El ciclo de cobro</p>
+        <h2 class="reveal">Cuatro pasos para automatizar la mensualidad.</h2>
 
-  <section class="pricing" id="planes">
-    <div class="wrap">
-      <p class="eyebrow">Planes para tus clientes</p>
-      <h2 class="reveal">Elige cómo te cobran</h2>
-      <p class="pricing__sub reveal">Los mismos planes se pueden aplicar a gimnasios, academias o clases particulares.</p>
-
-      <div class="pricing__grid">
-        <article class="receipt receipt--plan reveal" data-plan="Bronce" data-price="80.000">
-          <div class="receipt__perf"></div>
-          <div class="receipt__body">
-            <p class="receipt__store">PLAN BRONCE</p>
-            <p class="receipt__line receipt__small">Facturación mensual</p>
-            <div class="receipt__dash"></div>
-            <p class="receipt__amount">$80.000</p>
-            <p class="receipt__line receipt__small">por mes</p>
-            <div class="receipt__dash"></div>
-            <ul class="receipt__list">
-              <li>Cobro automático cada mes</li>
-              <li>Factura por correo</li>
-              <li>Cancela cuando quieras</li>
-            </ul>
-            <button class="btn btn--plan" data-plan="Bronce">Elegir Bronce</button>
+        <div class="flow__grid">
+          <div class="flow__item reveal">
+            <span class="flow__num">01 · DÍA 1</span>
+            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>
+            </svg>
+            <h3>Cobro programado</h3>
+            <p>El sistema lanza la orden de cobro al medio de pago que el cliente registró.</p>
           </div>
-        </article>
 
-        <article class="receipt receipt--plan receipt--featured reveal" data-plan="Plata" data-price="220.000">
-          <span class="tag tag--save">AHORRA 8%</span>
-          <div class="receipt__perf"></div>
-          <div class="receipt__body">
-            <p class="receipt__store">PLAN PLATA</p>
-            <p class="receipt__line receipt__small">Facturación trimestral</p>
-            <div class="receipt__dash"></div>
-            <p class="receipt__amount">$220.000</p>
-            <p class="receipt__line receipt__small">cada 3 meses</p>
-            <div class="receipt__dash"></div>
-            <ul class="receipt__list">
-              <li>Todo lo del plan Bronce</li>
-              <li>Un solo cobro trimestral</li>
-              <li>8% más barato que pagar mes a mes</li>
-            </ul>
-            <button class="btn btn--plan" data-plan="Plata">Elegir Plata</button>
+          <div class="flow__item reveal">
+            <span class="flow__num">02 · +0H</span>
+            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M17 3v4h-4M7 21v-4h4"/>
+            </svg>
+            <h3>Procesamiento</h3>
+            <p>Si el pago falla, se plantea un segundo intento 48 horas después.</p>
           </div>
-        </article>
 
-        <article class="receipt receipt--plan reveal" data-plan="Oro" data-price="800.000">
-          <span class="tag tag--save">2 MESES GRATIS</span>
-          <div class="receipt__perf"></div>
-          <div class="receipt__body">
-            <p class="receipt__store">PLAN ORO</p>
-            <p class="receipt__line receipt__small">Facturación anual</p>
-            <div class="receipt__dash"></div>
-            <p class="receipt__amount">$800.000</p>
-            <p class="receipt__line receipt__small">por año</p>
-            <div class="receipt__dash"></div>
-            <ul class="receipt__list">
-              <li>Todo lo del plan Plata</li>
-              <li>Un solo cobro al año</li>
-              <li>Equivale a 2 meses gratis</li>
-            </ul>
-            <button class="btn btn--plan" data-plan="Oro">Elegir Oro</button>
+          <div class="flow__item reveal">
+            <span class="flow__num">03 · SOPORTE</span>
+            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h3"/>
+            </svg>
+            <h3>Comprobante</h3>
+            <p>Se genera un soporte digital para que el cliente tenga constancia del cobro.</p>
           </div>
-        </article>
-      </div>
-    </div>
-  </section>
 
-  <section class="registro" id="registro">
-    <div class="wrap registro__grid">
-      <div class="registro__intro reveal">
-        <p class="eyebrow">Registro del cliente</p>
-        <h2>Regístrate una vez.<br>Olvídate de pagar cada mes.</h2>
-        <p>
-          Ingresa tus datos y el medio de cobro. A partir de ahí, Recauda
-          se encarga de cobrarte automáticamente el día 1 de cada mes
-          y de enviarte el soporte por correo.
-        </p>
-        <p class="registro__note">
-          Demo de estudio: este formulario no procesa pagos reales.
-          Los registros se guardan solo en tu navegador para simular
-          la base de datos de clientes del panel administrativo.
-        </p>
-      </div>
-
-      <form class="form reveal" id="registroForm" novalidate>
-        <label class="field" id="fieldNombre">
-          <span>Nombre completo</span>
-          <input type="text" name="nombre" id="nombre" required placeholder="María Sánchez" minlength="3">
-          <small class="field__error">Escribe el nombre completo del cliente.</small>
-        </label>
-        <label class="field" id="fieldCedula">
-          <span>Cédula</span>
-          <input type="text" name="cedula" id="cedula" required placeholder="1.000.000.000" inputmode="numeric">
-          <small class="field__error">Ingresa solo números, sin puntos ni espacios.</small>
-        </label>
-        <label class="field" id="fieldCorreo">
-          <span>Correo</span>
-          <input type="email" name="correo" id="correo" required placeholder="maria@correo.com">
-          <small class="field__error">Ingresa un correo válido.</small>
-        </label>
-        <label class="field" id="fieldPlan">
-          <span>Plan</span>
-          <select name="plan" id="plan" required>
-            <option value="" disabled selected>Selecciona un plan</option>
-            <option value="Bronce">Bronce · $80.000/mes</option>
-            <option value="Plata">Plata · $220.000/trimestre</option>
-            <option value="Oro">Oro · $800.000/año</option>
-          </select>
-          <small class="field__error">Selecciona un plan.</small>
-        </label>
-        <label class="field" id="fieldMedio">
-          <span>Medio de cobro</span>
-          <select name="medio" id="medio" required>
-            <option value="" disabled selected>Selecciona un medio</option>
-            <option value="Tarjeta de crédito">Tarjeta de crédito</option>
-            <option value="Débito PSE">Débito PSE</option>
-            <option value="Nequi">Nequi</option>
-            <option value="Daviplata">Daviplata</option>
-          </select>
-          <small class="field__error">Selecciona un medio de cobro.</small>
-        </label>
-        <button type="submit" class="btn btn--primary btn--full">Activar cobro automático</button>
-      </form>
-    </div>
-
-    <div class="wrap">
-      <div class="receipt receipt--confirm" id="confirmReceipt" hidden>
-        <div class="receipt__perf"></div>
-        <div class="receipt__body">
-          <p class="receipt__store">RECAUDA · REGISTRO CONFIRMADO</p>
-          <p class="receipt__line" id="confNombre"></p>
-          <p class="receipt__line" id="confCedula"></p>
-          <p class="receipt__line" id="confCorreo"></p>
-          <div class="receipt__dash"></div>
-          <p class="receipt__line" id="confPlan"></p>
-          <p class="receipt__line" id="confMedio"></p>
-          <div class="receipt__dash"></div>
-          <p class="receipt__amount-label">PRÓXIMO COBRO</p>
-          <p class="receipt__amount" id="confMonto"></p>
-          <p class="receipt__line receipt__small" id="confFecha"></p>
-          <p class="receipt__line receipt__small">Estado: <span class="tag tag--ok">ACTIVO</span></p>
-          <div class="receipt__actions">
-            <button type="button" class="btn btn--ghost btn--small" id="printBtn">Imprimir recibo</button>
-            <button type="button" class="btn btn--ghost btn--small" id="newBtn">Registrar otro</button>
+          <div class="flow__item reveal">
+            <span class="flow__num">04 · DISPERSIÓN</span>
+            <svg class="icon icon--light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M4 12h13M13 6l6 6-6 6"/>
+            </svg>
+            <h3>Dinero al negocio</h3>
+            <p>La simulación muestra el valor neto después de la comisión del servicio.</p>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="clientes" id="clientesBox" hidden>
-        <p class="clientes__title">Últimos clientes registrados (demo local)</p>
-        <table class="clientes__table" id="clientesTable">
-          <thead><tr><th>Nombre</th><th>Plan</th><th>Medio</th><th>Estado</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section class="negocios" id="negocios">
-    <div class="wrap">
-      <p class="eyebrow reveal">Modelo de negocio</p>
-      <h2 class="reveal">Así gana Recauda — y así ganas tú</h2>
-      <p class="negocios__intro reveal">
-        Le cobramos al cliente final por adelantado el valor de su plan,
-        y descontamos dos cosas antes de girarle el dinero al negocio:
-      </p>
-
-      <div class="negocios__cards">
-        <div class="negocios__card reveal">
-          <div class="icon-circle icon-circle--dark"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 19L19 5M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
-          <p class="negocios__label">Comisión por transacción</p>
-          <p class="negocios__figure">2.5% + $900</p>
-          <p>Sobre cada mensualidad cobrada a través de la plataforma.</p>
+    <!-- BENEFICIOS -->
+    <section class="section section--soft" id="beneficios">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow">¿Por qué Recauda?</p>
+          <h2 class="reveal">Menos seguimiento manual. Más tiempo para el negocio.</h2>
+          <p class="section__sub reveal">
+            La propuesta está pensada para negocios pequeños que cobran de forma recurrente y necesitan una experiencia más ordenada.
+          </p>
         </div>
-        <div class="negocios__card reveal">
-          <div class="icon-circle icon-circle--dark"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg></div>
-          <p class="negocios__label">Suscripción al software</p>
-          <p class="negocios__figure">$50.000<span>/mes</span></p>
-          <p>Tarifa fija que paga el negocio por usar el sistema de gestión y facturación.</p>
+
+        <div class="value-grid">
+          <article class="value-card reveal">
+            <div class="value-card__number">01 / AUTOMATIZACIÓN</div>
+            <h3>Cobros programados</h3>
+            <p>El cliente se registra una vez y la lógica de la demo calcula el siguiente cobro sin que tengas que recordárselo cada mes.</p>
+          </article>
+
+          <article class="value-card reveal">
+            <div class="value-card__number">02 / VISIBILIDAD</div>
+            <h3>Información clara</h3>
+            <p>Cada registro deja una confirmación con cliente, plan, medio de cobro y fecha estimada del próximo ciclo.</p>
+          </article>
+
+          <article class="value-card reveal">
+            <div class="value-card__number">03 / CONTROL</div>
+            <h3>Simulación para decidir</h3>
+            <p>El negocio puede mover clientes y plan promedio para entender rápidamente cuánto quedaría después de comisiones.</p>
+          </article>
         </div>
       </div>
+    </section>
 
-      <div class="calc reveal">
-        <div>
-          <p class="eyebrow">Simulador de ingresos</p>
-          <h3>Calcula tu MRR estimado</h3>
-          <p style="color:var(--ink-soft); font-size:.92rem;">Mueve el número de clientes activos y el plan promedio para ver, en tiempo real, cuánto recibiría el negocio cada mes después de comisiones.</p>
+    <!-- PRICING -->
+    <section class="section" id="planes">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow">Planes para tus clientes</p>
+          <h2 class="reveal">Elige cómo cobrar.</h2>
+          <p class="section__sub reveal">Los planes de esta demo pueden adaptarse a gimnasios, academias, escuelas deportivas o servicios por suscripción.</p>
+        </div>
 
-          <div class="calc__field">
-            <label for="calcClientes">Clientes activos <b id="calcClientesVal">30</b></label>
-            <input type="range" id="calcClientes" min="1" max="200" value="30">
-          </div>
-          <div class="calc__field">
-            <label for="calcPlan">Plan promedio de los clientes</label>
-            <select id="calcPlan">
-              <option value="80000">Bronce · $80.000 / mes</option>
-              <option value="73333" selected>Plata · $220.000 cada 3 meses (≈ mensual)</option>
-              <option value="66667">Oro · $800.000 al año (≈ mensual)</option>
+        <div class="pricing__grid">
+          <article class="receipt receipt--plan reveal" data-plan="Bronce">
+            <div class="receipt__perf"></div>
+            <div class="receipt__body">
+              <p class="receipt__store">PLAN BRONCE</p>
+              <p class="receipt__line receipt__small">Facturación mensual</p>
+              <div class="receipt__dash"></div>
+              <p class="receipt__amount">$80.000</p>
+              <p class="receipt__line receipt__small">por mes</p>
+              <div class="receipt__dash"></div>
+              <ul class="receipt__list">
+                <li>Cobro automático por ciclo</li>
+                <li>Soporte digital de registro</li>
+                <li>Cancelación cuando quieras</li>
+              </ul>
+              <button class="btn btn--soft btn--full btn--plan" type="button" data-plan="Bronce">Elegir Bronce</button>
+            </div>
+          </article>
+
+          <article class="receipt receipt--plan receipt--featured reveal" data-plan="Plata">
+            <span class="tag tag--save">AHORRO 8%*</span>
+            <div class="receipt__perf"></div>
+            <div class="receipt__body">
+              <p class="receipt__store">PLAN PLATA</p>
+              <p class="receipt__line receipt__small">Facturación trimestral</p>
+              <div class="receipt__dash"></div>
+              <p class="receipt__amount">$220.000</p>
+              <p class="receipt__line receipt__small">cada 3 meses</p>
+              <div class="receipt__dash"></div>
+              <ul class="receipt__list">
+                <li>Todo lo del plan Bronce</li>
+                <li>Un solo cobro trimestral</li>
+                <li>Equivale a menos que 3 pagos mensuales</li>
+              </ul>
+              <button class="btn btn--primary btn--full btn--plan" type="button" data-plan="Plata">Elegir Plata</button>
+            </div>
+          </article>
+
+          <article class="receipt receipt--plan reveal" data-plan="Oro">
+            <span class="tag tag--save">2 MESES EQUIVALENTES GRATIS*</span>
+            <div class="receipt__perf"></div>
+            <div class="receipt__body">
+              <p class="receipt__store">PLAN ORO</p>
+              <p class="receipt__line receipt__small">Facturación anual</p>
+              <div class="receipt__dash"></div>
+              <p class="receipt__amount">$800.000</p>
+              <p class="receipt__line receipt__small">por año</p>
+              <div class="receipt__dash"></div>
+              <ul class="receipt__list">
+                <li>Todo lo del plan Plata</li>
+                <li>Un solo cobro anual</li>
+                <li>Valor equivalente a una tarifa mensual reducida</li>
+              </ul>
+              <button class="btn btn--soft btn--full btn--plan" type="button" data-plan="Oro">Elegir Oro</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="pricing__note reveal">
+          <span aria-hidden="true">ⓘ</span>
+          <span>*Los porcentajes y equivalencias se muestran como parte del ejercicio de la propuesta. Antes de ofrecer el servicio real deben definirse precios, comisiones, condiciones y reglas comerciales definitivas.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGISTRATION -->
+    <section class="section registro" id="registro">
+      <div class="wrap registro__grid">
+        <div class="registro__intro reveal">
+          <p class="eyebrow">Registro del cliente</p>
+          <h2>Regístrate una vez. Deja el ciclo organizado.</h2>
+          <p>
+            Ingresa los datos del cliente, selecciona su plan y registra el medio de cobro.
+            La demo genera una confirmación visual y guarda los últimos registros localmente en este navegador.
+          </p>
+          <p class="registro__note">
+            DEMO DE ESTUDIO<br>
+            Este formulario no procesa pagos reales ni almacena datos bancarios.
+          </p>
+        </div>
+
+        <form class="form reveal" id="registroForm" novalidate>
+          <label class="field" id="fieldNombre">
+            <span>Nombre completo</span>
+            <input type="text" name="nombre" id="nombre" required placeholder="María Sánchez" minlength="3" autocomplete="name">
+            <small class="field__error">Escribe el nombre completo del cliente.</small>
+          </label>
+
+          <label class="field" id="fieldCedula">
+            <span>Cédula</span>
+            <input type="text" name="cedula" id="cedula" required placeholder="1.000.000.000" inputmode="numeric" autocomplete="off">
+            <small class="field__error">Ingresa solo números, sin puntos ni espacios.</small>
+          </label>
+
+          <label class="field" id="fieldCorreo">
+            <span>Correo</span>
+            <input type="email" name="correo" id="correo" required placeholder="maria@correo.com" autocomplete="email">
+            <small class="field__error">Ingresa un correo válido.</small>
+          </label>
+
+          <label class="field" id="fieldPlan">
+            <span>Plan</span>
+            <select name="plan" id="plan" required>
+              <option value="" disabled selected>Selecciona un plan</option>
+              <option value="Bronce">Bronce · $80.000/mes</option>
+              <option value="Plata">Plata · $220.000/trimestre</option>
+              <option value="Oro">Oro · $800.000/año</option>
             </select>
+            <small class="field__error">Selecciona un plan.</small>
+          </label>
+
+          <label class="field" id="fieldMedio">
+            <span>Medio de cobro</span>
+            <select name="medio" id="medio" required>
+              <option value="" disabled selected>Selecciona un medio</option>
+              <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+              <option value="Débito PSE">Débito PSE</option>
+              <option value="Nequi">Nequi</option>
+              <option value="Daviplata">Daviplata</option>
+            </select>
+            <small class="field__error">Selecciona un medio de cobro.</small>
+          </label>
+
+          <p class="form__legal">
+            Al registrar, esta demo guarda únicamente información de ejemplo en el almacenamiento local del navegador.
+          </p>
+
+          <button type="submit" class="btn btn--primary btn--full">Activar cobro automático</button>
+        </form>
+      </div>
+
+      <div class="wrap">
+        <div class="receipt receipt--confirm" id="confirmReceipt" hidden>
+          <div class="receipt__perf"></div>
+          <div class="receipt__body">
+            <p class="receipt__store">RECAUDA · REGISTRO CONFIRMADO</p>
+            <p class="receipt__line" id="confNombre"></p>
+            <p class="receipt__line" id="confCedula"></p>
+            <p class="receipt__line" id="confCorreo"></p>
+            <div class="receipt__dash"></div>
+            <p class="receipt__line" id="confPlan"></p>
+            <p class="receipt__line" id="confMedio"></p>
+            <div class="receipt__dash"></div>
+            <p class="receipt__amount-label">PRÓXIMO COBRO ESTIMADO</p>
+            <p class="receipt__amount" id="confMonto"></p>
+            <p class="receipt__line receipt__small" id="confFecha"></p>
+            <p class="receipt__line receipt__small">Estado: <span class="tag tag--ok">ACTIVO</span></p>
+            <div class="receipt__actions">
+              <button type="button" class="btn btn--ghost btn--small" id="printBtn">Imprimir</button>
+              <button type="button" class="btn btn--ghost btn--small" id="newBtn">Registrar otro</button>
+            </div>
           </div>
         </div>
 
-        <div class="calc__results">
-          <div class="calc__row"><span>Ingreso bruto mensual</span><span id="calcBruto">$0</span></div>
-          <div class="calc__row"><span>Comisión Recauda (2.5% + $900 c/u)</span><span id="calcComision">$0</span></div>
-          <div class="calc__row"><span>Suscripción del software</span><span id="calcSuscripcion">$50.000</span></div>
-          <div class="calc__row total"><span>Neto para el negocio</span><span id="calcNeto">$0</span></div>
+        <div class="clientes" id="clientesBox" hidden>
+          <p class="clientes__title">Últimos clientes registrados · demo local</p>
+          <table class="clientes__table" id="clientesTable">
+            <thead>
+              <tr><th>Nombre</th><th>Plan</th><th>Medio</th><th>Estado</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="faq" id="faq">
-    <div class="wrap">
-      <p class="eyebrow reveal">Preguntas frecuentes</p>
-      <h2 class="reveal">Lo que suelen preguntar antes de registrarse</h2>
+    <!-- BUSINESS MODEL -->
+    <section class="section" id="negocios">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow reveal">Modelo de negocio</p>
+          <h2 class="reveal">Una plataforma que cobra y también deja ver el resultado.</h2>
+          <p class="section__sub reveal">
+            En esta maqueta, Recauda gana a través de una comisión por transacción y una suscripción de software.
+            La calculadora permite probar escenarios antes de tomar decisiones.
+          </p>
+        </div>
 
-      <div class="faq__list reveal">
-        <details class="faq__item">
-          <summary>¿Qué pasa si mi pago rebota?<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <p>El sistema programa un segundo intento automático 48 horas después. Si vuelve a fallar, el negocio recibe una alerta y el cliente pasa a estado "En mora" hasta que se regularice el pago.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Puedo cancelar cuando quiera?<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <p>Sí. Puedes cancelar tu plan en cualquier momento y no se te generará un nuevo cobro el siguiente ciclo.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Es seguro guardar mi tarjeta o Nequi?<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <p>Recauda no guarda directamente el número de tu tarjeta: la información se procesa a través de una pasarela de pagos certificada, siguiendo el mismo estándar que usan bancos y billeteras digitales.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Cómo recibe el negocio su dinero?<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <p>Después de cada cobro exitoso, Recauda transfiere el dinero al negocio descontando la comisión por transacción, dentro de los días hábiles siguientes.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Sirve para cualquier tipo de negocio?<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <p>Está pensado para negocios con cobros recurrentes: gimnasios, academias de baile, escuelas deportivas, clases particulares y servicios por suscripción en general.</p>
-        </details>
+        <div class="negocios__cards">
+          <div class="negocios__card reveal">
+            <div class="icon-circle icon-circle--dark">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M5 19L19 5M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+              </svg>
+            </div>
+            <p class="negocios__label">Comisión demostrativa</p>
+            <p class="negocios__figure">2,5% + $900</p>
+            <p>Modelo de referencia sobre cada mensualidad procesada en la simulación.</p>
+          </div>
+
+          <div class="negocios__card reveal">
+            <div class="icon-circle icon-circle--dark">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/>
+              </svg>
+            </div>
+            <p class="negocios__label">Suscripción al software</p>
+            <p class="negocios__figure">$50.000<span>/mes</span></p>
+            <p>Tarifa fija de referencia por la gestión del sistema dentro de esta maqueta.</p>
+          </div>
+        </div>
+
+        <div class="calc reveal" aria-label="Calculadora de ingresos">
+          <div>
+            <p class="eyebrow">Simulador de ingresos</p>
+            <h3>Calcula tu MRR estimado</h3>
+            <p class="calc__intro">
+              Mueve el número de clientes y el plan promedio para estimar el ingreso bruto y el valor que quedaría después de las comisiones de la demo.
+            </p>
+
+            <div class="calc__field">
+              <label for="calcClientes">Clientes activos <b id="calcClientesVal">30</b></label>
+              <input type="range" id="calcClientes" min="1" max="300" value="30" aria-label="Número de clientes activos">
+            </div>
+
+            <div class="calc__field">
+              <label for="calcPlan">Plan promedio</label>
+              <select id="calcPlan">
+                <option value="80000">Bronce · $80.000 / mes</option>
+                <option value="73333" selected>Plata · $220.000 cada 3 meses (≈ mensual)</option>
+                <option value="66667">Oro · $800.000 al año (≈ mensual)</option>
+              </select>
+            </div>
+
+            <p class="form__legal">La calculadora es orientativa y no representa una liquidación contable real.</p>
+          </div>
+
+          <div class="calc__results">
+            <div class="calc__row"><span>Ingreso bruto mensual</span><span id="calcBruto">$0</span></div>
+            <div class="calc__row"><span>Comisión Recauda</span><span id="calcComision">$0</span></div>
+            <div class="calc__row"><span>Suscripción del software</span><span id="calcSuscripcion">$50.000</span></div>
+            <div class="calc__row total"><span>Neto para el negocio</span><span id="calcNeto">$0</span></div>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section--soft" id="faq">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow reveal">Preguntas frecuentes</p>
+          <h2 class="reveal">Lo que conviene explicar antes de registrarse.</h2>
+        </div>
+
+        <div class="faq__list reveal">
+          <details class="faq__item">
+            <summary>
+              ¿Qué pasa si un pago falla?
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </summary>
+            <p>En la demo se plantea un segundo intento 48 horas después. Si también falla, el registro puede pasar a estado de mora y requerir una regularización manual.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary>
+              ¿Puedo cancelar?
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </summary>
+            <p>Sí. La propuesta contempla que el cliente pueda cancelar antes del siguiente ciclo de cobro.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary>
+              ¿Se guardan los datos de tarjeta o Nequi?
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </summary>
+            <p>No en esta página. El formulario es una simulación académica y no recoge ni procesa credenciales bancarias reales.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary>
+              ¿Cómo recibe el negocio su dinero?
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </summary>
+            <p>La maqueta muestra un valor neto estimado después de las comisiones definidas en el ejercicio. En una implementación real habría que conectar una pasarela y un sistema de dispersión.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary>
+              ¿Para qué tipo de negocio sirve?
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </summary>
+            <p>Está pensado para negocios con cobros recurrentes como gimnasios, academias, escuelas deportivas, clases particulares y servicios de suscripción.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+      <div class="wrap">
+        <div class="final-cta__box reveal">
+          <div>
+            <p class="eyebrow" style="color:var(--accent-2);">Siguiente paso</p>
+            <h2>Haz que cobrar sea parte del sistema.</h2>
+            <p>Prueba la demo, selecciona un plan y mira cómo cambia la simulación según el tamaño del negocio.</p>
+          </div>
+          <a href="#registro" class="btn btn--primary">
+            Probar la demo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p class="footer__brand"><span class="nav__mark">R</span>Recauda</p>
+      <p class="footer__meta">Proyecto de Etapa Productiva · SENA · Demo de plataforma intermediaria de cobros recurrentes.</p>
     </div>
-  </section>
+  </footer>
 
-</main>
+  <button class="totop" id="totop" type="button" aria-label="Volver arriba">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
 
-<footer class="footer">
-  <div class="wrap footer__inner">
-    <p><span class="nav__mark">R</span>Recauda</p>
-    <p class="footer__meta">Proyecto de Etapa Productiva · SENA — plataforma intermediaria de cobros automáticos.</p>
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M20 6L9 17l-5-5"/>
+    </svg>
+    <span id="toastMsg">Cliente registrado con éxito</span>
   </div>
-</footer>
 
-<button class="totop" id="totop" aria-label="Volver arriba">
-  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#F4F5F2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-</button>
+  <script>
+    'use strict';
 
-<div class="toast" id="toast">
-  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-  <span id="toastMsg">Cliente registrado con éxito</span>
-</div>
+    /* ---------- Utilidades ---------- */
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
-<script>
-/* ---------- Menú móvil ---------- */
-const burger = document.getElementById('burger');
-const navMobile = document.getElementById('navMobile');
-burger.addEventListener('click', () => {
-  const isOpen = navMobile.classList.toggle('is-open');
-  burger.setAttribute('aria-expanded', String(isOpen));
-});
-navMobile.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    navMobile.classList.remove('is-open');
-    burger.setAttribute('aria-expanded', 'false');
-  });
-});
-
-/* ---------- Barra de progreso + botón volver arriba ---------- */
-const progressBar = document.getElementById('progress');
-const totop = document.getElementById('totop');
-window.addEventListener('scroll', () => {
-  const h = document.documentElement;
-  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
-  progressBar.style.width = scrolled + '%';
-  totop.classList.toggle('is-visible', h.scrollTop > 500);
-});
-totop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-/* ---------- Resaltar sección activa en el menú ---------- */
-const sections = document.querySelectorAll('main section[id]');
-const navAnchors = document.querySelectorAll('#navLinks a[data-section]');
-const sectionObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      navAnchors.forEach(a => a.classList.toggle('is-active', a.dataset.section === entry.target.id));
+    function formatoCOP(valor) {
+      return '$' + Math.round(valor).toLocaleString('es-CO');
     }
-  });
-}, { rootMargin: '-45% 0px -50% 0px' });
-sections.forEach(s => sectionObserver.observe(s));
 
-/* ---------- Reveal on scroll ---------- */
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('is-visible');
-      revealObserver.unobserve(entry.target);
+    let toastTimer;
+    function mostrarToast(msg) {
+      const toast = $('#toast');
+      $('#toastMsg').textContent = msg;
+      toast.classList.add('is-visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 3200);
     }
-  });
-}, { threshold: 0.15 });
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-/* ---------- Animación del monto en el recibo del hero ---------- */
-function animarMonto(el, destino, duracion = 900) {
-  const inicio = performance.now();
-  function paso(ahora) {
-    const progreso = Math.min((ahora - inicio) / duracion, 1);
-    const valor = Math.floor(progreso * destino);
-    el.textContent = '$' + valor.toLocaleString('es-CO');
-    if (progreso < 1) requestAnimationFrame(paso);
-  }
-  requestAnimationFrame(paso);
-}
-const heroAmount = document.getElementById('heroAmount');
-if (heroAmount) window.addEventListener('load', () => animarMonto(heroAmount, 80000));
+    /* ---------- Menú móvil ---------- */
+    const burger = $('#burger');
+    const navMobile = $('#navMobile');
 
-/* ---------- Elegir plan desde las tarjetas ---------- */
-const planSelect = document.getElementById('plan');
-document.querySelectorAll('.btn--plan').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const plan = btn.dataset.plan;
-    if (planSelect) planSelect.value = plan;
-    document.getElementById('registro').scrollIntoView({ behavior: 'smooth' });
-    document.getElementById('nombre').focus({ preventScroll: true });
-  });
-});
+    function cerrarMenu() {
+      navMobile.classList.remove('is-open');
+      burger.classList.remove('is-open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+    }
 
-/* ---------- Formateo en vivo de la cédula ---------- */
-const cedulaInput = document.getElementById('cedula');
-cedulaInput.addEventListener('input', () => {
-  const digits = cedulaInput.value.replace(/\D/g, '').slice(0, 12);
-  cedulaInput.value = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-});
+    burger.addEventListener('click', () => {
+      const abierto = navMobile.classList.toggle('is-open');
+      burger.classList.toggle('is-open', abierto);
+      burger.setAttribute('aria-expanded', String(abierto));
+      document.body.classList.toggle('menu-open', abierto);
+    });
 
-/* ---------- Validación con mensajes por campo ---------- */
-const camposValidar = ['nombre', 'cedula', 'correo', 'plan', 'medio'];
-function validarCampo(id) {
-  const input = document.getElementById(id);
-  const field = document.getElementById('field' + id.charAt(0).toUpperCase() + id.slice(1));
-  const valido = input.checkValidity() && input.value.trim() !== '';
-  field.classList.toggle('has-error', !valido);
-  return valido;
-}
-camposValidar.forEach(id => {
-  document.getElementById(id).addEventListener('blur', () => validarCampo(id));
-});
+    $$('#navMobile a').forEach(link => link.addEventListener('click', cerrarMenu));
 
-/* ---------- Registro y recibo de confirmación ---------- */
-const PRECIOS = {
-  Bronce: { monto: 80000 },
-  Plata:  { monto: 220000 },
-  Oro:    { monto: 800000 }
-};
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 980) cerrarMenu();
+    });
 
-function proximoDiaUno() {
-  const hoy = new Date();
-  const proximo = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1);
-  return proximo.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
-}
+    /* ---------- Scroll UI ---------- */
+    const progressBar = $('#progress');
+    const totop = $('#totop');
 
-function cargarClientes() {
-  try { return JSON.parse(localStorage.getItem('recauda_clientes') || '[]'); }
-  catch { return []; }
-}
-function guardarCliente(cliente) {
-  const clientes = cargarClientes();
-  clientes.unshift(cliente);
-  localStorage.setItem('recauda_clientes', JSON.stringify(clientes.slice(0, 8)));
-}
-function pintarClientes() {
-  const clientes = cargarClientes();
-  const box = document.getElementById('clientesBox');
-  const tbody = document.querySelector('#clientesTable tbody');
-  if (!clientes.length) return;
-  tbody.innerHTML = '';
-  clientes.forEach(c => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${c.nombre}</td><td>${c.plan}</td><td>${c.medio}</td><td class="estado">Activo</td>`;
-    tbody.appendChild(tr);
-  });
-  box.hidden = false;
-}
+    function actualizarScrollUI() {
+      const doc = document.documentElement;
+      const maxScroll = doc.scrollHeight - doc.clientHeight;
+      const scrolled = maxScroll > 0 ? (doc.scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = scrolled + '%';
+      totop.classList.toggle('is-visible', doc.scrollTop > 550);
+    }
 
-let toastTimer;
-function mostrarToast(msg) {
-  const toast = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  toast.classList.add('is-visible');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 3200);
-}
+    window.addEventListener('scroll', actualizarScrollUI, { passive: true });
+    actualizarScrollUI();
 
-const form = document.getElementById('registroForm');
-const confirmReceipt = document.getElementById('confirmReceipt');
+    totop.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+    /* ---------- Menú activo ---------- */
+    const sections = $$('main section[id]');
+    const navAnchors = $$('#navLinks a[data-section]');
 
-  const todoValido = camposValidar.map(validarCampo).every(Boolean);
-  if (!todoValido) {
-    mostrarToast('Revisa los campos marcados en rojo');
-    return;
-  }
+    if ('IntersectionObserver' in window) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          navAnchors.forEach(a => {
+            a.classList.toggle('is-active', a.dataset.section === entry.target.id);
+          });
+        });
+      }, { rootMargin: '-35% 0px -55% 0px' });
 
-  const nombre = document.getElementById('nombre').value.trim();
-  const cedula = document.getElementById('cedula').value.trim();
-  const correo = document.getElementById('correo').value.trim();
-  const plan = document.getElementById('plan').value;
-  const medio = document.getElementById('medio').value;
-  const info = PRECIOS[plan];
+      sections.forEach(section => sectionObserver.observe(section));
+    }
 
-  document.getElementById('confNombre').textContent = 'Cliente     ' + nombre;
-  document.getElementById('confCedula').textContent = 'Cédula      ' + cedula;
-  document.getElementById('confCorreo').textContent = 'Correo      ' + correo;
-  document.getElementById('confPlan').textContent = 'Plan        ' + plan;
-  document.getElementById('confMedio').textContent = 'Medio       ' + medio;
-  document.getElementById('confMonto').textContent = '$' + info.monto.toLocaleString('es-CO');
-  document.getElementById('confFecha').textContent = 'Próximo cobro: ' + proximoDiaUno();
+    /* ---------- Reveal ---------- */
+    const revealElements = $$('.reveal');
 
-  confirmReceipt.hidden = false;
-  confirmReceipt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.12 });
 
-  guardarCliente({ nombre, plan, medio });
-  pintarClientes();
-  mostrarToast('Cliente registrado con éxito');
-  form.reset();
-});
+      revealElements.forEach(el => revealObserver.observe(el));
+    } else {
+      revealElements.forEach(el => el.classList.add('is-visible'));
+    }
 
-document.getElementById('printBtn').addEventListener('click', () => window.print());
-document.getElementById('newBtn').addEventListener('click', () => {
-  confirmReceipt.hidden = true;
-  document.getElementById('registro').scrollIntoView({ behavior: 'smooth' });
-  document.getElementById('nombre').focus({ preventScroll: true });
-});
+    /* ---------- Monto animado ---------- */
+    function animarMonto(el, destino, duracion = 900) {
+      const inicio = performance.now();
 
-pintarClientes();
+      function paso(ahora) {
+        const progreso = Math.min((ahora - inicio) / duracion, 1);
+        const valor = Math.floor(progreso * destino);
+        el.textContent = formatoCOP(valor);
+        if (progreso < 1) requestAnimationFrame(paso);
+      }
 
-/* ---------- Calculadora de ingresos (MRR) ---------- */
-const calcClientes = document.getElementById('calcClientes');
-const calcClientesVal = document.getElementById('calcClientesVal');
-const calcPlan = document.getElementById('calcPlan');
-const calcBruto = document.getElementById('calcBruto');
-const calcComision = document.getElementById('calcComision');
-const calcSuscripcion = document.getElementById('calcSuscripcion');
-const calcNeto = document.getElementById('calcNeto');
+      requestAnimationFrame(paso);
+    }
 
-function formatoCOP(valor) {
-  return '$' + Math.round(valor).toLocaleString('es-CO');
-}
+    window.addEventListener('load', () => {
+      const heroAmount = $('#heroAmount');
+      if (heroAmount) animarMonto(heroAmount, 80000);
+    });
 
-function actualizarCalculadora() {
-  const clientes = parseInt(calcClientes.value, 10);
-  const precioMensual = parseFloat(calcPlan.value);
-  calcClientesVal.textContent = clientes;
+    /* ---------- Selección de plan ---------- */
+    const planSelect = $('#plan');
 
-  const bruto = clientes * precioMensual;
-  const comision = clientes * (precioMensual * 0.025 + 900);
-  const suscripcion = 50000;
-  const neto = bruto - comision - suscripcion;
+    $$('.btn--plan').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const plan = btn.dataset.plan;
+        if (planSelect) planSelect.value = plan;
 
-  calcBruto.textContent = formatoCOP(bruto);
-  calcComision.textContent = '-' + formatoCOP(comision);
-  calcSuscripcion.textContent = '-' + formatoCOP(suscripcion);
-  calcNeto.textContent = formatoCOP(Math.max(neto, 0));
-}
+        $('#registro').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => $('#nombre').focus({ preventScroll: true }), 450);
+      });
+    });
 
-calcClientes.addEventListener('input', actualizarCalculadora);
-calcPlan.addEventListener('change', actualizarCalculadora);
-actualizarCalculadora();
-</script>
+    /* ---------- Formateo de cédula ---------- */
+    const cedulaInput = $('#cedula');
+
+    cedulaInput.addEventListener('input', () => {
+      const digits = cedulaInput.value.replace(/\D/g, '').slice(0, 12);
+      cedulaInput.value = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    });
+
+    /* ---------- Validación ---------- */
+    const camposValidar = ['nombre', 'cedula', 'correo', 'plan', 'medio'];
+
+    function validarCampo(id) {
+      const input = $('#' + id);
+      const field = $('#field' + id.charAt(0).toUpperCase() + id.slice(1));
+      let valido = input.checkValidity() && input.value.trim() !== '';
+
+      if (id === 'cedula') {
+        valido = /^\d{1,12}(\.\d{3})*$/.test(input.value) && input.value.replace(/\D/g, '').length >= 5;
+      }
+
+      field.classList.toggle('has-error', !valido);
+      input.setAttribute('aria-invalid', String(!valido));
+      return valido;
+    }
+
+    camposValidar.forEach(id => {
+      const input = $('#' + id);
+      input.addEventListener('blur', () => validarCampo(id));
+      input.addEventListener('input', () => {
+        if (input.getAttribute('aria-invalid') === 'true') validarCampo(id);
+      });
+    });
+
+    /* ---------- Datos y ciclos ---------- */
+    const PRECIOS = {
+      Bronce: { monto: 80000, meses: 1 },
+      Plata:  { monto: 220000, meses: 3 },
+      Oro:    { monto: 800000, meses: 12 }
+    };
+
+    function proximoCobro(plan) {
+      const hoy = new Date();
+      const meses = PRECIOS[plan]?.meses || 1;
+      const proximo = new Date(hoy.getFullYear(), hoy.getMonth() + meses, 1);
+
+      return proximo.toLocaleDateString('es-CO', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+
+    function cargarClientes() {
+      try {
+        const datos = JSON.parse(localStorage.getItem('recauda_clientes') || '[]');
+        return Array.isArray(datos) ? datos : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function guardarCliente(cliente) {
+      try {
+        const clientes = cargarClientes();
+        clientes.unshift(cliente);
+        localStorage.setItem('recauda_clientes', JSON.stringify(clientes.slice(0, 8)));
+      } catch {
+        mostrarToast('Registro creado, pero no pudo guardarse localmente');
+      }
+    }
+
+    function pintarClientes() {
+      const clientes = cargarClientes();
+      const box = $('#clientesBox');
+      const tbody = $('#clientesTable tbody');
+
+      tbody.innerHTML = '';
+
+      if (!clientes.length) {
+        box.hidden = true;
+        return;
+      }
+
+      clientes.forEach(cliente => {
+        const tr = document.createElement('tr');
+
+        [cliente.nombre, cliente.plan, cliente.medio].forEach(valor => {
+          const td = document.createElement('td');
+          td.textContent = valor;
+          tr.appendChild(td);
+        });
+
+        const estado = document.createElement('td');
+        estado.textContent = 'Activo';
+        estado.className = 'estado';
+        tr.appendChild(estado);
+
+        tbody.appendChild(tr);
+      });
+
+      box.hidden = false;
+    }
+
+    /* ---------- Registro ---------- */
+    const form = $('#registroForm');
+    const confirmReceipt = $('#confirmReceipt');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const todoValido = camposValidar.map(validarCampo).every(Boolean);
+
+      if (!todoValido) {
+        mostrarToast('Revisa los campos marcados en rojo');
+        const primerError = $('.has-error input, .has-error select');
+        primerError?.focus();
+        return;
+      }
+
+      const nombre = $('#nombre').value.trim();
+      const cedula = $('#cedula').value.trim();
+      const correo = $('#correo').value.trim();
+      const plan = $('#plan').value;
+      const medio = $('#medio').value;
+      const info = PRECIOS[plan];
+
+      $('#confNombre').textContent = 'Cliente    ' + nombre;
+      $('#confCedula').textContent = 'Cédula     ' + cedula;
+      $('#confCorreo').textContent = 'Correo     ' + correo;
+      $('#confPlan').textContent = 'Plan       ' + plan;
+      $('#confMedio').textContent = 'Medio      ' + medio;
+      $('#confMonto').textContent = formatoCOP(info.monto);
+      $('#confFecha').textContent = 'Próximo cobro: ' + proximoCobro(plan);
+
+      confirmReceipt.hidden = false;
+      confirmReceipt.scrollIntoView({behavior:'smooth', block:'center'});
+
+      guardarCliente({
+        nombre,
+        plan,
+        medio,
+        fecha: new Date().toISOString()
+      });
+
+      pintarClientes();
+      mostrarToast('Cliente registrado con éxito');
+
+      form.reset();
+      camposValidar.forEach(id => {
+        const field = $('#field' + id.charAt(0).toUpperCase() + id.slice(1));
+        const input = $('#' + id);
+        field.classList.remove('has-error');
+        input.setAttribute('aria-invalid', 'false');
+      });
+    });
+
+    $('#printBtn').addEventListener('click', () => window.print());
+
+    $('#newBtn').addEventListener('click', () => {
+      confirmReceipt.hidden = true;
+      $('#registro').scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(() => $('#nombre').focus({preventScroll:true}), 350);
+    });
+
+    pintarClientes();
+
+    /* ---------- Calculadora ---------- */
+    const calcClientes = $('#calcClientes');
+    const calcClientesVal = $('#calcClientesVal');
+    const calcPlan = $('#calcPlan');
+    const calcBruto = $('#calcBruto');
+    const calcComision = $('#calcComision');
+    const calcSuscripcion = $('#calcSuscripcion');
+    const calcNeto = $('#calcNeto');
+
+    function actualizarCalculadora() {
+      const clientes = parseInt(calcClientes.value, 10) || 0;
+      const precioMensual = parseFloat(calcPlan.value) || 0;
+
+      calcClientesVal.textContent = clientes;
+
+      const bruto = clientes * precioMensual;
+      const comision = clientes * (precioMensual * 0.025 + 900);
+      const suscripcion = 50000;
+      const neto = bruto - comision - suscripcion;
+
+      calcBruto.textContent = formatoCOP(bruto);
+      calcComision.textContent = '-' + formatoCOP(comision);
+      calcSuscripcion.textContent = '-' + formatoCOP(suscripcion);
+      calcNeto.textContent = formatoCOP(Math.max(neto, 0));
+    }
+
+    calcClientes.addEventListener('input', actualizarCalculadora);
+    calcPlan.addEventListener('change', actualizarCalculadora);
+    actualizarCalculadora();
+
+    /* ---------- Cerrar FAQ anterior para una lectura más limpia ---------- */
+    $$('.faq__item').forEach(item => {
+      item.addEventListener('toggle', () => {
+        if (!item.open) return;
+        $$('.faq__item').forEach(other => {
+          if (other !== item) other.open = false;
+        });
+      });
+    });
+  </script>
 </body>
 </html>
