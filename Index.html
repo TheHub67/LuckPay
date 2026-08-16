@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recauda — Cobro automático para negocios locales</title>
+<meta name="description" content="Recauda cobra la mensualidad de tus clientes de forma automática cada mes. Sin WhatsApp, sin efectivo, sin perseguir a nadie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens (paleta neutra, tipo fintech serio) ---------- */
+:root{
+  --ink:#22303C;
+  --ink-soft:#4A5A68;
+  --paper:#F3F4F1;
+  --card:#FFFFFF;
+  --accent:#3E5C76;
+  --accent-soft:#6E8CA0;
+  --ok:#4C7A5D;
+  --line:#D9DCD5;
+  --cream-text:#F4F5F2;
+
+  --display:'Zilla Slab', serif;
+  --body:'Work Sans', sans-serif;
+  --mono:'IBM Plex Mono', monospace;
+
+  --radius:4px;
+  --shadow:0 16px 34px -20px rgba(34,48,60,0.35);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:var(--body);
+  color:var(--ink);
+  background:var(--paper);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:var(--display); margin:0 0 .5em; color:var(--ink); font-weight:700;}
+p{margin:0 0 1em;}
+a{color:inherit;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 24px;}
+
+.eyebrow{
+  font-family:var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-size:.7rem;
+  color:var(--accent);
+  margin:0 0 .8em;
+}
+
+button{font-family:inherit; cursor:pointer;}
+:focus-visible{outline:3px solid var(--accent-soft); outline-offset:2px;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-block;
+  font-family:var(--mono);
+  font-weight:600;
+  font-size:.82rem;
+  letter-spacing:.02em;
+  text-decoration:none;
+  padding:.85em 1.5em;
+  border-radius:var(--radius);
+  border:1.5px solid var(--ink);
+  transition:transform .15s ease, background .15s ease, color .15s ease;
+}
+.btn:hover{transform:translateY(-2px);}
+.btn--primary{background:var(--ink); color:var(--cream-text);}
+.btn--primary:hover{background:var(--accent); border-color:var(--accent);}
+.btn--ghost{background:transparent; color:var(--ink);}
+.btn--ghost:hover{background:var(--ink); color:var(--cream-text);}
+.btn--full{width:100%; text-align:center; border:none; margin-top:.5em;}
+.btn--plan{
+  width:100%;
+  background:var(--paper);
+  border:1.5px dashed var(--ink-soft);
+  margin-top:1.2em;
+}
+.btn--plan:hover{background:var(--accent-soft); border-style:solid; color:#fff;}
+
+/* ---------- Nav ---------- */
+.nav{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1.5px solid var(--line);}
+.nav__inner{display:flex; align-items:center; justify-content:space-between; height:66px;}
+.nav__brand{display:flex; align-items:center; gap:.5em; font-family:var(--display); font-weight:700; font-size:1.2rem; text-decoration:none;}
+.nav__mark{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:1.7em; height:1.7em; background:var(--ink); color:var(--cream-text);
+  border-radius:50%; font-size:.95rem;
+}
+.nav__links{display:flex; align-items:center; gap:2em; font-family:var(--mono); font-size:.82rem;}
+.nav__links a{text-decoration:none;}
+.nav__links a:not(.nav__cta):hover{color:var(--accent);}
+.nav__cta{border:1.5px solid var(--ink); padding:.5em 1em; border-radius:var(--radius);}
+.nav__cta:hover{background:var(--ink); color:var(--cream-text);}
+.nav__burger{display:none; flex-direction:column; gap:4px; background:none; border:none; padding:8px;}
+.nav__burger span{width:22px; height:2px; background:var(--ink); display:block;}
+.nav__mobile{display:none; flex-direction:column; padding:0 24px 20px; gap:1em; font-family:var(--mono);}
+.nav__mobile a{text-decoration:none; padding:.4em 0;}
+@media (max-width:800px){
+  .nav__links{display:none;}
+  .nav__burger{display:flex;}
+  .nav__mobile.is-open{display:flex;}
+}
+
+/* ---------- Hero ---------- */
+.hero{padding:64px 0 40px;}
+.hero__grid{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center;}
+.hero h1{font-size:clamp(2rem, 4vw, 2.9rem); line-height:1.1;}
+.hero__lead{max-width:46ch; color:var(--ink-soft); font-size:1rem;}
+.hero__actions{display:flex; gap:14px; margin-top:1.6em; flex-wrap:wrap;}
+.hero__receipt-wrap{display:flex; justify-content:center;}
+@media (max-width:900px){
+  .hero__grid{grid-template-columns:1fr; text-align:left;}
+  .hero__receipt-wrap{order:-1;}
+}
+
+/* ---------- Receipt (elemento firma) ---------- */
+.receipt{
+  background:var(--card); border:1.5px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); position:relative; width:100%; max-width:330px;
+}
+.receipt__perf{
+  height:11px;
+  background-image: radial-gradient(circle, var(--paper) 3px, transparent 3.5px);
+  background-size:16px 16px; background-position:8px center;
+  border-bottom:1.5px dashed var(--line);
+}
+.receipt__body{padding:24px 22px 26px;}
+.receipt__store{
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+  text-align:center; margin-bottom:1.1em; color:var(--ink-soft);
+}
+.receipt__line{font-family:var(--mono); font-size:.8rem; margin:0 0 .5em; color:var(--ink-soft);}
+.receipt__small{font-size:.72rem; color:#7A8894;}
+.receipt__dash{border-top:1.5px dashed var(--line); margin:1em 0;}
+.receipt__amount-label{font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-align:center; color:var(--accent); margin-bottom:.3em;}
+.receipt__amount{font-family:var(--mono); font-weight:600; font-size:1.8rem; text-align:center; color:var(--ink); margin-bottom:0;}
+.receipt__list{list-style:none; padding:0; margin:0 0 .2em; font-size:.85rem; color:var(--ink-soft);}
+.receipt__list li{padding-left:1.3em; position:relative; margin-bottom:.55em;}
+.receipt__list li::before{content:"·"; position:absolute; left:0; color:var(--accent); font-weight:700; font-size:1.3em; top:-4px;}
+
+.tag{font-family:var(--mono); font-size:.65rem; letter-spacing:.08em; padding:.2em .6em; border-radius:2px; font-weight:600;}
+.tag--ok{background:var(--ok); color:var(--cream-text);}
+.tag--save{
+  position:absolute; top:-11px; right:16px; background:var(--accent); color:var(--cream-text);
+  box-shadow:0 6px 14px -8px rgba(62,92,118,.6); z-index:2;
+}
+
+.receipt--hero{animation: printIn .9s cubic-bezier(.2,.8,.2,1) both; transform-origin:top center;}
+@keyframes printIn{
+  0%{opacity:0; transform:translateY(-20px) scaleY(.94);}
+  100%{opacity:1; transform:translateY(0) scaleY(1);}
+}
+
+/* ---------- Flow ---------- */
+.flow{padding:76px 0; background:var(--ink); color:var(--cream-text);}
+.flow h2{color:var(--cream-text); font-size:clamp(1.4rem,3vw,2rem); max-width:20ch;}
+.flow .eyebrow{color:var(--accent-soft);}
+.flow__grid{display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:48px; border-top:1.5px solid #ffffff26;}
+.flow__item{padding:26px 20px 0; border-right:1.5px solid #ffffff26;}
+.flow__item:last-child{border-right:none;}
+.flow__num{font-family:var(--mono); font-size:.82rem; color:var(--accent-soft); display:block; margin-bottom:.8em;}
+.flow__item h3{color:var(--cream-text); font-size:1.05rem;}
+.flow__item p{color:#C7CDD1; font-size:.88rem;}
+@media (max-width:800px){
+  .flow__grid{grid-template-columns:1fr; border-top:none;}
+  .flow__item{border-right:none; border-top:1.5px solid #ffffff26; padding-top:22px; padding-bottom:6px;}
+}
+
+/* ---------- Pricing ---------- */
+.pricing{padding:84px 0;}
+.pricing h2{font-size:clamp(1.5rem,3vw,2.1rem);}
+.pricing__sub{color:var(--ink-soft); max-width:50ch;}
+.pricing__grid{display:grid; grid-template-columns:repeat(3,1fr); gap:30px; margin-top:44px; align-items:start;}
+.receipt--plan{max-width:none;}
+.receipt--featured{border-width:2px; transform:translateY(-8px); box-shadow:0 22px 44px -22px rgba(34,48,60,0.4);}
+@media (max-width:900px){
+  .pricing__grid{grid-template-columns:1fr; max-width:380px; margin-left:auto; margin-right:auto;}
+  .receipt--featured{transform:none;}
+}
+
+/* ---------- Registro ---------- */
+.registro{padding:84px 0 40px; background:var(--card); border-top:1.5px solid var(--line); border-bottom:1.5px solid var(--line);}
+.registro__grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:56px; align-items:start;}
+.registro__intro h2{font-size:clamp(1.5rem,3vw,2rem);}
+.registro__note{font-family:var(--mono); font-size:.76rem; color:var(--accent); border-left:2px solid var(--accent); padding-left:12px;}
+
+.form{background:var(--paper); border:1.5px solid var(--line); border-radius:var(--radius); padding:30px; display:grid; gap:18px;}
+.field{display:flex; flex-direction:column; gap:.4em; font-family:var(--mono); font-size:.76rem;}
+.field span{color:var(--ink-soft); text-transform:uppercase; font-size:.68rem; letter-spacing:.1em;}
+.field input, .field select{
+  font-family:var(--body); font-size:.94rem; padding:.72em .8em;
+  border:1.5px solid var(--line); border-radius:var(--radius); background:var(--card); color:var(--ink);
+}
+.field input:focus, .field select:focus{border-color:var(--accent);}
+
+@media (max-width:900px){ .registro__grid{grid-template-columns:1fr;} }
+
+.receipt--confirm{margin:36px auto 0; max-width:330px;}
+
+.clientes{margin:36px auto 0; max-width:640px; font-family:var(--mono); font-size:.8rem;}
+.clientes__title{color:var(--accent); text-transform:uppercase; letter-spacing:.08em; font-size:.7rem; margin-bottom:.8em;}
+.clientes__table{width:100%; border-collapse:collapse;}
+.clientes__table th, .clientes__table td{text-align:left; padding:.6em .5em; border-bottom:1px dashed var(--line);}
+.clientes__table th{color:var(--ink-soft); font-weight:600; font-size:.7rem; text-transform:uppercase;}
+
+/* ---------- Negocios ---------- */
+.negocios{padding:84px 0;}
+.negocios__grid{display:grid; grid-template-columns:.8fr 1.2fr; gap:56px; align-items:center;}
+.negocios h2{font-size:clamp(1.5rem,3vw,2rem);}
+.negocios__cards{display:grid; gap:18px;}
+.negocios__card{background:var(--ink); color:var(--cream-text); padding:26px 24px; border-radius:var(--radius);}
+.negocios__label{font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-soft); margin-bottom:.5em;}
+.negocios__figure{font-family:var(--mono); font-size:1.9rem; font-weight:600; margin-bottom:.3em;}
+.negocios__figure span{font-size:1rem; color:#C7CDD1;}
+.negocios__card p:last-child{color:#C7CDD1; margin-bottom:0; font-size:.88rem;}
+@media (max-width:800px){ .negocios__grid{grid-template-columns:1fr;} }
+
+/* ---------- Footer ---------- */
+.footer{background:var(--ink); color:var(--cream-text); padding:32px 0;}
+.footer__inner{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
+.footer p{margin:0; font-family:var(--display); display:flex; align-items:center; gap:.5em;}
+.footer__meta{font-family:var(--mono); font-size:.76rem; color:#C7CDD1;}
+</style>
+</head>
+<body>
+
+<header class="nav" id="top">
+  <div class="wrap nav__inner">
+    <a href="#top" class="nav__brand"><span class="nav__mark">R</span>Recauda</a>
+    <nav class="nav__links">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#planes">Planes</a>
+      <a href="#negocios">Para negocios</a>
+      <a href="#registro" class="nav__cta">Registrarme</a>
+    </nav>
+    <button class="nav__burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="nav__mobile" id="navMobile">
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#planes">Planes</a>
+    <a href="#negocios">Para negocios</a>
+    <a href="#registro" class="nav__cta">Registrarme</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Cobro recurrente para negocios locales</p>
+        <h1>Cobra la mensualidad<br>sin perseguir a nadie.</h1>
+        <p class="hero__lead">
+          Gimnasios, academias de baile, escuelas de fútbol y profesores particulares
+          pierden horas cada mes cobrando por WhatsApp o en efectivo.
+          Recauda guarda el medio de pago de tu cliente una sola vez
+          y le cobra automático el primer día de cada mes.
+        </p>
+        <div class="hero__actions">
+          <a href="#planes" class="btn btn--primary">Ver planes</a>
+          <a href="#negocios" class="btn btn--ghost">Soy un negocio</a>
+        </div>
+      </div>
+
+      <div class="hero__receipt-wrap" aria-hidden="true">
+        <div class="receipt receipt--hero" id="heroReceipt">
+          <div class="receipt__perf"></div>
+          <div class="receipt__body">
+            <p class="receipt__store">RECAUDA · COMPROBANTE</p>
+            <p class="receipt__line">Cliente&nbsp; &nbsp;María Sánchez</p>
+            <p class="receipt__line">Negocio&nbsp; Estudio Fit Zone</p>
+            <p class="receipt__line">Plan&nbsp; &nbsp; &nbsp; &nbsp;Bronce · Mensual</p>
+            <div class="receipt__dash"></div>
+            <p class="receipt__amount-label">COBRO AUTOMÁTICO EXITOSO</p>
+            <p class="receipt__amount" id="heroAmount">$0</p>
+            <div class="receipt__dash"></div>
+            <p class="receipt__line receipt__small">Día 1 · próximo cobro programado</p>
+            <p class="receipt__line receipt__small">Estado: <span class="tag tag--ok">ACTIVO</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flow" id="como-funciona">
+    <div class="wrap">
+      <p class="eyebrow">El ciclo de cobro</p>
+      <h2>Cuatro pasos, cada mes, sin que muevas un dedo</h2>
+      <div class="flow__grid">
+        <div class="flow__item">
+          <span class="flow__num">01</span>
+          <h3>Cobro programado</h3>
+          <p>El día 1 de cada mes, el sistema lanza la orden de cobro automática al banco o billetera digital del cliente.</p>
+        </div>
+        <div class="flow__item">
+          <span class="flow__num">02</span>
+          <h3>Procesamiento</h3>
+          <p>Si hay fondos, la transacción se aprueba al instante. Si falla, se programa un segundo intento en 48 horas.</p>
+        </div>
+        <div class="flow__item">
+          <span class="flow__num">03</span>
+          <h3>Emisión de soporte</h3>
+          <p>Se genera la factura digital o recibo de caja y se envía automáticamente al correo del cliente.</p>
+        </div>
+        <div class="flow__item">
+          <span class="flow__num">04</span>
+          <h3>Dispersión</h3>
+          <p>Recauda transfiere el dinero al dueño del negocio, descontando la comisión del servicio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing" id="planes">
+    <div class="wrap">
+      <p class="eyebrow">Planes para tus clientes</p>
+      <h2>Elige cómo te cobran</h2>
+      <p class="pricing__sub">Los mismos planes se pueden aplicar a gimnasios, academias o clases particulares.</p>
+
+      <div class="pricing__grid">
+        <article class="receipt receipt--plan" data-plan="Bronce" data-price="80.000">
+          <div class="receipt__perf"></div>
+          <div class="receipt__body">
+            <p class="receipt__store">PLAN BRONCE</p>
+            <p class="receipt__line receipt__small">Facturación mensual</p>
+            <div class="receipt__dash"></div>
+            <p class="receipt__amount">$80.000</p>
+            <p class="receipt__line receipt__small">por mes</p>
+            <div class="receipt__dash"></div>
+            <ul class="receipt__list">
+              <li>Cobro automático cada mes</li>
+              <li>Factura por correo</li>
+              <li>Cancela cuando quieras</li>
+            </ul>
+            <button class="btn btn--plan" data-plan="Bronce">Elegir Bronce</button>
+          </div>
+        </article>
+
+        <article class="receipt receipt--plan receipt--featured" data-plan="Plata" data-price="220.000">
+          <span class="tag tag--save">AHORRA 8%</span>
+          <div class="receipt__perf"></div>
+          <div class="receipt__body">
+            <p class="receipt__store">PLAN PLATA</p>
+            <p class="receipt__line receipt__small">Facturación trimestral</p>
+            <div class="receipt__dash"></div>
+            <p class="receipt__amount">$220.000</p>
+            <p class="receipt__line receipt__small">cada 3 meses</p>
+            <div class="receipt__dash"></div>
+            <ul class="receipt__list">
+              <li>Todo lo del plan Bronce</li>
+              <li>Un solo cobro trimestral</li>
+              <li>8% más barato que pagar mes a mes</li>
+            </ul>
+            <button class="btn btn--plan" data-plan="Plata">Elegir Plata</button>
+          </div>
+        </article>
+
+        <article class="receipt receipt--plan" data-plan="Oro" data-price="800.000">
+          <span class="tag tag--save">2 MESES GRATIS</span>
+          <div class="receipt__perf"></div>
+          <div class="receipt__body">
+            <p class="receipt__store">PLAN ORO</p>
+            <p class="receipt__line receipt__small">Facturación anual</p>
+            <div class="receipt__dash"></div>
+            <p class="receipt__amount">$800.000</p>
+            <p class="receipt__line receipt__small">por año</p>
+            <div class="receipt__dash"></div>
+            <ul class="receipt__list">
+              <li>Todo lo del plan Plata</li>
+              <li>Un solo cobro al año</li>
+              <li>Equivale a 2 meses gratis</li>
+            </ul>
+            <button class="btn btn--plan" data-plan="Oro">Elegir Oro</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="registro" id="registro">
+    <div class="wrap registro__grid">
+      <div class="registro__intro">
+        <p class="eyebrow">Registro del cliente</p>
+        <h2>Regístrate una vez.<br>Olvídate de pagar cada mes.</h2>
+        <p>
+          Ingresa tus datos y el medio de cobro. A partir de ahí, Recauda
+          se encarga de cobrarte automáticamente el día 1 de cada mes
+          y de enviarte el soporte por correo.
+        </p>
+        <p class="registro__note">
+          Demo de estudio: este formulario no procesa pagos reales.
+          Los registros se guardan solo en tu navegador para simular
+          la base de datos de clientes del panel administrativo.
+        </p>
+      </div>
+
+      <form class="form" id="registroForm" novalidate>
+        <label class="field">
+          <span>Nombre completo</span>
+          <input type="text" name="nombre" id="nombre" required placeholder="María Sánchez">
+        </label>
+        <label class="field">
+          <span>Cédula</span>
+          <input type="text" name="cedula" id="cedula" required placeholder="1 000 000 000" inputmode="numeric">
+        </label>
+        <label class="field">
+          <span>Correo</span>
+          <input type="email" name="correo" id="correo" required placeholder="maria@correo.com">
+        </label>
+        <label class="field">
+          <span>Plan</span>
+          <select name="plan" id="plan" required>
+            <option value="" disabled selected>Selecciona un plan</option>
+            <option value="Bronce">Bronce · $80.000/mes</option>
+            <option value="Plata">Plata · $220.000/trimestre</option>
+            <option value="Oro">Oro · $800.000/año</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Medio de cobro</span>
+          <select name="medio" id="medio" required>
+            <option value="" disabled selected>Selecciona un medio</option>
+            <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+            <option value="Débito PSE">Débito PSE</option>
+            <option value="Nequi">Nequi</option>
+            <option value="Daviplata">Daviplata</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn--primary btn--full">Activar cobro automático</button>
+      </form>
+    </div>
+
+    <div class="wrap">
+      <div class="receipt receipt--confirm" id="confirmReceipt" hidden>
+        <div class="receipt__perf"></div>
+        <div class="receipt__body">
+          <p class="receipt__store">RECAUDA · REGISTRO CONFIRMADO</p>
+          <p class="receipt__line" id="confNombre"></p>
+          <p class="receipt__line" id="confCedula"></p>
+          <p class="receipt__line" id="confCorreo"></p>
+          <div class="receipt__dash"></div>
+          <p class="receipt__line" id="confPlan"></p>
+          <p class="receipt__line" id="confMedio"></p>
+          <div class="receipt__dash"></div>
+          <p class="receipt__amount-label">PRÓXIMO COBRO</p>
+          <p class="receipt__amount" id="confMonto"></p>
+          <p class="receipt__line receipt__small" id="confFecha"></p>
+          <p class="receipt__line receipt__small">Estado: <span class="tag tag--ok">ACTIVO</span></p>
+        </div>
+      </div>
+
+      <div class="clientes" id="clientesBox" hidden>
+        <p class="clientes__title">Últimos clientes registrados (demo local)</p>
+        <table class="clientes__table" id="clientesTable">
+          <thead><tr><th>Nombre</th><th>Plan</th><th>Medio</th><th>Estado</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="negocios" id="negocios">
+    <div class="wrap negocios__grid">
+      <div>
+        <p class="eyebrow">Modelo de negocio</p>
+        <h2>Así gana Recauda</h2>
+        <p>
+          Le cobramos al cliente final por adelantado el valor de su plan,
+          y descontamos dos cosas antes de girarle el dinero al negocio:
+        </p>
+      </div>
+      <div class="negocios__cards">
+        <div class="negocios__card">
+          <p class="negocios__label">Comisión por transacción</p>
+          <p class="negocios__figure">2.5% + $900</p>
+          <p>Sobre cada mensualidad cobrada a través de la plataforma.</p>
+        </div>
+        <div class="negocios__card">
+          <p class="negocios__label">Suscripción al software</p>
+          <p class="negocios__figure">$50.000<span>/mes</span></p>
+          <p>Tarifa fija que paga el negocio por usar el sistema de gestión y facturación.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <p><span class="nav__mark">R</span>Recauda</p>
+    <p class="footer__meta">Proyecto de Etapa Productiva · SENA — plataforma intermediaria de cobros automáticos.</p>
+  </div>
+</footer>
+
+<script>
+// ---------- Menú móvil ----------
+const burger = document.getElementById('burger');
+const navMobile = document.getElementById('navMobile');
+burger.addEventListener('click', () => {
+  const isOpen = navMobile.classList.toggle('is-open');
+  burger.setAttribute('aria-expanded', String(isOpen));
+});
+navMobile.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    navMobile.classList.remove('is-open');
+    burger.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// ---------- Animación del monto en el recibo del hero ----------
+function animarMonto(el, destino, duracion = 900) {
+  const inicio = performance.now();
+  function paso(ahora) {
+    const progreso = Math.min((ahora - inicio) / duracion, 1);
+    const valor = Math.floor(progreso * destino);
+    el.textContent = '$' + valor.toLocaleString('es-CO');
+    if (progreso < 1) requestAnimationFrame(paso);
+  }
+  requestAnimationFrame(paso);
+}
+const heroAmount = document.getElementById('heroAmount');
+if (heroAmount) window.addEventListener('load', () => animarMonto(heroAmount, 80000));
+
+// ---------- Elegir plan desde las tarjetas ----------
+const planSelect = document.getElementById('plan');
+document.querySelectorAll('.btn--plan').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const plan = btn.dataset.plan;
+    if (planSelect) planSelect.value = plan;
+    document.getElementById('registro').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('nombre').focus({ preventScroll: true });
+  });
+});
+
+// ---------- Registro y recibo de confirmación ----------
+const PRECIOS = {
+  Bronce: { monto: 80000, ciclo: 'mes' },
+  Plata:  { monto: 220000, ciclo: 'trimestre' },
+  Oro:    { monto: 800000, ciclo: 'año' }
+};
+
+function proximoDiaUno() {
+  const hoy = new Date();
+  const proximo = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1);
+  return proximo.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function cargarClientes() {
+  try { return JSON.parse(localStorage.getItem('recauda_clientes') || '[]'); }
+  catch { return []; }
+}
+function guardarCliente(cliente) {
+  const clientes = cargarClientes();
+  clientes.unshift(cliente);
+  localStorage.setItem('recauda_clientes', JSON.stringify(clientes.slice(0, 8)));
+}
+function pintarClientes() {
+  const clientes = cargarClientes();
+  const box = document.getElementById('clientesBox');
+  const tbody = document.querySelector('#clientesTable tbody');
+  if (!clientes.length) return;
+  tbody.innerHTML = '';
+  clientes.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${c.nombre}</td><td>${c.plan}</td><td>${c.medio}</td><td>Activo</td>`;
+    tbody.appendChild(tr);
+  });
+  box.hidden = false;
+}
+
+const form = document.getElementById('registroForm');
+const confirmReceipt = document.getElementById('confirmReceipt');
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (!form.checkValidity()) { form.reportValidity(); return; }
+
+  const nombre = document.getElementById('nombre').value.trim();
+  const cedula = document.getElementById('cedula').value.trim();
+  const correo = document.getElementById('correo').value.trim();
+  const plan = document.getElementById('plan').value;
+  const medio = document.getElementById('medio').value;
+  const info = PRECIOS[plan];
+
+  document.getElementById('confNombre').textContent = 'Cliente     ' + nombre;
+  document.getElementById('confCedula').textContent = 'Cédula      ' + cedula;
+  document.getElementById('confCorreo').textContent = 'Correo      ' + correo;
+  document.getElementById('confPlan').textContent = 'Plan        ' + plan;
+  document.getElementById('confMedio').textContent = 'Medio       ' + medio;
+  document.getElementById('confMonto').textContent = '$' + info.monto.toLocaleString('es-CO');
+  document.getElementById('confFecha').textContent = 'Próximo cobro: ' + proximoDiaUno();
+
+  confirmReceipt.hidden = false;
+  confirmReceipt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  guardarCliente({ nombre, plan, medio });
+  pintarClientes();
+  form.reset();
+});
+
+pintarClientes();
+</script>
+</body>
+</html>
