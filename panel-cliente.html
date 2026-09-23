@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C141A">
+  <title>Mi cuenta — Recauda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <button class="panel__menu-btn" id="panelMenuBtn" aria-label="Abrir menú">
+    <span class="hamb"><i></i><i></i><i></i></span>
+  </button>
+
+  <div class="panel">
+    <aside class="panel__sidebar" id="panelSidebar">
+      <a href="index.html" class="panel__brand">
+        <span class="brand__mark">R</span>
+        <span class="brand__name">Recauda</span>
+      </a>
+
+      <div class="panel__who">
+        <small>Sesión de cliente</small>
+        <strong id="whoName">—</strong>
+        <span id="whoBusiness">—</span>
+      </div>
+
+      <nav class="panel__nav">
+        <a href="#resumen" class="is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+          Mi plan
+        </a>
+        <a href="#historial">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 18V6M10 18v-8M16 18V3M22 18v-5"/></svg>
+          Historial de pagos
+        </a>
+        <a href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          Ver sitio público
+        </a>
+      </nav>
+
+      <div class="panel__logout">
+        <button type="button" id="logoutBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <main class="panel__main">
+      <div class="panel__topbar">
+        <div>
+          <h1>Hola, <span id="firstName">—</span></h1>
+          <p>Este es el estado de tu suscripción dentro de Recauda.</p>
+        </div>
+        <span class="chip" id="statusChip"><span class="chip__dot"></span> —</span>
+      </div>
+
+      <div class="panel-grid" id="resumen">
+        <section class="panel-card">
+          <div class="panel-card__head">
+            <h3>Tu plan</h3>
+            <span class="tag-plan" id="planTag">—</span>
+          </div>
+
+          <div class="dash-card dash-card--dark" style="margin-bottom:16px">
+            <div class="dash-card__label">Próximo cobro</div>
+            <div class="dash-card__value" id="nextAmount">$0</div>
+            <div class="dash-card__sub" id="nextDate">—</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="mini-metric"><b id="businessName">—</b><span>negocio</span></div>
+            <div class="mini-metric"><b id="methodLabel">—</b><span>medio de cobro</span></div>
+          </div>
+
+          <button class="btn btn--primary btn--full" style="margin-top:18px" id="openReceipt">Ver comprobante del próximo cobro</button>
+        </section>
+
+        <section class="panel-card" id="historial">
+          <div class="panel-card__head">
+            <h3>Historial de pagos</h3>
+            <span id="historyCount">0 registros</span>
+          </div>
+
+          <div class="receipt-list" id="historyList"></div>
+          <div class="empty-state" id="historyEmpty" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18V6M10 18v-8M16 18V3M22 18v-5"/></svg>
+            <strong>Todavía no hay pagos registrados</strong>
+            <p>Cuando se procese tu primer cobro, aparecerá aquí.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+    <span id="toastText">Listo</span>
+  </div>
+
+  <!-- RECEIPT MODAL -->
+  <div class="modal" id="receiptModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <strong id="receiptTitle">Comprobante · Recauda</strong>
+        <button class="modal__close" type="button" data-close-modal="receiptModal" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="modal__amount" id="receiptAmount">$0</div>
+        <p id="receiptSummary">Cobro programado para el próximo ciclo.</p>
+
+        <div class="modal__timeline">
+          <div class="timeline-step is-active"><b>01</b><span>Registro</span></div>
+          <div class="timeline-step is-active"><b>02</b><span>Programación</span></div>
+          <div class="timeline-step"><b>03</b><span>Procesamiento</span></div>
+          <div class="timeline-step"><b>04</b><span>Dispersión</span></div>
+        </div>
+
+        <div class="modal__actions">
+          <button class="btn btn--secondary" type="button" id="printReceipt">Imprimir</button>
+          <button class="btn btn--primary" type="button" data-close-modal="receiptModal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/auth.js"></script>
+  <script src="assets/ui.js"></script>
+  <script>
+    'use strict';
+
+    const client = requireClient();
+    if(client){
+      const business = businessOf(client.businessId);
+
+      $('#firstName').textContent = client.name.split(' ')[0];
+      $('#whoName').textContent = client.name;
+      $('#whoBusiness').textContent = business ? business.name : 'Negocio no encontrado';
+      $('#businessName').textContent = business ? business.name : '—';
+      $('#planTag').textContent = client.plan;
+      $('#methodLabel').textContent = client.method;
+
+      const planInfo = PLAN_INFO[client.plan] || { amount:0 };
+      $('#nextAmount').textContent = cop(planInfo.amount);
+      $('#nextDate').textContent = formatDate(client.nextCharge);
+
+      const chip = $('#statusChip');
+      chip.lastChild.textContent = ' ' + client.status;
+      if(client.status === 'Vencido' || client.status === 'Reintento'){
+        chip.querySelector('.chip__dot').style.background = 'var(--amber)';
+      }
+
+      const history = client.history || [];
+      $('#historyCount').textContent = history.length + (history.length === 1 ? ' registro' : ' registros');
+      $('#historyEmpty').hidden = history.length > 0;
+
+      const list = $('#historyList');
+      history.forEach(h => {
+        const row = document.createElement('div');
+        row.className = 'receipt-row';
+        row.innerHTML =
+          '<div class="receipt-row__info"><strong>' + h.status + '</strong><span>' + formatDate(h.date) + '</span></div>' +
+          '<div class="receipt-row__amount">' + cop(h.amount) + '</div>';
+        list.appendChild(row);
+      });
+
+      $('#openReceipt').addEventListener('click', () => {
+        $('#receiptAmount').textContent = cop(planInfo.amount);
+        $('#receiptSummary').textContent = client.name + ' · plan ' + client.plan + ' · próximo cobro ' + formatDate(client.nextCharge);
+        openModal('receiptModal');
+      });
+
+      $('#printReceipt').addEventListener('click', () => {
+        const oldTitle = document.title;
+        document.title = 'Recauda · Comprobante';
+        window.print();
+        document.title = oldTitle;
+      });
+
+      $('#logoutBtn').addEventListener('click', logout);
+    }
+  </script>
+</body>
+</html>

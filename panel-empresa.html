@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C141A">
+  <title>Panel de negocio — Recauda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <button class="panel__menu-btn" id="panelMenuBtn" aria-label="Abrir menú">
+    <span class="hamb"><i></i><i></i><i></i></span>
+  </button>
+
+  <div class="panel">
+    <aside class="panel__sidebar" id="panelSidebar">
+      <a href="index.html" class="panel__brand">
+        <span class="brand__mark">R</span>
+        <span class="brand__name">Recauda</span>
+      </a>
+
+      <div class="panel__who">
+        <small>Sesión de negocio</small>
+        <strong id="whoName">—</strong>
+        <span id="whoCategory">—</span>
+      </div>
+
+      <nav class="panel__nav">
+        <a href="#resumen" class="is-active" data-tab="resumen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 18V6M10 18v-8M16 18V3M22 18v-5"/></svg>
+          Resumen
+        </a>
+        <a href="#clientes" data-tab="clientes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.4 6.5-6.4s6.5 2.8 6.5 6.4M16 8.3a3 3 0 1 1 3.6 2.9M21.5 20c0-2.9-1.9-5.3-4.6-6.1"/></svg>
+          Clientes
+        </a>
+        <a href="#agregar" data-tab="agregar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 5v14M5 12h14"/></svg>
+          Nuevo cliente
+        </a>
+        <a href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          Ver sitio público
+        </a>
+      </nav>
+
+      <div class="panel__logout">
+        <button type="button" id="logoutBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <main class="panel__main">
+      <div class="panel__topbar">
+        <div>
+          <h1 id="pageTitle">Resumen</h1>
+          <p>Así se ve la operación de tu negocio dentro de Recauda ahora mismo.</p>
+        </div>
+        <span class="chip"><span class="chip__dot"></span> Datos guardados en este navegador</span>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card__label">Clientes activos</div>
+          <div class="stat-card__value" id="statActive">0</div>
+          <div class="stat-card__sub" id="statActiveSub">de 0 en total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__label">Ingreso mensual equivalente</div>
+          <div class="stat-card__value" id="statGross">$0</div>
+          <div class="stat-card__sub">suma de planes activos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__label">Comisión Recauda</div>
+          <div class="stat-card__value" id="statFee">$0</div>
+          <div class="stat-card__sub">2,5% + $900 por cliente</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__label">Neto estimado</div>
+          <div class="stat-card__value" id="statNet">$0</div>
+          <div class="stat-card__sub is-positive">después de software</div>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <section class="panel-card" id="clientes">
+          <div class="panel-card__head">
+            <h3>Clientes registrados</h3>
+            <span id="clientCountLabel">0 clientes</span>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Plan</th>
+                  <th>Próximo cobro</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="clientsBody"></tbody>
+            </table>
+          </div>
+          <div class="table-empty" id="clientsEmpty" hidden>Todavía no tienes clientes. Agrega el primero abajo.</div>
+        </section>
+
+        <section class="panel-card" id="agregar">
+          <div class="panel-card__head">
+            <h3>Registrar cliente</h3>
+          </div>
+
+          <form id="addClientForm" style="display:grid;gap:13px">
+            <div class="form-error-banner" id="addError">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+              <span id="addErrorText">Revisa los datos.</span>
+            </div>
+
+            <div class="field">
+              <label for="cName">Nombre</label>
+              <input id="cName" required minlength="3" placeholder="Nombre del cliente">
+            </div>
+            <div class="field">
+              <label for="cEmail">Correo</label>
+              <input id="cEmail" type="email" required placeholder="cliente@correo.demo">
+            </div>
+            <div class="field">
+              <label for="cPlan">Plan</label>
+              <select id="cPlan" required>
+                <option value="" disabled selected>Selecciona</option>
+                <option value="Bronce">Bronce · $80.000 / mes</option>
+                <option value="Plata">Plata · $220.000 / 3 meses</option>
+                <option value="Oro">Oro · $620.000 / año</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="cMethod">Medio de cobro</label>
+              <select id="cMethod" required>
+                <option value="" disabled selected>Selecciona</option>
+                <option>Tarjeta</option>
+                <option>PSE</option>
+                <option>Nequi</option>
+                <option>Daviplata</option>
+              </select>
+            </div>
+            <button class="btn btn--primary btn--full" type="submit">Agregar cliente</button>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+    <span id="toastText">Listo</span>
+  </div>
+
+  <script src="assets/auth.js"></script>
+  <script src="assets/ui.js"></script>
+  <script>
+    'use strict';
+
+    const business = requireBusiness();
+    if(business){
+      $('#whoName').textContent = business.name;
+      $('#whoCategory').textContent = business.category;
+
+      function statusClass(status){
+        if(status === 'Activo') return 'status--ok';
+        if(status === 'Reintento') return 'status--warn';
+        return 'status--bad';
+      }
+
+      function render(){
+        const clients = clientsOf(business.id);
+        const active = clients.filter(c => c.status === 'Activo').length;
+
+        $('#statActive').textContent = active;
+        $('#statActiveSub').textContent = 'de ' + clients.length + ' en total';
+        $('#clientCountLabel').textContent = clients.length + (clients.length === 1 ? ' cliente' : ' clientes');
+
+        const gross = clients.reduce((sum, c) => sum + (PLAN_INFO[c.plan]?.amount / (PLAN_INFO[c.plan]?.months || 1) || 0), 0);
+        const fee = clients.reduce((sum, c) => sum + ((PLAN_INFO[c.plan]?.amount / (PLAN_INFO[c.plan]?.months || 1) || 0) * .025 + 900), 0);
+        const net = Math.max(0, gross - fee - (business.software || 50000));
+
+        $('#statGross').textContent = cop(gross);
+        $('#statFee').textContent = cop(fee);
+        $('#statNet').textContent = cop(net);
+
+        const body = $('#clientsBody');
+        body.textContent = '';
+        $('#clientsEmpty').hidden = clients.length > 0;
+
+        clients.forEach(c => {
+          const tr = document.createElement('tr');
+
+          const tdName = document.createElement('td');
+          tdName.innerHTML = '<strong>' + c.name + '</strong><br><span style="color:var(--muted);font-size:10px">' + c.email + '</span>';
+
+          const tdPlan = document.createElement('td');
+          tdPlan.innerHTML = '<span class="tag-plan">' + c.plan + '</span>';
+
+          const tdNext = document.createElement('td');
+          tdNext.textContent = formatDate(c.nextCharge);
+
+          const tdStatus = document.createElement('td');
+          tdStatus.innerHTML = '<span class="status ' + statusClass(c.status) + '">' + c.status + '</span>';
+
+          const tdActions = document.createElement('td');
+          tdActions.style.whiteSpace = 'nowrap';
+
+          const payBtn = document.createElement('button');
+          payBtn.className = 'btn btn--soft';
+          payBtn.style.minHeight = '34px';
+          payBtn.style.padding = '0 10px';
+          payBtn.style.marginRight = '6px';
+          payBtn.textContent = 'Marcar pagado';
+          payBtn.addEventListener('click', () => {
+            markClientPaid(c.id);
+            toast(c.name + ' marcado como pagado');
+            render();
+          });
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn btn--danger';
+          delBtn.style.minHeight = '34px';
+          delBtn.style.padding = '0 10px';
+          delBtn.textContent = 'Quitar';
+          delBtn.addEventListener('click', () => {
+            if(confirm('¿Quitar a ' + c.name + ' de tu lista de clientes?')){
+              removeClient(c.id);
+              toast(c.name + ' fue eliminado');
+              render();
+            }
+          });
+
+          tdActions.append(payBtn, delBtn);
+          tr.append(tdName, tdPlan, tdNext, tdStatus, tdActions);
+          body.appendChild(tr);
+        });
+      }
+
+      render();
+
+      $('#addClientForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const errBox = $('#addError');
+        errBox.classList.remove('is-visible');
+
+        const name = $('#cName').value.trim();
+        const email = $('#cEmail').value.trim();
+        const plan = $('#cPlan').value;
+        const method = $('#cMethod').value;
+
+        if(name.length < 3){ $('#addErrorText').textContent = 'Escribe el nombre del cliente.'; errBox.classList.add('is-visible'); return; }
+        if(!/^\S+@\S+\.\S+$/.test(email)){ $('#addErrorText').textContent = 'Ingresa un correo válido.'; errBox.classList.add('is-visible'); return; }
+        if(!plan){ $('#addErrorText').textContent = 'Selecciona un plan.'; errBox.classList.add('is-visible'); return; }
+        if(!method){ $('#addErrorText').textContent = 'Selecciona un medio de cobro.'; errBox.classList.add('is-visible'); return; }
+
+        addClientToBusiness(business.id, { name, email, plan, method });
+        $('#addClientForm').reset();
+        toast('Cliente agregado correctamente');
+        render();
+      });
+
+      $('#logoutBtn').addEventListener('click', logout);
+
+      /* Tabs (scroll spy simple) */
+      $$('.panel__nav a[data-tab]').forEach(link => {
+        link.addEventListener('click', () => {
+          $$('.panel__nav a[data-tab]').forEach(l => l.classList.remove('is-active'));
+          link.classList.add('is-active');
+        });
+      });
+    }
+  </script>
+</body>
+</html>

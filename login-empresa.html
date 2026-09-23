@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C141A">
+  <title>Iniciar sesión · Negocios — Recauda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="auth-shell">
+    <aside class="auth-side">
+      <a href="index.html" class="brand" style="color:#fff">
+        <span class="brand__mark">R</span>
+        <span class="brand__name">Recauda</span>
+      </a>
+
+      <div class="auth-side__quote">
+        <h3 style="color:#fff">El panel que resume tu operación en un vistazo.</h3>
+        <p>Ingresos cobrados, clientes al día, reintentos y próximos cobros: todo en una sola pantalla pensada para negocios de suscripción.</p>
+      </div>
+
+      <div>
+        <div class="auth-side__points">
+          <div class="auth-side__point">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+            <span>Ve el estado de cada cliente sin perseguir mensajes</span>
+          </div>
+          <div class="auth-side__point">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+            <span>Registra clientes nuevos directo desde tu panel</span>
+          </div>
+          <div class="auth-side__point">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+            <span>Calcula tu neto estimado después de comisiones</span>
+          </div>
+        </div>
+
+        <div class="auth-side__demo">
+          <strong>Cuentas de ejemplo</strong>
+          <div class="auth-demo-row">
+            <span>PowerFit Gym</span>
+            <button type="button" data-demo-email="contacto@powerfit.demo" data-demo-pass="powerfit123">Usar</button>
+          </div>
+          <div class="auth-demo-row">
+            <span>Ritmo Vital</span>
+            <button type="button" data-demo-email="hola@ritmovital.demo" data-demo-pass="ritmo123">Usar</button>
+          </div>
+          <div class="auth-demo-row">
+            <span>Golazo Escuela Deportiva</span>
+            <button type="button" data-demo-email="info@golazo.demo" data-demo-pass="golazo123">Usar</button>
+          </div>
+          <div class="auth-demo-row">
+            <span>Fluir Idiomas</span>
+            <button type="button" data-demo-email="contacto@fluir.demo" data-demo-pass="fluir123">Usar</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-box">
+        <a href="acceso.html" class="auth-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+          Volver
+        </a>
+        <a href="index.html" class="brand"><span class="brand__mark">R</span><span class="brand__name">Recauda</span></a>
+        <h1>Panel de negocio</h1>
+        <p class="auth-box__sub">Entra con tu cuenta o usa una de las empresas de ejemplo del panel izquierdo.</p>
+
+        <div class="auth-tabs">
+          <a class="is-active" href="login-empresa.html">Iniciar sesión</a>
+          <a href="registro-empresa.html">Crear cuenta</a>
+        </div>
+
+        <form class="auth-form" id="loginForm" novalidate>
+          <div class="form-error-banner" id="formError">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            <span id="formErrorText">Revisa tus datos.</span>
+          </div>
+
+          <div class="field" id="fEmail">
+            <label for="email">Correo del negocio</label>
+            <input id="email" name="email" type="email" required autocomplete="email" placeholder="contacto@turnegocio.demo">
+          </div>
+
+          <div class="field" id="fPassword">
+            <label for="password">Contraseña</label>
+            <div class="password-field">
+              <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••">
+              <button class="password-toggle" type="button" id="togglePass">Ver</button>
+            </div>
+          </div>
+
+          <button class="btn btn--primary btn--full" type="submit">
+            Entrar al panel
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+
+        <p class="auth-foot">¿Eres cliente en vez de negocio? <a href="login-cliente.html">Inicia sesión aquí</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+    <span id="toastText">Listo</span>
+  </div>
+
+  <script src="assets/auth.js"></script>
+  <script src="assets/ui.js"></script>
+  <script>
+    'use strict';
+    loadDatabase();
+    if(getSession()?.role === 'empresa'){ window.location.href = 'panel-empresa.html'; }
+
+    $$('[data-demo-email]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $('#email').value = btn.dataset.demoEmail;
+        $('#password').value = btn.dataset.demoPass;
+        toast('Datos de ' + btn.previousElementSibling.textContent + ' cargados');
+      });
+    });
+
+    $('#togglePass').addEventListener('click', () => {
+      const input = $('#password');
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      $('#togglePass').textContent = show ? 'Ocultar' : 'Ver';
+    });
+
+    function showError(msg){
+      $('#formErrorText').textContent = msg;
+      $('#formError').classList.add('is-visible');
+    }
+    function hideError(){ $('#formError').classList.remove('is-visible'); }
+
+    $('#loginForm').addEventListener('submit', e => {
+      e.preventDefault();
+      hideError();
+      const email = $('#email').value.trim();
+      const password = $('#password').value;
+      if(!email || !password){ showError('Completa correo y contraseña.'); return; }
+
+      const result = loginBusiness(email, password);
+      if(!result.ok){ showError(result.error); return; }
+      toast('Bienvenido, ' + result.business.name);
+      setTimeout(() => window.location.href = 'panel-empresa.html', 450);
+    });
+  </script>
+</body>
+</html>

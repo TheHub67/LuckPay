@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C141A">
+  <title>Crear cuenta de negocio — Recauda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="auth-shell">
+    <aside class="auth-side">
+      <a href="index.html" class="brand" style="color:#fff">
+        <span class="brand__mark">R</span>
+        <span class="brand__name">Recauda</span>
+      </a>
+
+      <div class="auth-side__quote">
+        <h3 style="color:#fff">Deja listo el cobro de tu próximo ciclo en minutos.</h3>
+        <p>Crea tu cuenta de negocio, registra tus primeros clientes y mira tu panel funcionando al instante.</p>
+      </div>
+
+      <div class="auth-side__points">
+        <div class="auth-side__point">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+          <span>Sin tarjeta ni datos bancarios para esta demo</span>
+        </div>
+        <div class="auth-side__point">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+          <span>Tu cuenta queda guardada en este navegador</span>
+        </div>
+        <div class="auth-side__point">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+          <span>Puedes agregar clientes apenas entres a tu panel</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-box">
+        <a href="acceso.html" class="auth-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+          Volver
+        </a>
+        <a href="index.html" class="brand"><span class="brand__mark">R</span><span class="brand__name">Recauda</span></a>
+        <h1>Crea tu negocio</h1>
+        <p class="auth-box__sub">Estos datos crean tu panel de administración.</p>
+
+        <div class="auth-tabs">
+          <a href="login-empresa.html">Iniciar sesión</a>
+          <a class="is-active" href="registro-empresa.html">Crear cuenta</a>
+        </div>
+
+        <form class="auth-form" id="registerForm" novalidate>
+          <div class="form-error-banner" id="formError">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            <span id="formErrorText">Revisa tus datos.</span>
+          </div>
+
+          <div class="field" id="fName">
+            <label for="name">Nombre del negocio</label>
+            <input id="name" name="name" required minlength="3" placeholder="Ej. Vital Studio">
+          </div>
+
+          <div class="field" id="fCategory">
+            <label for="category">Tipo de negocio</label>
+            <select id="category" name="category" required>
+              <option value="" disabled selected>Selecciona</option>
+              <option>Gimnasio / Fitness</option>
+              <option>Academia de baile</option>
+              <option>Escuela deportiva</option>
+              <option>Academia de idiomas</option>
+              <option>Otro servicio recurrente</option>
+            </select>
+          </div>
+
+          <div class="field" id="fEmail">
+            <label for="email">Correo del negocio</label>
+            <input id="email" name="email" type="email" required placeholder="contacto@tunegocio.demo">
+          </div>
+
+          <div class="field" id="fCity">
+            <label for="city">Ciudad</label>
+            <input id="city" name="city" required placeholder="Villavicencio, Meta">
+          </div>
+
+          <div class="field" id="fPassword">
+            <label for="password">Contraseña</label>
+            <div class="password-field">
+              <input id="password" name="password" type="password" required minlength="6" placeholder="Mínimo 6 caracteres">
+              <button class="password-toggle" type="button" id="togglePass">Ver</button>
+            </div>
+          </div>
+
+          <div class="form-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></svg>
+            <span>Esta demo no procesa pagos reales. Nunca uses una contraseña que utilices en otros sitios.</span>
+          </div>
+
+          <button class="btn btn--primary btn--full" type="submit">
+            Crear cuenta y entrar al panel
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+
+        <p class="auth-foot">¿Ya tienes cuenta? <a href="login-empresa.html">Inicia sesión</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>
+    <span id="toastText">Listo</span>
+  </div>
+
+  <script src="assets/auth.js"></script>
+  <script src="assets/ui.js"></script>
+  <script>
+    'use strict';
+    loadDatabase();
+    if(getSession()?.role === 'empresa'){ window.location.href = 'panel-empresa.html'; }
+
+    $('#togglePass').addEventListener('click', () => {
+      const input = $('#password');
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      $('#togglePass').textContent = show ? 'Ocultar' : 'Ver';
+    });
+
+    function showError(msg){
+      $('#formErrorText').textContent = msg;
+      $('#formError').classList.add('is-visible');
+    }
+    function hideError(){ $('#formError').classList.remove('is-visible'); }
+
+    $('#registerForm').addEventListener('submit', e => {
+      e.preventDefault();
+      hideError();
+
+      const name = $('#name').value.trim();
+      const category = $('#category').value;
+      const email = $('#email').value.trim();
+      const city = $('#city').value.trim();
+      const password = $('#password').value;
+
+      if(name.length < 3){ showError('El nombre del negocio es muy corto.'); return; }
+      if(!category){ showError('Selecciona el tipo de negocio.'); return; }
+      if(!/^\S+@\S+\.\S+$/.test(email)){ showError('Ingresa un correo válido.'); return; }
+      if(!city){ showError('Escribe la ciudad de tu negocio.'); return; }
+      if(password.length < 6){ showError('La contraseña debe tener al menos 6 caracteres.'); return; }
+
+      const result = registerBusiness({ name, category, email, password, city });
+      if(!result.ok){ showError(result.error); return; }
+
+      toast('Cuenta creada. Entrando a tu panel…');
+      setTimeout(() => window.location.href = 'panel-empresa.html', 500);
+    });
+  </script>
+</body>
+</html>
