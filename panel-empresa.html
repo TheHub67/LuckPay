@@ -56,7 +56,7 @@
     </aside>
 
     <main class="panel__main">
-      <div class="panel__topbar">
+      <div class="panel__topbar" id="resumen">
         <div>
           <h1 id="pageTitle">Resumen</h1>
           <p>Así se ve la operación de tu negocio dentro de LuckPay ahora mismo.</p>
@@ -201,16 +201,16 @@
           const tr = document.createElement('tr');
 
           const tdName = document.createElement('td');
-          tdName.innerHTML = '<strong>' + c.name + '</strong><br><span style="color:var(--muted);font-size:10px">' + c.email + '</span>';
+          tdName.innerHTML = '<strong>' + escapeHtml(c.name) + '</strong><br><span style="color:var(--muted);font-size:10px">' + escapeHtml(c.email) + '</span>';
 
           const tdPlan = document.createElement('td');
-          tdPlan.innerHTML = '<span class="tag-plan">' + c.plan + '</span>';
+          tdPlan.innerHTML = '<span class="tag-plan">' + escapeHtml(c.plan) + '</span>';
 
           const tdNext = document.createElement('td');
           tdNext.textContent = formatDate(c.nextCharge);
 
           const tdStatus = document.createElement('td');
-          tdStatus.innerHTML = '<span class="status ' + statusClass(c.status) + '">' + c.status + '</span>';
+          tdStatus.innerHTML = '<span class="status ' + statusClass(c.status) + '">' + escapeHtml(c.status) + '</span>';
 
           const tdActions = document.createElement('td');
           tdActions.style.whiteSpace = 'nowrap';

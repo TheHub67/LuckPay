@@ -2,6 +2,20 @@
 
 Plataforma demostrativa de cobros recurrentes para negocios locales (gimnasios, academias de baile, escuelas deportivas, academias de idiomas y otros servicios por suscripción).
 
+## Novedades de esta revisión
+
+**Diseño**
+- Encabezado y hero ahora comparten una misma franja oscura (igual que el resto de la marca: footer, panel y pantallas de acceso), en vez de que el hero quedara claro y desentonara con el resto del sitio.
+- El isotipo "L" ya no se "perdía" sobre fondos oscuros (footer, panel, acceso): antes el círculo tenía el mismo color que el fondo y solo se veía la letra flotando.
+- Botones ahora con forma de píldora (antes eran rectángulos redondeados), para un acabado más pulido y coherente en toda la interfaz.
+- La sección "El ciclo de cobro" pasó de fondo oscuro a claro para que el recorrido de la página respire mejor (antes había dos bloques oscuros seguidos con muy poco contraste entre ellos).
+
+**Bugs corregidos**
+- El enlace "Resumen" del panel de negocio no llevaba a ningún sitio (apuntaba a un ancla `#resumen` que no existía en la página).
+- En móvil, el menú lateral de los paneles no se cerraba automáticamente al tocar una opción; había que tocar fuera del menú para cerrarlo.
+- El botón "Ver/Ocultar" contraseña se superponía con el texto escrito en los formularios de acceso.
+- Los nombres y correos escritos por el usuario se insertaban sin escapar en las tablas de los paneles: un nombre con `<` o `>` podía romper el marcado de la tabla.
+
 Proyecto de Etapa Productiva — SENA. Es un **frontend puro**: no hay servidor ni base de datos real. Toda la información (negocios, clientes, sesión activa) se guarda en el `localStorage` del navegador, así que funciona abriendo el sitio directamente o publicándolo en GitHub Pages, sin necesidad de backend.
 
 ## Estructura del proyecto

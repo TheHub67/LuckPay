@@ -166,7 +166,7 @@
         const row = document.createElement('div');
         row.className = 'receipt-row';
         row.innerHTML =
-          '<div class="receipt-row__info"><strong>' + h.status + '</strong><span>' + formatDate(h.date) + '</span></div>' +
+          '<div class="receipt-row__info"><strong>' + escapeHtml(h.status) + '</strong><span>' + formatDate(h.date) + '</span></div>' +
           '<div class="receipt-row__amount">' + cop(h.amount) + '</div>';
         list.appendChild(row);
       });

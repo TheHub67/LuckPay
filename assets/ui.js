@@ -6,6 +6,14 @@
 const $ = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
 
+/* Evita que nombres/correos con caracteres HTML rompan el marcado
+   cuando se insertan con innerHTML (p. ej. tablas de los paneles). */
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
+
 /* ---------- Toast ---------- */
 let toastTimer;
 function toast(message, isError){
@@ -51,6 +59,12 @@ function initPanelSidebar(){
     if(!sidebar.classList.contains('is-open')) return;
     if(sidebar.contains(e.target) || btn.contains(e.target)) return;
     sidebar.classList.remove('is-open');
+  });
+  /* En móvil, cerrar el menú lateral al tocar un enlace o botón de navegación */
+  $$('.panel__nav a, .panel__nav button', sidebar).forEach(item => {
+    item.addEventListener('click', () => {
+      if(window.innerWidth <= 1020) sidebar.classList.remove('is-open');
+    });
   });
 }
 
