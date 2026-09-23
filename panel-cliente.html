@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0C141A">
-  <title>Mi cuenta — Recauda</title>
+  <title>Mi cuenta — LuckPay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
@@ -18,8 +18,8 @@
   <div class="panel">
     <aside class="panel__sidebar" id="panelSidebar">
       <a href="index.html" class="panel__brand">
-        <span class="brand__mark">R</span>
-        <span class="brand__name">Recauda</span>
+        <span class="brand__mark">L</span>
+        <span class="brand__name">LuckPay</span>
       </a>
 
       <div class="panel__who">
@@ -55,7 +55,7 @@
       <div class="panel__topbar">
         <div>
           <h1>Hola, <span id="firstName">—</span></h1>
-          <p>Este es el estado de tu suscripción dentro de Recauda.</p>
+          <p>Este es el estado de tu suscripción dentro de LuckPay.</p>
         </div>
         <span class="chip" id="statusChip"><span class="chip__dot"></span> —</span>
       </div>
@@ -107,7 +107,7 @@
   <div class="modal" id="receiptModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
     <div class="modal__panel">
       <div class="modal__head">
-        <strong id="receiptTitle">Comprobante · Recauda</strong>
+        <strong id="receiptTitle">Comprobante · LuckPay</strong>
         <button class="modal__close" type="button" data-close-modal="receiptModal" aria-label="Cerrar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg>
         </button>
@@ -179,7 +179,7 @@
 
       $('#printReceipt').addEventListener('click', () => {
         const oldTitle = document.title;
-        document.title = 'Recauda · Comprobante';
+        document.title = 'LuckPay · Comprobante';
         window.print();
         document.title = oldTitle;
       });

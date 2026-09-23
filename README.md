@@ -1,4 +1,4 @@
-# Recauda
+# LuckPay
 
 Plataforma demostrativa de cobros recurrentes para negocios locales (gimnasios, academias de baile, escuelas deportivas, academias de idiomas y otros servicios por suscripción).
 
@@ -7,7 +7,7 @@ Proyecto de Etapa Productiva — SENA. Es un **frontend puro**: no hay servidor 
 ## Estructura del proyecto
 
 ```
-recauda/
+luckpay/
 ├── index.html              → Landing / página principal
 ├── acceso.html              → Elige si entras como negocio o como cliente
 ├── login-empresa.html       → Inicio de sesión para negocios
@@ -30,7 +30,7 @@ Simplemente abre `index.html` en el navegador (doble clic), o súbelo a GitHub P
 1. Sube esta carpeta a un repositorio de GitHub.
 2. Ve a **Settings → Pages**.
 3. En "Branch" selecciona tu rama principal (`main`) y carpeta `/root`.
-4. Guarda. GitHub te dará un enlace público (algo como `https://tuusuario.github.io/recauda/`).
+4. Guarda. GitHub te dará un enlace público (algo como `https://tuusuario.github.io/luckpay/`).
 
 No requiere `npm install` ni ningún paso de compilación: es HTML, CSS y JavaScript planos.
 
@@ -81,7 +81,7 @@ Si durante las pruebas quedan datos "sucios" (clientes de prueba, etc.), abre la
 
 ```js
 resetDemoData();
-localStorage.removeItem('recauda_session_v1');
+localStorage.removeItem('luckpay_session_v1');
 location.reload();
 ```
 

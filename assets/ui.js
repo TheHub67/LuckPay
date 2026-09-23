@@ -1,6 +1,6 @@
 'use strict';
 /* =======================================================
-   RECAUDA — Utilidades de interfaz compartidas
+   LUCKPAY — Utilidades de interfaz compartidas
    ======================================================= */
 
 const $ = (sel, root=document) => root.querySelector(sel);

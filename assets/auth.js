@@ -1,12 +1,12 @@
 /* =======================================================
-   RECAUDA — Capa de datos y autenticación (demo académica)
+   LUCKPAY — Capa de datos y autenticación (demo académica)
    Todo vive en localStorage del navegador. No hay backend
    real: esto simula el comportamiento de una plataforma de
    cobros recurrentes para la sustentación del proyecto.
    ======================================================= */
 
-const RECAUDA_DB_KEY = 'recauda_db_v1';
-const RECAUDA_SESSION_KEY = 'recauda_session_v1';
+const LUCKPAY_DB_KEY = 'luckpay_db_v1';
+const LUCKPAY_SESSION_KEY = 'luckpay_session_v1';
 
 const PLAN_INFO = {
   Bronce: { amount: 80000, months: 1, label: 'mensual' },
@@ -141,13 +141,13 @@ function seedDatabase(){
   ];
 
   const db = { businesses, clients };
-  localStorage.setItem(RECAUDA_DB_KEY, JSON.stringify(db));
+  localStorage.setItem(LUCKPAY_DB_KEY, JSON.stringify(db));
   return db;
 }
 
 function loadDatabase(){
   try{
-    const raw = localStorage.getItem(RECAUDA_DB_KEY);
+    const raw = localStorage.getItem(LUCKPAY_DB_KEY);
     if(!raw) return seedDatabase();
     const db = JSON.parse(raw);
     if(!db || !Array.isArray(db.businesses) || !Array.isArray(db.clients)) return seedDatabase();
@@ -157,27 +157,27 @@ function loadDatabase(){
   }
 }
 function saveDatabase(db){
-  localStorage.setItem(RECAUDA_DB_KEY, JSON.stringify(db));
+  localStorage.setItem(LUCKPAY_DB_KEY, JSON.stringify(db));
 }
 function resetDemoData(){
-  localStorage.removeItem(RECAUDA_DB_KEY);
+  localStorage.removeItem(LUCKPAY_DB_KEY);
   return seedDatabase();
 }
 
 /* ---------- Sesión ---------- */
 function getSession(){
   try{
-    const raw = localStorage.getItem(RECAUDA_SESSION_KEY);
+    const raw = localStorage.getItem(LUCKPAY_SESSION_KEY);
     return raw ? JSON.parse(raw) : null;
   }catch{
     return null;
   }
 }
 function setSession(session){
-  localStorage.setItem(RECAUDA_SESSION_KEY, JSON.stringify(session));
+  localStorage.setItem(LUCKPAY_SESSION_KEY, JSON.stringify(session));
 }
 function clearSession(){
-  localStorage.removeItem(RECAUDA_SESSION_KEY);
+  localStorage.removeItem(LUCKPAY_SESSION_KEY);
 }
 
 /* ---------- Autenticación: negocios ---------- */
